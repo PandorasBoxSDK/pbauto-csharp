@@ -1,4 +1,4 @@
-/* Pandoras Box Automation - pbauto-csharp v0.1.12086 @2016-02-22 <support@coolux.de> */
+/* Pandoras Box Automation - pbauto-csharp v0.2.12086 @2016-02-23 <support@coolux.de> */
 
 using System;
 using System.Collections.Generic;
