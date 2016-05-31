@@ -1,4 +1,4 @@
-/* Pandoras Box Automation - pbauto-csharp v0.2.12086 @2016-02-23 <support@coolux.de> */
+/* Pandoras Box Automation TESTING - pbauto-csharp v0.0.13077 @2016-05-31 <support@coolux.de> */
 
 using System;
 using System.Collections.Generic;
@@ -11,4323 +11,5690 @@ namespace PandorasBox
     /// <summary>
     /// The main class used to communicate with Pandoras Box
     /// </summary>
-    public class PBAuto
+    public class PbAuto
     {
-        private Connector c;
+        private IConnector connector;
 
-        public PBAuto(Connector connector)
+        public PbAuto(IConnector connector)
         {
-            c = connector;
+            this.connector = connector;
         }
 
-        public static PBAuto ConnectTcp(string ip, int domain = 0)
+        public static PbAuto ConnectTcp(string ip, int domain = 0)
         {
-            return new PBAuto(new TCP(ip, domain));
+            return new PbAuto(new TcpConnector(ip, domain));
         }
 
-        public struct PBAutoResult {
-            public bool ok { get { return error == 0; } }
-            public short code; public int error;
-        }
-
-
-        public PBAutoResult SetParamInt(int siteId, int deviceId, string parameterName, int parameterValue, bool doSilent, bool doDirect)
+        public bool IsConnected
         {
-            var b = new ByteUtil();
-            b.writeShort(1);
-            b.writeInt(siteId);
-            b.writeInt(deviceId);
-            b.writeStringNarrow(parameterName);
-            b.writeInt(parameterValue);
-            b.writeBool(doSilent);
-            b.writeBool(doDirect);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 1,error = 0 };
+            get
+            {
+                return connector.IsConnected();
+            }
         }
 
-        public PBAutoResult SetParamDouble(int siteId, int deviceId, string parameterName, double parameterValue, bool doSilent, bool doDirect)
+        public struct PbAutoResult {
+            public bool Ok { get { return Error == 0; } }
+            public short Code; public int Error;
+        }
+
+
+        public PbAutoResult SetParamInt(int siteId, int deviceId, string parameterName, int parameterValue, bool doSilent, bool doDirect)
         {
             var b = new ByteUtil();
-            b.writeShort(84);
-            b.writeInt(siteId);
-            b.writeInt(deviceId);
-            b.writeStringNarrow(parameterName);
-            b.writeDouble(parameterValue);
-            b.writeBool(doSilent);
-            b.writeBool(doDirect);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 84,error = 0 };
+            b.WriteShort(1);
+            b.WriteInt( (int)siteId);
+            b.WriteInt( (int)deviceId);
+            b.WriteStringNarrow( (string)parameterName);
+            b.WriteInt( (int)parameterValue);
+            b.WriteBool( (bool)doSilent);
+            b.WriteBool( (bool)doDirect);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetParamByteTuples(int siteId, int deviceId, string parameterName, int tupleDimension, byte[] tupleData, bool doSilent, bool doDirect)
+        public PbAutoResult SetParamDouble(int siteId, int deviceId, string parameterName, double parameterValue, bool doSilent, bool doDirect)
         {
             var b = new ByteUtil();
-            b.writeShort(115);
-            b.writeInt(siteId);
-            b.writeInt(deviceId);
-            b.writeStringNarrow(parameterName);
-            b.writeInt(tupleDimension);
-            b.writeByteBuffer(tupleData);
-            b.writeBool(doSilent);
-            b.writeBool(doDirect);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 115,error = 0 };
+            b.WriteShort(84);
+            b.WriteInt( (int)siteId);
+            b.WriteInt( (int)deviceId);
+            b.WriteStringNarrow( (string)parameterName);
+            b.WriteDouble( (double)parameterValue);
+            b.WriteBool( (bool)doSilent);
+            b.WriteBool( (bool)doDirect);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
+        }
+
+        public PbAutoResult SetParamByteTuples(int siteId, int deviceId, string parameterName, int tupleDimension, byte[] tupleData, bool doSilent, bool doDirect)
+        {
+            var b = new ByteUtil();
+            b.WriteShort(115);
+            b.WriteInt( (int)siteId);
+            b.WriteInt( (int)deviceId);
+            b.WriteStringNarrow( (string)parameterName);
+            b.WriteInt( (int)tupleDimension);
+            b.WriteByteBuffer( (byte[])tupleData);
+            b.WriteBool( (bool)doSilent);
+            b.WriteBool( (bool)doDirect);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
         public struct GetParamResult
         {
-            public bool ok { get { return error == 0; } }
-            public short code; public int error;
-            public double parameterValue;
+            public bool Ok { get { return Error == 0; } }
+            public short Code; public int Error;
+            public double ParameterValue;
         }
         public GetParamResult GetParam(int siteId, int deviceId, string parameterName)
         {
             var b = new ByteUtil();
-            b.writeShort(79);
-            b.writeInt(siteId);
-            b.writeInt(deviceId);
-            b.writeStringNarrow(parameterName);
-            b = c.Send(b, true);
+            b.WriteShort(79);
+            b.WriteInt( (int)siteId);
+            b.WriteInt( (int)deviceId);
+            b.WriteStringNarrow( (string)parameterName);
+            b = connector.Send(b, true);
             var r = new GetParamResult();
-            r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else
             {
-                r.error = 0;
-                r.parameterValue = b.readDouble();
+                r.Error = 0;
+                r.ParameterValue = b.ReadDouble();
             }
             return r;
         }
 
         public struct GetParamByteTuplesResult
         {
-            public bool ok { get { return error == 0; } }
-            public short code; public int error;
-            public int tupleDimension;
-            public byte[] tupleData;
+            public bool Ok { get { return Error == 0; } }
+            public short Code; public int Error;
+            public int TupleDimension;
+            public byte[] TupleData;
         }
         public GetParamByteTuplesResult GetParamByteTuples(int siteId, int deviceId, string parameterName)
         {
             var b = new ByteUtil();
-            b.writeShort(132);
-            b.writeInt(siteId);
-            b.writeInt(deviceId);
-            b.writeStringWide(parameterName);
-            b = c.Send(b, true);
+            b.WriteShort(132);
+            b.WriteInt( (int)siteId);
+            b.WriteInt( (int)deviceId);
+            b.WriteStringWide( (string)parameterName);
+            b = connector.Send(b, true);
             var r = new GetParamByteTuplesResult();
-            r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else
             {
-                r.error = 0;
-                r.tupleDimension = b.readInt();
-                r.tupleData = b.readByteBuffer();
+                r.Error = 0;
+                r.TupleDimension = b.ReadInt();
+                r.TupleData = b.ReadByteBuffer();
             }
             return r;
         }
 
-        public PBAutoResult SetParamOfKind(int siteId, int deviceId, int parameterKindId, int parameterValue, bool doSilent, bool doDirect)
+        public PbAutoResult SetParamOfKind(int siteId, int deviceId, int parameterKindId, int parameterValue, bool doSilent, bool doDirect)
         {
             var b = new ByteUtil();
-            b.writeShort(39);
-            b.writeInt(siteId);
-            b.writeInt(deviceId);
-            b.writeInt(parameterKindId);
-            b.writeInt(parameterValue);
-            b.writeBool(doSilent);
-            b.writeBool(doDirect);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 39,error = 0 };
+            b.WriteShort(39);
+            b.WriteInt( (int)siteId);
+            b.WriteInt( (int)deviceId);
+            b.WriteInt( (int)parameterKindId);
+            b.WriteInt( (int)parameterValue);
+            b.WriteBool( (bool)doSilent);
+            b.WriteBool( (bool)doDirect);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetParamOfKindDouble(int siteId, int deviceId, int parameterKindId, double parameterValue, bool doSilent, bool doDirect)
+        public PbAutoResult SetParamOfKindDouble(int siteId, int deviceId, int parameterKindId, double parameterValue, bool doSilent, bool doDirect)
         {
             var b = new ByteUtil();
-            b.writeShort(85);
-            b.writeInt(siteId);
-            b.writeInt(deviceId);
-            b.writeInt(parameterKindId);
-            b.writeDouble(parameterValue);
-            b.writeBool(doSilent);
-            b.writeBool(doDirect);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 85,error = 0 };
+            b.WriteShort(85);
+            b.WriteInt( (int)siteId);
+            b.WriteInt( (int)deviceId);
+            b.WriteInt( (int)parameterKindId);
+            b.WriteDouble( (double)parameterValue);
+            b.WriteBool( (bool)doSilent);
+            b.WriteBool( (bool)doDirect);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
         public struct GetParamOfKindResult
         {
-            public bool ok { get { return error == 0; } }
-            public short code; public int error;
-            public double parameterValue;
+            public bool Ok { get { return Error == 0; } }
+            public short Code; public int Error;
+            public double ParameterValue;
         }
         public GetParamOfKindResult GetParamOfKind(int siteId, int deviceId, int parameterKindId)
         {
             var b = new ByteUtil();
-            b.writeShort(80);
-            b.writeInt(siteId);
-            b.writeInt(deviceId);
-            b.writeInt(parameterKindId);
-            b = c.Send(b, true);
+            b.WriteShort(80);
+            b.WriteInt( (int)siteId);
+            b.WriteInt( (int)deviceId);
+            b.WriteInt( (int)parameterKindId);
+            b = connector.Send(b, true);
             var r = new GetParamOfKindResult();
-            r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else
             {
-                r.error = 0;
-                r.parameterValue = b.readDouble();
+                r.Error = 0;
+                r.ParameterValue = b.ReadDouble();
             }
             return r;
         }
 
-        public PBAutoResult SetParamInSelection(string parameterName, int parameterValue)
+        public PbAutoResult SetParamInSelection(string parameterName, int parameterValue)
         {
             var b = new ByteUtil();
-            b.writeShort(58);
-            b.writeStringNarrow(parameterName);
-            b.writeInt(parameterValue);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 58,error = 0 };
+            b.WriteShort(58);
+            b.WriteStringNarrow( (string)parameterName);
+            b.WriteInt( (int)parameterValue);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetParamInSelectionDouble(string parameterName, double parameterValue)
+        public PbAutoResult SetParamInSelectionDouble(string parameterName, double parameterValue)
         {
             var b = new ByteUtil();
-            b.writeShort(99);
-            b.writeStringNarrow(parameterName);
-            b.writeDouble(parameterValue);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 99,error = 0 };
+            b.WriteShort(99);
+            b.WriteStringNarrow( (string)parameterName);
+            b.WriteDouble( (double)parameterValue);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetParamOfKindInSelection(int parameterKindId, int parameterValue)
+        public PbAutoResult SetParamOfKindInSelection(int parameterKindId, int parameterValue)
         {
             var b = new ByteUtil();
-            b.writeShort(59);
-            b.writeInt(parameterKindId);
-            b.writeInt(parameterValue);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 59,error = 0 };
+            b.WriteShort(59);
+            b.WriteInt( (int)parameterKindId);
+            b.WriteInt( (int)parameterValue);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetParamOfKindInSelectionDouble(int parameterKindId, double parameterValue)
+        public PbAutoResult SetParamOfKindInSelectionDouble(int parameterKindId, double parameterValue)
         {
             var b = new ByteUtil();
-            b.writeShort(100);
-            b.writeInt(parameterKindId);
-            b.writeDouble(parameterValue);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 100,error = 0 };
+            b.WriteShort(100);
+            b.WriteInt( (int)parameterKindId);
+            b.WriteDouble( (double)parameterValue);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetParamLerpTime(int siteId, int deviceId, string parameterName, int smoothingTime)
+        public PbAutoResult SetParamLerpTime(int siteId, int deviceId, string parameterName, int smoothingTime)
         {
             var b = new ByteUtil();
-            b.writeShort(232);
-            b.writeInt(siteId);
-            b.writeInt(deviceId);
-            b.writeStringNarrow(parameterName);
-            b.writeInt(smoothingTime);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 232,error = 0 };
+            b.WriteShort(232);
+            b.WriteInt( (int)siteId);
+            b.WriteInt( (int)deviceId);
+            b.WriteStringNarrow( (string)parameterName);
+            b.WriteInt( (int)smoothingTime);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
         public struct GetIsDeviceSelectedResult
         {
-            public bool ok { get { return error == 0; } }
-            public short code; public int error;
-            public byte isSelected;
+            public bool Ok { get { return Error == 0; } }
+            public short Code; public int Error;
+            public byte IsSelected;
         }
         public GetIsDeviceSelectedResult GetIsDeviceSelected(int siteId, int deviceId)
         {
             var b = new ByteUtil();
-            b.writeShort(74);
-            b.writeInt(siteId);
-            b.writeInt(deviceId);
-            b = c.Send(b, true);
+            b.WriteShort(74);
+            b.WriteInt( (int)siteId);
+            b.WriteInt( (int)deviceId);
+            b = connector.Send(b, true);
             var r = new GetIsDeviceSelectedResult();
-            r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else
             {
-                r.error = 0;
-                r.isSelected = b.readByte();
+                r.Error = 0;
+                r.IsSelected = b.ReadByte();
             }
             return r;
         }
 
         public struct GetSelectedDeviceCountResult
         {
-            public bool ok { get { return error == 0; } }
-            public short code; public int error;
-            public int selectedDevicesCount;
+            public bool Ok { get { return Error == 0; } }
+            public short Code; public int Error;
+            public int SelectedDevicesCount;
         }
         public GetSelectedDeviceCountResult GetSelectedDeviceCount()
         {
             var b = new ByteUtil();
-            b.writeShort(81);
-            b = c.Send(b, true);
+            b.WriteShort(81);
+            b = connector.Send(b, true);
             var r = new GetSelectedDeviceCountResult();
-            r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else
             {
-                r.error = 0;
-                r.selectedDevicesCount = b.readInt();
+                r.Error = 0;
+                r.SelectedDevicesCount = b.ReadInt();
             }
             return r;
         }
 
         public struct GetSelectedDeviceResult
         {
-            public bool ok { get { return error == 0; } }
-            public short code; public int error;
-            public int siteId;
-            public int deviceId;
+            public bool Ok { get { return Error == 0; } }
+            public short Code; public int Error;
+            public int SiteId;
+            public int DeviceId;
         }
         public GetSelectedDeviceResult GetSelectedDevice(int selectionIndex)
         {
             var b = new ByteUtil();
-            b.writeShort(75);
-            b.writeInt(selectionIndex);
-            b = c.Send(b, true);
+            b.WriteShort(75);
+            b.WriteInt( (int)selectionIndex);
+            b = connector.Send(b, true);
             var r = new GetSelectedDeviceResult();
-            r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else
             {
-                r.error = 0;
-                r.siteId = b.readInt();
-                r.deviceId = b.readInt();
+                r.Error = 0;
+                r.SiteId = b.ReadInt();
+                r.DeviceId = b.ReadInt();
             }
             return r;
         }
 
-        public PBAutoResult SetSequenceMediaAtTime(int siteId, int deviceId, int sequenceId, int hours, int minutes, int seconds, int frames, int dmxFolderId, int dmxFileId)
+        public PbAutoResult SetSequenceMediaAtTime(int siteId, int deviceId, int sequenceId, int hours, int minutes, int seconds, int frames, int dmxFolderId, int dmxFileId)
         {
             var b = new ByteUtil();
-            b.writeShort(56);
-            b.writeInt(siteId);
-            b.writeInt(deviceId);
-            b.writeInt(sequenceId);
-            b.writeInt(hours);
-            b.writeInt(minutes);
-            b.writeInt(seconds);
-            b.writeInt(frames);
-            b.writeInt(dmxFolderId);
-            b.writeInt(dmxFileId);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 56,error = 0 };
+            b.WriteShort(56);
+            b.WriteInt( (int)siteId);
+            b.WriteInt( (int)deviceId);
+            b.WriteInt( (int)sequenceId);
+            b.WriteInt( (int)hours);
+            b.WriteInt( (int)minutes);
+            b.WriteInt( (int)seconds);
+            b.WriteInt( (int)frames);
+            b.WriteInt( (int)dmxFolderId);
+            b.WriteInt( (int)dmxFileId);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult AssignResource(int siteId, int deviceId, int dmxFolderId, int dmxFileId, bool forMesh)
+        public PbAutoResult AssignResource(int siteId, int deviceId, int dmxFolderId, int dmxFileId, bool forMesh)
         {
             var b = new ByteUtil();
-            b.writeShort(2);
-            b.writeInt(siteId);
-            b.writeInt(deviceId);
-            b.writeInt(dmxFolderId);
-            b.writeInt(dmxFileId);
-            b.writeBool(forMesh);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 2,error = 0 };
+            b.WriteShort(2);
+            b.WriteInt( (int)siteId);
+            b.WriteInt( (int)deviceId);
+            b.WriteInt( (int)dmxFolderId);
+            b.WriteInt( (int)dmxFileId);
+            b.WriteBool( (bool)forMesh);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult AssignResourceByName(int siteId, int deviceId, string resourcePath, string parameterName, bool forMesh)
+        public PbAutoResult AssignResourceByName(int siteId, int deviceId, string resourcePath, string parameterName, bool forMesh)
         {
             var b = new ByteUtil();
-            b.writeShort(129);
-            b.writeInt(siteId);
-            b.writeInt(deviceId);
-            b.writeStringWide(resourcePath);
-            b.writeStringWide(parameterName);
-            b.writeBool(forMesh);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 129,error = 0 };
+            b.WriteShort(129);
+            b.WriteInt( (int)siteId);
+            b.WriteInt( (int)deviceId);
+            b.WriteStringWide( (string)resourcePath);
+            b.WriteStringWide( (string)parameterName);
+            b.WriteBool( (bool)forMesh);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult AssignResourceToSelection(int dmxFolderId, int dmxFileId, bool forMesh)
+        public PbAutoResult AssignResourceToSelection(int dmxFolderId, int dmxFileId, bool forMesh)
         {
             var b = new ByteUtil();
-            b.writeShort(61);
-            b.writeInt(dmxFolderId);
-            b.writeInt(dmxFileId);
-            b.writeBool(forMesh);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 61,error = 0 };
+            b.WriteShort(61);
+            b.WriteInt( (int)dmxFolderId);
+            b.WriteInt( (int)dmxFileId);
+            b.WriteBool( (bool)forMesh);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult MoveResourceToPath(string resourcePath, string projectPath)
+        public PbAutoResult MoveResourceToPath(string resourcePath, string projectPath)
         {
             var b = new ByteUtil();
-            b.writeShort(144);
-            b.writeStringWide(resourcePath);
-            b.writeStringWide(projectPath);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 144,error = 0 };
+            b.WriteShort(144);
+            b.WriteStringWide( (string)resourcePath);
+            b.WriteStringWide( (string)projectPath);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult MoveTreeItem(int itemIdFrom, int itemIdTo)
+        public PbAutoResult MoveTreeItem(int itemIdFrom, int itemIdTo)
         {
             var b = new ByteUtil();
-            b.writeShort(158);
-            b.writeInt(itemIdFrom);
-            b.writeInt(itemIdTo);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 158,error = 0 };
+            b.WriteShort(158);
+            b.WriteInt( (int)itemIdFrom);
+            b.WriteInt( (int)itemIdTo);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetSequenceTransportMode(int sequenceId, int transportMode)
+        public PbAutoResult SetSequenceTransportMode(int sequenceId, int transportMode)
         {
             var b = new ByteUtil();
-            b.writeShort(3);
-            b.writeInt(sequenceId);
-            b.writeInt(transportMode);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 3,error = 0 };
+            b.WriteShort(3);
+            b.WriteInt( (int)sequenceId);
+            b.WriteInt( (int)transportMode);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
         public struct GetSequenceTransportModeResult
         {
-            public bool ok { get { return error == 0; } }
-            public short code; public int error;
-            public int transportMode;
+            public bool Ok { get { return Error == 0; } }
+            public short Code; public int Error;
+            public int TransportMode;
         }
         public GetSequenceTransportModeResult GetSequenceTransportMode(int sequenceId)
         {
             var b = new ByteUtil();
-            b.writeShort(72);
-            b.writeInt(sequenceId);
-            b = c.Send(b, true);
+            b.WriteShort(72);
+            b.WriteInt( (int)sequenceId);
+            b = connector.Send(b, true);
             var r = new GetSequenceTransportModeResult();
-            r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else
             {
-                r.error = 0;
-                r.transportMode = b.readInt();
+                r.Error = 0;
+                r.TransportMode = b.ReadInt();
             }
             return r;
         }
 
-        public PBAutoResult MoveSequenceToTime(int sequenceId, int hours, int minutes, int seconds, int frames)
+        public PbAutoResult MoveSequenceToTime(int sequenceId, int hours, int minutes, int seconds, int frames)
         {
             var b = new ByteUtil();
-            b.writeShort(5);
-            b.writeInt(sequenceId);
-            b.writeInt(hours);
-            b.writeInt(minutes);
-            b.writeInt(seconds);
-            b.writeInt(frames);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 5,error = 0 };
+            b.WriteShort(5);
+            b.WriteInt( (int)sequenceId);
+            b.WriteInt( (int)hours);
+            b.WriteInt( (int)minutes);
+            b.WriteInt( (int)seconds);
+            b.WriteInt( (int)frames);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
         public struct GetSequenceTimeResult
         {
-            public bool ok { get { return error == 0; } }
-            public short code; public int error;
-            public int hours;
-            public int minutes;
-            public int seconds;
-            public int frames;
+            public bool Ok { get { return Error == 0; } }
+            public short Code; public int Error;
+            public int Hours;
+            public int Minutes;
+            public int Seconds;
+            public int Frames;
         }
         public GetSequenceTimeResult GetSequenceTime(int sequenceId)
         {
             var b = new ByteUtil();
-            b.writeShort(73);
-            b.writeInt(sequenceId);
-            b = c.Send(b, true);
+            b.WriteShort(73);
+            b.WriteInt( (int)sequenceId);
+            b = connector.Send(b, true);
             var r = new GetSequenceTimeResult();
-            r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else
             {
-                r.error = 0;
-                r.hours = b.readInt();
-                r.minutes = b.readInt();
-                r.seconds = b.readInt();
-                r.frames = b.readInt();
+                r.Error = 0;
+                r.Hours = b.ReadInt();
+                r.Minutes = b.ReadInt();
+                r.Seconds = b.ReadInt();
+                r.Frames = b.ReadInt();
             }
             return r;
         }
 
-        public PBAutoResult MoveSequenceToNextFrame(int sequenceId, byte isNext)
+        public PbAutoResult MoveSequenceToNextFrame(int sequenceId, byte isNext)
         {
             var b = new ByteUtil();
-            b.writeShort(6);
-            b.writeInt(sequenceId);
-            b.writeByte(isNext);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 6,error = 0 };
+            b.WriteShort(6);
+            b.WriteInt( (int)sequenceId);
+            b.WriteByte( (byte)isNext);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult MoveSequenceToCue(int sequenceId, int cueId)
+        public PbAutoResult MoveSequenceToCue(int sequenceId, int cueId)
         {
             var b = new ByteUtil();
-            b.writeShort(4);
-            b.writeInt(sequenceId);
-            b.writeInt(cueId);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 4,error = 0 };
+            b.WriteShort(4);
+            b.WriteInt( (int)sequenceId);
+            b.WriteInt( (int)cueId);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult MoveSequenceToNextCue(int sequenceId, byte isNext)
+        public PbAutoResult MoveSequenceToNextCue(int sequenceId, byte isNext)
         {
             var b = new ByteUtil();
-            b.writeShort(7);
-            b.writeInt(sequenceId);
-            b.writeByte(isNext);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 7,error = 0 };
+            b.WriteShort(7);
+            b.WriteInt( (int)sequenceId);
+            b.WriteByte( (byte)isNext);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetSequenceTransparency(int sequenceId, int transparency)
+        public PbAutoResult SetSequenceTransparency(int sequenceId, int transparency)
         {
             var b = new ByteUtil();
-            b.writeShort(8);
-            b.writeInt(sequenceId);
-            b.writeInt(transparency);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 8,error = 0 };
+            b.WriteShort(8);
+            b.WriteInt( (int)sequenceId);
+            b.WriteInt( (int)transparency);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
         public struct GetSequenceTransparencyResult
         {
-            public bool ok { get { return error == 0; } }
-            public short code; public int error;
-            public int transparency;
+            public bool Ok { get { return Error == 0; } }
+            public short Code; public int Error;
+            public int Transparency;
         }
         public GetSequenceTransparencyResult GetSequenceTransparency(int sequenceId)
         {
             var b = new ByteUtil();
-            b.writeShort(91);
-            b.writeInt(sequenceId);
-            b = c.Send(b, true);
+            b.WriteShort(91);
+            b.WriteInt( (int)sequenceId);
+            b = connector.Send(b, true);
             var r = new GetSequenceTransparencyResult();
-            r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else
             {
-                r.error = 0;
-                r.transparency = b.readInt();
+                r.Error = 0;
+                r.Transparency = b.ReadInt();
             }
             return r;
         }
 
-        public PBAutoResult SetSequenceSMTPETimeCodeMode(int sequenceId, int timeCodeMode)
+        public PbAutoResult SetSequenceSMTPETimeCodeMode(int sequenceId, int timeCodeMode)
         {
             var b = new ByteUtil();
-            b.writeShort(41);
-            b.writeInt(sequenceId);
-            b.writeInt(timeCodeMode);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 41,error = 0 };
+            b.WriteShort(41);
+            b.WriteInt( (int)sequenceId);
+            b.WriteInt( (int)timeCodeMode);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetSequenceSMTPETimeCodeOffset(int sequenceId, int hours, int minutes, int seconds, int frames)
+        public PbAutoResult SetSequenceSMTPETimeCodeOffset(int sequenceId, int hours, int minutes, int seconds, int frames)
         {
             var b = new ByteUtil();
-            b.writeShort(42);
-            b.writeInt(sequenceId);
-            b.writeInt(hours);
-            b.writeInt(minutes);
-            b.writeInt(seconds);
-            b.writeInt(frames);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 42,error = 0 };
+            b.WriteShort(42);
+            b.WriteInt( (int)sequenceId);
+            b.WriteInt( (int)hours);
+            b.WriteInt( (int)minutes);
+            b.WriteInt( (int)seconds);
+            b.WriteInt( (int)frames);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetSequenceSMTPETimeCodeStopAction(int sequenceId, int stopAction)
+        public PbAutoResult SetSequenceSMTPETimeCodeStopAction(int sequenceId, int stopAction)
         {
             var b = new ByteUtil();
-            b.writeShort(43);
-            b.writeInt(sequenceId);
-            b.writeInt(stopAction);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 43,error = 0 };
+            b.WriteShort(43);
+            b.WriteInt( (int)sequenceId);
+            b.WriteInt( (int)stopAction);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult ResetAll()
+        public PbAutoResult ResetAll()
         {
             var b = new ByteUtil();
-            b.writeShort(9);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 9,error = 0 };
+            b.WriteShort(9);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult ResetSite(int siteId)
+        public PbAutoResult ResetSite(int siteId)
         {
             var b = new ByteUtil();
-            b.writeShort(10);
-            b.writeInt(siteId);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 10,error = 0 };
+            b.WriteShort(10);
+            b.WriteInt( (int)siteId);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult ResetDevice(int siteId, int deviceId)
+        public PbAutoResult ResetDevice(int siteId, int deviceId)
         {
             var b = new ByteUtil();
-            b.writeShort(11);
-            b.writeInt(siteId);
-            b.writeInt(deviceId);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 11,error = 0 };
+            b.WriteShort(11);
+            b.WriteInt( (int)siteId);
+            b.WriteInt( (int)deviceId);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult ResetParam(int siteId, int deviceId, string parameterName)
+        public PbAutoResult ResetParam(int siteId, int deviceId, string parameterName)
         {
             var b = new ByteUtil();
-            b.writeShort(12);
-            b.writeInt(siteId);
-            b.writeInt(deviceId);
-            b.writeStringNarrow(parameterName);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 12,error = 0 };
+            b.WriteShort(12);
+            b.WriteInt( (int)siteId);
+            b.WriteInt( (int)deviceId);
+            b.WriteStringNarrow( (string)parameterName);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetAllActive()
+        public PbAutoResult SetAllActive()
         {
             var b = new ByteUtil();
-            b.writeShort(35);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 35,error = 0 };
+            b.WriteShort(35);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetSiteActive(int siteId)
+        public PbAutoResult SetSiteActive(int siteId)
         {
             var b = new ByteUtil();
-            b.writeShort(36);
-            b.writeInt(siteId);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 36,error = 0 };
+            b.WriteShort(36);
+            b.WriteInt( (int)siteId);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetDeviceActive(int siteId, int deviceId)
+        public PbAutoResult SetDeviceActive(int siteId, int deviceId)
         {
             var b = new ByteUtil();
-            b.writeShort(37);
-            b.writeInt(siteId);
-            b.writeInt(deviceId);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 37,error = 0 };
+            b.WriteShort(37);
+            b.WriteInt( (int)siteId);
+            b.WriteInt( (int)deviceId);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetParamActive(int siteId, int deviceId, string parameterName)
+        public PbAutoResult SetParamActive(int siteId, int deviceId, string parameterName)
         {
             var b = new ByteUtil();
-            b.writeShort(38);
-            b.writeInt(siteId);
-            b.writeInt(deviceId);
-            b.writeStringNarrow(parameterName);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 38,error = 0 };
+            b.WriteShort(38);
+            b.WriteInt( (int)siteId);
+            b.WriteInt( (int)deviceId);
+            b.WriteStringNarrow( (string)parameterName);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult ClearAllActive()
+        public PbAutoResult ClearAllActive()
         {
             var b = new ByteUtil();
-            b.writeShort(13);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 13,error = 0 };
+            b.WriteShort(13);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult ClearActiveSite(int siteId)
+        public PbAutoResult ClearActiveSite(int siteId)
         {
             var b = new ByteUtil();
-            b.writeShort(14);
-            b.writeInt(siteId);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 14,error = 0 };
+            b.WriteShort(14);
+            b.WriteInt( (int)siteId);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult ClearActiveDevice(int siteId, int deviceId)
+        public PbAutoResult ClearActiveDevice(int siteId, int deviceId)
         {
             var b = new ByteUtil();
-            b.writeShort(15);
-            b.writeInt(siteId);
-            b.writeInt(deviceId);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 15,error = 0 };
+            b.WriteShort(15);
+            b.WriteInt( (int)siteId);
+            b.WriteInt( (int)deviceId);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult ClearActiveParam(int siteId, int deviceId, string parameterName)
+        public PbAutoResult ClearActiveParam(int siteId, int deviceId, string parameterName)
         {
             var b = new ByteUtil();
-            b.writeShort(16);
-            b.writeInt(siteId);
-            b.writeInt(deviceId);
-            b.writeStringNarrow(parameterName);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 16,error = 0 };
+            b.WriteShort(16);
+            b.WriteInt( (int)siteId);
+            b.WriteInt( (int)deviceId);
+            b.WriteStringNarrow( (string)parameterName);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult ToggleFullscreen(int siteId)
+        public PbAutoResult ToggleFullscreen(int siteId)
         {
             var b = new ByteUtil();
-            b.writeShort(17);
-            b.writeInt(siteId);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 17,error = 0 };
+            b.WriteShort(17);
+            b.WriteInt( (int)siteId);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetParamRelativeDouble(int siteId, int deviceId, string parameterName, double parameterValue)
+        public PbAutoResult SetParamRelativeDouble(int siteId, int deviceId, string parameterName, double parameterValue)
         {
             var b = new ByteUtil();
-            b.writeShort(98);
-            b.writeInt(siteId);
-            b.writeInt(deviceId);
-            b.writeStringNarrow(parameterName);
-            b.writeDouble(parameterValue);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 98,error = 0 };
+            b.WriteShort(98);
+            b.WriteInt( (int)siteId);
+            b.WriteInt( (int)deviceId);
+            b.WriteStringNarrow( (string)parameterName);
+            b.WriteDouble( (double)parameterValue);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetParamRelativeExtended(int siteId, int deviceId, string parameterName, double parameterValue, bool doSilent, bool doDirect)
+        public PbAutoResult SetParamRelativeExtended(int siteId, int deviceId, string parameterName, double parameterValue, bool doSilent, bool doDirect)
         {
             var b = new ByteUtil();
-            b.writeShort(149);
-            b.writeInt(siteId);
-            b.writeInt(deviceId);
-            b.writeStringNarrow(parameterName);
-            b.writeDouble(parameterValue);
-            b.writeBool(doSilent);
-            b.writeBool(doDirect);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 149,error = 0 };
+            b.WriteShort(149);
+            b.WriteInt( (int)siteId);
+            b.WriteInt( (int)deviceId);
+            b.WriteStringNarrow( (string)parameterName);
+            b.WriteDouble( (double)parameterValue);
+            b.WriteBool( (bool)doSilent);
+            b.WriteBool( (bool)doDirect);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetParamRelativeInSelection(string parameterName, int parameterValue)
+        public PbAutoResult SetParamRelativeInSelection(string parameterName, int parameterValue)
         {
             var b = new ByteUtil();
-            b.writeShort(60);
-            b.writeStringNarrow(parameterName);
-            b.writeInt(parameterValue);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 60,error = 0 };
+            b.WriteShort(60);
+            b.WriteStringNarrow( (string)parameterName);
+            b.WriteInt( (int)parameterValue);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetParamRelativeInSelectionDouble(string parameterName, double parameterValue)
+        public PbAutoResult SetParamRelativeInSelectionDouble(string parameterName, double parameterValue)
         {
             var b = new ByteUtil();
-            b.writeShort(101);
-            b.writeStringNarrow(parameterName);
-            b.writeDouble(parameterValue);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 101,error = 0 };
+            b.WriteShort(101);
+            b.WriteStringNarrow( (string)parameterName);
+            b.WriteDouble( (double)parameterValue);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult AddContentToPath(string filePath, int siteId, int dmxFolderId, int dmxFileId, string projectPath)
+        public PbAutoResult AddContentToPath(string filePath, int siteId, int dmxFolderId, int dmxFileId, string projectPath)
         {
             var b = new ByteUtil();
-            b.writeShort(87);
-            b.writeStringNarrow(filePath);
-            b.writeInt(siteId);
-            b.writeInt(dmxFolderId);
-            b.writeInt(dmxFileId);
-            b.writeStringNarrow(projectPath);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 87,error = 0 };
+            b.WriteShort(87);
+            b.WriteStringNarrow( (string)filePath);
+            b.WriteInt( (int)siteId);
+            b.WriteInt( (int)dmxFolderId);
+            b.WriteInt( (int)dmxFileId);
+            b.WriteStringNarrow( (string)projectPath);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult AddContentToTreeItem(string filePath, int siteId, int dmxFolderId, int dmxFileId, int treeItemIndex)
+        public PbAutoResult AddContentToTreeItem(string filePath, int siteId, int dmxFolderId, int dmxFileId, int treeItemIndex)
         {
             var b = new ByteUtil();
-            b.writeShort(153);
-            b.writeStringNarrow(filePath);
-            b.writeInt(siteId);
-            b.writeInt(dmxFolderId);
-            b.writeInt(dmxFileId);
-            b.writeInt(treeItemIndex);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 153,error = 0 };
+            b.WriteShort(153);
+            b.WriteStringNarrow( (string)filePath);
+            b.WriteInt( (int)siteId);
+            b.WriteInt( (int)dmxFolderId);
+            b.WriteInt( (int)dmxFileId);
+            b.WriteInt( (int)treeItemIndex);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult AddContentFromLocalNode(string filePath, short dmxFolderId, short dmxFileId)
+        public PbAutoResult AddContentFromLocalNode(string filePath, short dmxFolderId, short dmxFileId)
         {
             var b = new ByteUtil();
-            b.writeShort(63);
-            b.writeStringNarrow(filePath);
-            b.writeShort(dmxFolderId);
-            b.writeShort(dmxFileId);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 63,error = 0 };
+            b.WriteShort(63);
+            b.WriteStringNarrow( (string)filePath);
+            b.WriteShort( (short)dmxFolderId);
+            b.WriteShort( (short)dmxFileId);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult AddContentFromLocalNodeToPath(string filePath, string projectPath, short dmxFolderId, short dmxFileId)
+        public PbAutoResult AddContentFromLocalNodeToPath(string filePath, string projectPath, short dmxFolderId, short dmxFileId)
         {
             var b = new ByteUtil();
-            b.writeShort(135);
-            b.writeStringNarrow(filePath);
-            b.writeStringNarrow(projectPath);
-            b.writeShort(dmxFolderId);
-            b.writeShort(dmxFileId);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 135,error = 0 };
+            b.WriteShort(135);
+            b.WriteStringNarrow( (string)filePath);
+            b.WriteStringNarrow( (string)projectPath);
+            b.WriteShort( (short)dmxFolderId);
+            b.WriteShort( (short)dmxFileId);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult AddContentFromLocalNodeToTreeItem(string filePath, int treeItemIndex, short dmxFolderId, short dmxFileId)
+        public PbAutoResult AddContentFromLocalNodeToTreeItem(string filePath, int treeItemIndex, short dmxFolderId, short dmxFileId)
         {
             var b = new ByteUtil();
-            b.writeShort(154);
-            b.writeStringNarrow(filePath);
-            b.writeInt(treeItemIndex);
-            b.writeShort(dmxFolderId);
-            b.writeShort(dmxFileId);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 154,error = 0 };
+            b.WriteShort(154);
+            b.WriteStringNarrow( (string)filePath);
+            b.WriteInt( (int)treeItemIndex);
+            b.WriteShort( (short)dmxFolderId);
+            b.WriteShort( (short)dmxFileId);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult AddContentFromFolder(string folderPath, int siteId, int dmxFolderId, int dmxFileId, string projectPath)
+        public PbAutoResult AddContentFromFolder(string folderPath, int siteId, int dmxFolderId, int dmxFileId, string projectPath)
         {
             var b = new ByteUtil();
-            b.writeShort(124);
-            b.writeStringWide(folderPath);
-            b.writeInt(siteId);
-            b.writeInt(dmxFolderId);
-            b.writeInt(dmxFileId);
-            b.writeStringWide(projectPath);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 124,error = 0 };
+            b.WriteShort(124);
+            b.WriteStringWide( (string)folderPath);
+            b.WriteInt( (int)siteId);
+            b.WriteInt( (int)dmxFolderId);
+            b.WriteInt( (int)dmxFileId);
+            b.WriteStringWide( (string)projectPath);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult AddContentFromLocalNodeFolder(string folderPath, short dmxFolderId, short dmxFileId)
+        public PbAutoResult AddContentFromLocalNodeFolder(string folderPath, short dmxFolderId, short dmxFileId)
         {
             var b = new ByteUtil();
-            b.writeShort(133);
-            b.writeStringWide(folderPath);
-            b.writeShort(dmxFolderId);
-            b.writeShort(dmxFileId);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 133,error = 0 };
+            b.WriteShort(133);
+            b.WriteStringWide( (string)folderPath);
+            b.WriteShort( (short)dmxFolderId);
+            b.WriteShort( (short)dmxFileId);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult AddContentFromLocalNodeFolderToPath(string folderPath, string projectPath, short dmxFolderId, short dmxFileId)
+        public PbAutoResult AddContentFromLocalNodeFolderToPath(string folderPath, string projectPath, short dmxFolderId, short dmxFileId)
         {
             var b = new ByteUtil();
-            b.writeShort(134);
-            b.writeStringNarrow(folderPath);
-            b.writeStringNarrow(projectPath);
-            b.writeShort(dmxFolderId);
-            b.writeShort(dmxFileId);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 134,error = 0 };
+            b.WriteShort(134);
+            b.WriteStringNarrow( (string)folderPath);
+            b.WriteStringNarrow( (string)projectPath);
+            b.WriteShort( (short)dmxFolderId);
+            b.WriteShort( (short)dmxFileId);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult AddContentFolderFromLocalNodeToTreeItem(string folderPath, int treeItemIndex, short dmxFolderId, short dmxFileId)
+        public PbAutoResult AddContentFolderFromLocalNodeToTreeItem(string folderPath, int treeItemIndex, short dmxFolderId, short dmxFileId)
         {
             var b = new ByteUtil();
-            b.writeShort(155);
-            b.writeStringNarrow(folderPath);
-            b.writeInt(treeItemIndex);
-            b.writeShort(dmxFolderId);
-            b.writeShort(dmxFileId);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 155,error = 0 };
+            b.WriteShort(155);
+            b.WriteStringNarrow( (string)folderPath);
+            b.WriteInt( (int)treeItemIndex);
+            b.WriteShort( (short)dmxFolderId);
+            b.WriteShort( (short)dmxFileId);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult RemoveMediaById(int dmxFolderId, int dmxFileId)
+        public PbAutoResult RemoveMediaById(int dmxFolderId, int dmxFileId)
         {
             var b = new ByteUtil();
-            b.writeShort(20);
-            b.writeInt(dmxFolderId);
-            b.writeInt(dmxFileId);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 20,error = 0 };
+            b.WriteShort(20);
+            b.WriteInt( (int)dmxFolderId);
+            b.WriteInt( (int)dmxFileId);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult RemoveMeshById(int dmxFolderId, int dmxFileId)
+        public PbAutoResult RemoveMeshById(int dmxFolderId, int dmxFileId)
         {
             var b = new ByteUtil();
-            b.writeShort(21);
-            b.writeInt(dmxFolderId);
-            b.writeInt(dmxFileId);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 21,error = 0 };
+            b.WriteShort(21);
+            b.WriteInt( (int)dmxFolderId);
+            b.WriteInt( (int)dmxFileId);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult RemoveContentByName(string resourcePath, bool allEquallyNamed)
+        public PbAutoResult RemoveContentByName(string resourcePath, bool allEquallyNamed)
         {
             var b = new ByteUtil();
-            b.writeShort(125);
-            b.writeStringWide(resourcePath);
-            b.writeBool(allEquallyNamed);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 125,error = 0 };
+            b.WriteShort(125);
+            b.WriteStringWide( (string)resourcePath);
+            b.WriteBool( (bool)allEquallyNamed);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult RemoveTreeItem(int treeItemIndex)
+        public PbAutoResult RemoveTreeItem(int treeItemIndex)
         {
             var b = new ByteUtil();
-            b.writeShort(156);
-            b.writeInt(treeItemIndex);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 156,error = 0 };
+            b.WriteShort(156);
+            b.WriteInt( (int)treeItemIndex);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult RemoveAllResources(bool removeFolder)
+        public PbAutoResult RemoveAllResources(bool removeFolder)
         {
             var b = new ByteUtil();
-            b.writeShort(126);
-            b.writeBool(removeFolder);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 126,error = 0 };
+            b.WriteShort(126);
+            b.WriteBool( (bool)removeFolder);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetContentId(string resourcePath, short dmxFolderId, short dmxFileId)
+        public PbAutoResult SetContentId(string resourcePath, short dmxFolderId, short dmxFileId)
         {
             var b = new ByteUtil();
-            b.writeShort(234);
-            b.writeStringWide(resourcePath);
-            b.writeShort(dmxFolderId);
-            b.writeShort(dmxFileId);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 234,error = 0 };
+            b.WriteShort(234);
+            b.WriteStringWide( (string)resourcePath);
+            b.WriteShort( (short)dmxFolderId);
+            b.WriteShort( (short)dmxFileId);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SpreadAll()
+        public PbAutoResult SpreadAll()
         {
             var b = new ByteUtil();
-            b.writeShort(22);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 22,error = 0 };
+            b.WriteShort(22);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SpreadMediaById(int dmxFolderId, int dmxFileId)
+        public PbAutoResult SpreadMediaById(int dmxFolderId, int dmxFileId)
         {
             var b = new ByteUtil();
-            b.writeShort(23);
-            b.writeInt(dmxFolderId);
-            b.writeInt(dmxFileId);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 23,error = 0 };
+            b.WriteShort(23);
+            b.WriteInt( (int)dmxFolderId);
+            b.WriteInt( (int)dmxFileId);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SpreadMeshById(int dmxFolderId, int dmxFileId)
+        public PbAutoResult SpreadMeshById(int dmxFolderId, int dmxFileId)
         {
             var b = new ByteUtil();
-            b.writeShort(24);
-            b.writeInt(dmxFolderId);
-            b.writeInt(dmxFileId);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 24,error = 0 };
+            b.WriteShort(24);
+            b.WriteInt( (int)dmxFolderId);
+            b.WriteInt( (int)dmxFileId);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult ReloadMediaById(int dmxFolderId, int dmxFileId)
+        public PbAutoResult ReloadMediaById(int dmxFolderId, int dmxFileId)
         {
             var b = new ByteUtil();
-            b.writeShort(44);
-            b.writeInt(dmxFolderId);
-            b.writeInt(dmxFileId);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 44,error = 0 };
+            b.WriteShort(44);
+            b.WriteInt( (int)dmxFolderId);
+            b.WriteInt( (int)dmxFileId);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult ReloadMeshById(int dmxFolderId, int dmxFileId)
+        public PbAutoResult ReloadMeshById(int dmxFolderId, int dmxFileId)
         {
             var b = new ByteUtil();
-            b.writeShort(45);
-            b.writeInt(dmxFolderId);
-            b.writeInt(dmxFileId);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 45,error = 0 };
+            b.WriteShort(45);
+            b.WriteInt( (int)dmxFolderId);
+            b.WriteInt( (int)dmxFileId);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult ReloadResource(string resourcePath)
+        public PbAutoResult ReloadResource(string resourcePath)
         {
             var b = new ByteUtil();
-            b.writeShort(147);
-            b.writeStringWide(resourcePath);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 147,error = 0 };
+            b.WriteShort(147);
+            b.WriteStringWide( (string)resourcePath);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SpreadResource(string resourcePath)
+        public PbAutoResult SpreadResource(string resourcePath)
         {
             var b = new ByteUtil();
-            b.writeShort(148);
-            b.writeStringWide(resourcePath);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 148,error = 0 };
+            b.WriteShort(148);
+            b.WriteStringWide( (string)resourcePath);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult ReloadAndSpreadResourceByPath(string resourcePath)
+        public PbAutoResult ReloadAndSpreadResourceByPath(string resourcePath)
         {
             var b = new ByteUtil();
-            b.writeShort(159);
-            b.writeStringWide(resourcePath);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 159,error = 0 };
+            b.WriteShort(159);
+            b.WriteStringWide( (string)resourcePath);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult ReloadAndSpreadResourceByTreeItem(int treeItemIndex)
+        public PbAutoResult ReloadAndSpreadResourceByTreeItem(int treeItemIndex)
         {
             var b = new ByteUtil();
-            b.writeShort(160);
-            b.writeInt(treeItemIndex);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 160,error = 0 };
+            b.WriteShort(160);
+            b.WriteInt( (int)treeItemIndex);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult ReloadAndSpreadResourceByDmxId(int dmxFolderId, int dmxFileId)
+        public PbAutoResult ReloadAndSpreadResourceByDmxId(int dmxFolderId, int dmxFileId)
         {
             var b = new ByteUtil();
-            b.writeShort(161);
-            b.writeInt(dmxFolderId);
-            b.writeInt(dmxFileId);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 161,error = 0 };
+            b.WriteShort(161);
+            b.WriteInt( (int)dmxFolderId);
+            b.WriteInt( (int)dmxFileId);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult RemoveInconsistent()
+        public PbAutoResult RemoveInconsistent()
         {
             var b = new ByteUtil();
-            b.writeShort(34);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 34,error = 0 };
+            b.WriteShort(34);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult RemoveAssetOnSite(string resourcePath, int siteId)
+        public PbAutoResult RemoveAssetOnSite(string resourcePath, int siteId)
         {
             var b = new ByteUtil();
-            b.writeShort(170);
-            b.writeStringWide(resourcePath);
-            b.writeInt(siteId);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 170,error = 0 };
+            b.WriteShort(170);
+            b.WriteStringWide( (string)resourcePath);
+            b.WriteInt( (int)siteId);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult RemoveAssetOnSiteById(int dmxFolderId, int dmxFileId, int siteId)
+        public PbAutoResult RemoveAssetOnSiteById(int dmxFolderId, int dmxFileId, int siteId)
         {
             var b = new ByteUtil();
-            b.writeShort(171);
-            b.writeInt(dmxFolderId);
-            b.writeInt(dmxFileId);
-            b.writeInt(siteId);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 171,error = 0 };
+            b.WriteShort(171);
+            b.WriteInt( (int)dmxFolderId);
+            b.WriteInt( (int)dmxFileId);
+            b.WriteInt( (int)siteId);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult RemoveAssetOnSiteByTreeItem(int treeItemIndex, int siteId)
+        public PbAutoResult RemoveAssetOnSiteByTreeItem(int treeItemIndex, int siteId)
         {
             var b = new ByteUtil();
-            b.writeShort(172);
-            b.writeInt(treeItemIndex);
-            b.writeInt(siteId);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 172,error = 0 };
+            b.WriteShort(172);
+            b.WriteInt( (int)treeItemIndex);
+            b.WriteInt( (int)siteId);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult AttachAssetOnSite(string filePath, string resourcePath, int siteId)
+        public PbAutoResult AttachAssetOnSite(string filePath, string resourcePath, int siteId)
         {
             var b = new ByteUtil();
-            b.writeShort(173);
-            b.writeStringWide(filePath);
-            b.writeStringWide(resourcePath);
-            b.writeInt(siteId);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 173,error = 0 };
+            b.WriteShort(173);
+            b.WriteStringWide( (string)filePath);
+            b.WriteStringWide( (string)resourcePath);
+            b.WriteInt( (int)siteId);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult AttachAssetOnSiteByDmxId(string filePath, int dmxFolderId, int dmxFileId, int siteId)
+        public PbAutoResult AttachAssetOnSiteByDmxId(string filePath, int dmxFolderId, int dmxFileId, int siteId)
         {
             var b = new ByteUtil();
-            b.writeShort(174);
-            b.writeStringWide(filePath);
-            b.writeInt(dmxFolderId);
-            b.writeInt(dmxFileId);
-            b.writeInt(siteId);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 174,error = 0 };
+            b.WriteShort(174);
+            b.WriteStringWide( (string)filePath);
+            b.WriteInt( (int)dmxFolderId);
+            b.WriteInt( (int)dmxFileId);
+            b.WriteInt( (int)siteId);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult AttachAssetOnSiteByTreeItem(string filePath, int treeItemIndex, int siteId)
+        public PbAutoResult AttachAssetOnSiteByTreeItem(string filePath, int treeItemIndex, int siteId)
         {
             var b = new ByteUtil();
-            b.writeShort(175);
-            b.writeStringWide(filePath);
-            b.writeInt(treeItemIndex);
-            b.writeInt(siteId);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 175,error = 0 };
+            b.WriteShort(175);
+            b.WriteStringWide( (string)filePath);
+            b.WriteInt( (int)treeItemIndex);
+            b.WriteInt( (int)siteId);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult StoreActive(int sequenceId)
+        public PbAutoResult StoreActive(int sequenceId)
         {
             var b = new ByteUtil();
-            b.writeShort(25);
-            b.writeInt(sequenceId);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 25,error = 0 };
+            b.WriteShort(25);
+            b.WriteInt( (int)sequenceId);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult StoreActiveToTime(int sequenceId, int hours, int minutes, int seconds, int frames)
+        public PbAutoResult StoreActiveToTime(int sequenceId, int hours, int minutes, int seconds, int frames)
         {
             var b = new ByteUtil();
-            b.writeShort(26);
-            b.writeInt(sequenceId);
-            b.writeInt(hours);
-            b.writeInt(minutes);
-            b.writeInt(seconds);
-            b.writeInt(frames);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 26,error = 0 };
+            b.WriteShort(26);
+            b.WriteInt( (int)sequenceId);
+            b.WriteInt( (int)hours);
+            b.WriteInt( (int)minutes);
+            b.WriteInt( (int)seconds);
+            b.WriteInt( (int)frames);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetMediaFrameBlendingById(int dmxFolderId, int dmxFileId, bool frameBlended)
+        public PbAutoResult SetMediaFrameBlendingById(int dmxFolderId, int dmxFileId, bool frameBlended)
         {
             var b = new ByteUtil();
-            b.writeShort(27);
-            b.writeInt(dmxFolderId);
-            b.writeInt(dmxFileId);
-            b.writeBool(frameBlended);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 27,error = 0 };
+            b.WriteShort(27);
+            b.WriteInt( (int)dmxFolderId);
+            b.WriteInt( (int)dmxFileId);
+            b.WriteBool( (bool)frameBlended);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetMediaDeinterlacingById(int dmxFolderId, int dmxFileId, int deinterlacer)
+        public PbAutoResult SetMediaDeinterlacingById(int dmxFolderId, int dmxFileId, int deinterlacer)
         {
             var b = new ByteUtil();
-            b.writeShort(28);
-            b.writeInt(dmxFolderId);
-            b.writeInt(dmxFileId);
-            b.writeInt(deinterlacer);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 28,error = 0 };
+            b.WriteShort(28);
+            b.WriteInt( (int)dmxFolderId);
+            b.WriteInt( (int)dmxFileId);
+            b.WriteInt( (int)deinterlacer);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetMediaAnisotropicFilteringById(int dmxFolderId, int dmxFileId, bool useFiltering)
+        public PbAutoResult SetMediaAnisotropicFilteringById(int dmxFolderId, int dmxFileId, bool useFiltering)
         {
             var b = new ByteUtil();
-            b.writeShort(29);
-            b.writeInt(dmxFolderId);
-            b.writeInt(dmxFileId);
-            b.writeBool(useFiltering);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 29,error = 0 };
+            b.WriteShort(29);
+            b.WriteInt( (int)dmxFolderId);
+            b.WriteInt( (int)dmxFileId);
+            b.WriteBool( (bool)useFiltering);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetMediaUnderscanById(int dmxFolderId, int dmxFileId, bool useUnderscan)
+        public PbAutoResult SetMediaUnderscanById(int dmxFolderId, int dmxFileId, bool useUnderscan)
         {
             var b = new ByteUtil();
-            b.writeShort(30);
-            b.writeInt(dmxFolderId);
-            b.writeInt(dmxFileId);
-            b.writeBool(useUnderscan);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 30,error = 0 };
+            b.WriteShort(30);
+            b.WriteInt( (int)dmxFolderId);
+            b.WriteInt( (int)dmxFileId);
+            b.WriteBool( (bool)useUnderscan);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetMediaMpegColourSpaceById(int dmxFolderId, int dmxFileId, bool useMpegColorSpace)
+        public PbAutoResult SetMediaMpegColourSpaceById(int dmxFolderId, int dmxFileId, bool useMpegColorSpace)
         {
             var b = new ByteUtil();
-            b.writeShort(31);
-            b.writeInt(dmxFolderId);
-            b.writeInt(dmxFileId);
-            b.writeBool(useMpegColorSpace);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 31,error = 0 };
+            b.WriteShort(31);
+            b.WriteInt( (int)dmxFolderId);
+            b.WriteInt( (int)dmxFileId);
+            b.WriteBool( (bool)useMpegColorSpace);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetMediaAlphaChannelById(int dmxFolderId, int dmxFileId, bool useAlphaChannel)
+        public PbAutoResult SetMediaAlphaChannelById(int dmxFolderId, int dmxFileId, bool useAlphaChannel)
         {
             var b = new ByteUtil();
-            b.writeShort(32);
-            b.writeInt(dmxFolderId);
-            b.writeInt(dmxFileId);
-            b.writeBool(useAlphaChannel);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 32,error = 0 };
+            b.WriteShort(32);
+            b.WriteInt( (int)dmxFolderId);
+            b.WriteInt( (int)dmxFileId);
+            b.WriteBool( (bool)useAlphaChannel);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult CreateTextInput(int dmxFolderId, int dmxFileId, string text)
+        public PbAutoResult CreateTextInput(int dmxFolderId, int dmxFileId, string text)
         {
             var b = new ByteUtil();
-            b.writeShort(52);
-            b.writeInt(dmxFolderId);
-            b.writeInt(dmxFileId);
-            b.writeStringNarrow(text);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 52,error = 0 };
+            b.WriteShort(52);
+            b.WriteInt( (int)dmxFolderId);
+            b.WriteInt( (int)dmxFileId);
+            b.WriteStringNarrow( (string)text);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetText(int dmxFolderId, int dmxFileId, string text)
+        public PbAutoResult SetText(int dmxFolderId, int dmxFileId, string text)
         {
             var b = new ByteUtil();
-            b.writeShort(33);
-            b.writeInt(dmxFolderId);
-            b.writeInt(dmxFileId);
-            b.writeStringNarrow(text);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 33,error = 0 };
+            b.WriteShort(33);
+            b.WriteInt( (int)dmxFolderId);
+            b.WriteInt( (int)dmxFileId);
+            b.WriteStringNarrow( (string)text);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult LoadProject(string folderPathToProject, string projectXmlFileName, byte saveExisting)
+        public PbAutoResult LoadProject(string folderPathToProject, string projectXmlFileName, byte saveExisting)
         {
             var b = new ByteUtil();
-            b.writeShort(46);
-            b.writeStringNarrow(folderPathToProject);
-            b.writeStringNarrow(projectXmlFileName);
-            b.writeByte(saveExisting);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 46,error = 0 };
+            b.WriteShort(46);
+            b.WriteStringNarrow( (string)folderPathToProject);
+            b.WriteStringNarrow( (string)projectXmlFileName);
+            b.WriteByte( (byte)saveExisting);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult CloseProject(byte save)
+        public PbAutoResult CloseProject(byte save)
         {
             var b = new ByteUtil();
-            b.writeShort(47);
-            b.writeByte(save);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 47,error = 0 };
+            b.WriteShort(47);
+            b.WriteByte( (byte)save);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult ClearSelection()
+        public PbAutoResult ClearSelection()
         {
             var b = new ByteUtil();
-            b.writeShort(48);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 48,error = 0 };
+            b.WriteShort(48);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetDeviceAcceptDmxById(int siteId, int deviceId, byte acceptDmx)
+        public PbAutoResult SetDeviceAcceptDmxById(int siteId, int deviceId, byte acceptDmx)
         {
             var b = new ByteUtil();
-            b.writeShort(49);
-            b.writeInt(siteId);
-            b.writeInt(deviceId);
-            b.writeByte(acceptDmx);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 49,error = 0 };
+            b.WriteShort(49);
+            b.WriteInt( (int)siteId);
+            b.WriteInt( (int)deviceId);
+            b.WriteByte( (byte)acceptDmx);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetSiteAcceptDmxById(int siteId, byte acceptDmx)
+        public PbAutoResult SetSiteAcceptDmxById(int siteId, byte acceptDmx)
         {
             var b = new ByteUtil();
-            b.writeShort(50);
-            b.writeInt(siteId);
-            b.writeByte(acceptDmx);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 50,error = 0 };
+            b.WriteShort(50);
+            b.WriteInt( (int)siteId);
+            b.WriteByte( (byte)acceptDmx);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetDeviceDmxAddressById(int siteId, int deviceId, int index, int id1, int id2)
+        public PbAutoResult SetDeviceDmxAddressById(int siteId, int deviceId, int index, int id1, int id2)
         {
             var b = new ByteUtil();
-            b.writeShort(51);
-            b.writeInt(siteId);
-            b.writeInt(deviceId);
-            b.writeInt(index);
-            b.writeInt(id1);
-            b.writeInt(id2);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 51,error = 0 };
+            b.WriteShort(51);
+            b.WriteInt( (int)siteId);
+            b.WriteInt( (int)deviceId);
+            b.WriteInt( (int)index);
+            b.WriteInt( (int)id1);
+            b.WriteInt( (int)id2);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetSiteDmxAddressById(int siteId, int index, int id1, int id2)
+        public PbAutoResult SetSiteDmxAddressById(int siteId, int index, int id1, int id2)
         {
             var b = new ByteUtil();
-            b.writeShort(235);
-            b.writeInt(siteId);
-            b.writeInt(index);
-            b.writeInt(id1);
-            b.writeInt(id2);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 235,error = 0 };
+            b.WriteShort(235);
+            b.WriteInt( (int)siteId);
+            b.WriteInt( (int)index);
+            b.WriteInt( (int)id1);
+            b.WriteInt( (int)id2);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetCuePlayMode(int sequenceId, int cueId, int playMode)
+        public PbAutoResult SetCuePlayMode(int sequenceId, int cueId, int playMode)
         {
             var b = new ByteUtil();
-            b.writeShort(53);
-            b.writeInt(sequenceId);
-            b.writeInt(cueId);
-            b.writeInt(playMode);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 53,error = 0 };
+            b.WriteShort(53);
+            b.WriteInt( (int)sequenceId);
+            b.WriteInt( (int)cueId);
+            b.WriteInt( (int)playMode);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetNextCuePlayMode(int sequenceId, int playMode)
+        public PbAutoResult SetNextCuePlayMode(int sequenceId, int playMode)
         {
             var b = new ByteUtil();
-            b.writeShort(54);
-            b.writeInt(sequenceId);
-            b.writeInt(playMode);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 54,error = 0 };
+            b.WriteShort(54);
+            b.WriteInt( (int)sequenceId);
+            b.WriteInt( (int)playMode);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetIgnoreNextCue(int sequenceId, byte doIgnore)
+        public PbAutoResult SetIgnoreNextCue(int sequenceId, byte doIgnore)
         {
             var b = new ByteUtil();
-            b.writeShort(55);
-            b.writeInt(sequenceId);
-            b.writeByte(doIgnore);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 55,error = 0 };
+            b.WriteShort(55);
+            b.WriteInt( (int)sequenceId);
+            b.WriteByte( (byte)doIgnore);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SaveProject()
+        public PbAutoResult SaveProject()
         {
             var b = new ByteUtil();
-            b.writeShort(62);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 62,error = 0 };
+            b.WriteShort(62);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetIsSiteFullscreen(int siteId, byte isFullscreen)
+        public PbAutoResult SetIsSiteFullscreen(int siteId, byte isFullscreen)
         {
             var b = new ByteUtil();
-            b.writeShort(64);
-            b.writeInt(siteId);
-            b.writeByte(isFullscreen);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 64,error = 0 };
+            b.WriteShort(64);
+            b.WriteInt( (int)siteId);
+            b.WriteByte( (byte)isFullscreen);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetIsSiteFullscreenByIp(string ipAddress, byte isFullscreen)
+        public PbAutoResult SetIsSiteFullscreenByIp(string ipAddress, byte isFullscreen)
         {
             var b = new ByteUtil();
-            b.writeShort(65);
-            b.writeStringNarrow(ipAddress);
-            b.writeByte(isFullscreen);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 65,error = 0 };
+            b.WriteShort(65);
+            b.WriteStringNarrow( (string)ipAddress);
+            b.WriteByte( (byte)isFullscreen);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetTextTextureSize(int dmxFolderId, int dmxFileId, int width, int height)
+        public PbAutoResult SetTextTextureSize(int dmxFolderId, int dmxFileId, int width, int height)
         {
             var b = new ByteUtil();
-            b.writeShort(66);
-            b.writeInt(dmxFolderId);
-            b.writeInt(dmxFileId);
-            b.writeInt(width);
-            b.writeInt(height);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 66,error = 0 };
+            b.WriteShort(66);
+            b.WriteInt( (int)dmxFolderId);
+            b.WriteInt( (int)dmxFileId);
+            b.WriteInt( (int)width);
+            b.WriteInt( (int)height);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetTextProperties(int dmxFolderId, int dmxFileId, string fontFamily, int size, byte style, byte alignment, byte colorRed, byte colorGreen, byte colorBlue)
+        public PbAutoResult SetTextProperties(int dmxFolderId, int dmxFileId, string fontFamily, int size, byte style, byte alignment, byte colorRed, byte colorGreen, byte colorBlue)
         {
             var b = new ByteUtil();
-            b.writeShort(67);
-            b.writeInt(dmxFolderId);
-            b.writeInt(dmxFileId);
-            b.writeStringNarrow(fontFamily);
-            b.writeInt(size);
-            b.writeByte(style);
-            b.writeByte(alignment);
-            b.writeByte(colorRed);
-            b.writeByte(colorGreen);
-            b.writeByte(colorBlue);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 67,error = 0 };
+            b.WriteShort(67);
+            b.WriteInt( (int)dmxFolderId);
+            b.WriteInt( (int)dmxFileId);
+            b.WriteStringNarrow( (string)fontFamily);
+            b.WriteInt( (int)size);
+            b.WriteByte( (byte)style);
+            b.WriteByte( (byte)alignment);
+            b.WriteByte( (byte)colorRed);
+            b.WriteByte( (byte)colorGreen);
+            b.WriteByte( (byte)colorBlue);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetTextCenterOnTexture(int dmxFolderId, int dmxFileId, byte centerOnTexture)
+        public PbAutoResult SetTextCenterOnTexture(int dmxFolderId, int dmxFileId, byte centerOnTexture)
         {
             var b = new ByteUtil();
-            b.writeShort(68);
-            b.writeInt(dmxFolderId);
-            b.writeInt(dmxFileId);
-            b.writeByte(centerOnTexture);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 68,error = 0 };
+            b.WriteShort(68);
+            b.WriteInt( (int)dmxFolderId);
+            b.WriteInt( (int)dmxFileId);
+            b.WriteByte( (byte)centerOnTexture);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult CreateTextInputWide(int dmxFolderId, int dmxFileId, string text)
+        public PbAutoResult CreateTextInputWide(int dmxFolderId, int dmxFileId, string text)
         {
             var b = new ByteUtil();
-            b.writeShort(69);
-            b.writeInt(dmxFolderId);
-            b.writeInt(dmxFileId);
-            b.writeStringWide(text);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 69,error = 0 };
+            b.WriteShort(69);
+            b.WriteInt( (int)dmxFolderId);
+            b.WriteInt( (int)dmxFileId);
+            b.WriteStringWide( (string)text);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetTextWide(int dmxFolderId, int dmxFileId, string text)
+        public PbAutoResult SetTextWide(int dmxFolderId, int dmxFileId, string text)
         {
             var b = new ByteUtil();
-            b.writeShort(70);
-            b.writeInt(dmxFolderId);
-            b.writeInt(dmxFileId);
-            b.writeStringWide(text);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 70,error = 0 };
+            b.WriteShort(70);
+            b.WriteInt( (int)dmxFolderId);
+            b.WriteInt( (int)dmxFileId);
+            b.WriteStringWide( (string)text);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetSiteIpById(int siteId, string ip)
+        public PbAutoResult SetSiteIpById(int siteId, string ip)
         {
             var b = new ByteUtil();
-            b.writeShort(71);
-            b.writeInt(siteId);
-            b.writeStringNarrow(ip);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 71,error = 0 };
+            b.WriteShort(71);
+            b.WriteInt( (int)siteId);
+            b.WriteStringNarrow( (string)ip);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
         public struct GetClipRemainingTimeResult
         {
-            public bool ok { get { return error == 0; } }
-            public short code; public int error;
-            public int hours;
-            public int minutes;
-            public int seconds;
-            public int frames;
+            public bool Ok { get { return Error == 0; } }
+            public short Code; public int Error;
+            public int Hours;
+            public int Minutes;
+            public int Seconds;
+            public int Frames;
         }
         public GetClipRemainingTimeResult GetClipRemainingTime(int siteId, int deviceId, int sequenceId)
         {
             var b = new ByteUtil();
-            b.writeShort(77);
-            b.writeInt(siteId);
-            b.writeInt(deviceId);
-            b.writeInt(sequenceId);
-            b = c.Send(b, true);
+            b.WriteShort(77);
+            b.WriteInt( (int)siteId);
+            b.WriteInt( (int)deviceId);
+            b.WriteInt( (int)sequenceId);
+            b = connector.Send(b, true);
             var r = new GetClipRemainingTimeResult();
-            r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else
             {
-                r.error = 0;
-                r.hours = b.readInt();
-                r.minutes = b.readInt();
-                r.seconds = b.readInt();
-                r.frames = b.readInt();
+                r.Error = 0;
+                r.Hours = b.ReadInt();
+                r.Minutes = b.ReadInt();
+                r.Seconds = b.ReadInt();
+                r.Frames = b.ReadInt();
             }
             return r;
         }
 
         public struct GetRemainingTimeUntilNextCueResult
         {
-            public bool ok { get { return error == 0; } }
-            public short code; public int error;
-            public int hours;
-            public int minutes;
-            public int seconds;
-            public int frames;
+            public bool Ok { get { return Error == 0; } }
+            public short Code; public int Error;
+            public int Hours;
+            public int Minutes;
+            public int Seconds;
+            public int Frames;
         }
         public GetRemainingTimeUntilNextCueResult GetRemainingTimeUntilNextCue(int sequenceId)
         {
             var b = new ByteUtil();
-            b.writeShort(78);
-            b.writeInt(sequenceId);
-            b = c.Send(b, true);
+            b.WriteShort(78);
+            b.WriteInt( (int)sequenceId);
+            b = connector.Send(b, true);
             var r = new GetRemainingTimeUntilNextCueResult();
-            r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else
             {
-                r.error = 0;
-                r.hours = b.readInt();
-                r.minutes = b.readInt();
-                r.seconds = b.readInt();
-                r.frames = b.readInt();
+                r.Error = 0;
+                r.Hours = b.ReadInt();
+                r.Minutes = b.ReadInt();
+                r.Seconds = b.ReadInt();
+                r.Frames = b.ReadInt();
             }
             return r;
         }
 
         public struct GetResourceCountResult
         {
-            public bool ok { get { return error == 0; } }
-            public short code; public int error;
-            public int mediaCount;
+            public bool Ok { get { return Error == 0; } }
+            public short Code; public int Error;
+            public int MediaCount;
         }
         public GetResourceCountResult GetResourceCount()
         {
             var b = new ByteUtil();
-            b.writeShort(82);
-            b = c.Send(b, true);
+            b.WriteShort(82);
+            b = connector.Send(b, true);
             var r = new GetResourceCountResult();
-            r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else
             {
-                r.error = 0;
-                r.mediaCount = b.readInt();
+                r.Error = 0;
+                r.MediaCount = b.ReadInt();
             }
             return r;
         }
 
         public struct GetTreeItemCountResult
         {
-            public bool ok { get { return error == 0; } }
-            public short code; public int error;
-            public int treeItemCount;
+            public bool Ok { get { return Error == 0; } }
+            public short Code; public int Error;
+            public int TreeItemCount;
         }
         public GetTreeItemCountResult GetTreeItemCount()
         {
             var b = new ByteUtil();
-            b.writeShort(150);
-            b = c.Send(b, true);
+            b.WriteShort(150);
+            b = connector.Send(b, true);
             var r = new GetTreeItemCountResult();
-            r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else
             {
-                r.error = 0;
-                r.treeItemCount = b.readInt();
+                r.Error = 0;
+                r.TreeItemCount = b.ReadInt();
             }
             return r;
         }
 
-        public PBAutoResult CreateProjectFolder(string folderName)
+        public PbAutoResult CreateProjectFolder(string folderName)
         {
             var b = new ByteUtil();
-            b.writeShort(83);
-            b.writeStringWide(folderName);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 83,error = 0 };
+            b.WriteShort(83);
+            b.WriteStringWide( (string)folderName);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult CreateProjectFolderInPath(string folderName, string projectPath)
+        public PbAutoResult CreateProjectFolderInPath(string folderName, string projectPath)
         {
             var b = new ByteUtil();
-            b.writeShort(122);
-            b.writeStringWide(folderName);
-            b.writeStringWide(projectPath);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 122,error = 0 };
+            b.WriteShort(122);
+            b.WriteStringWide( (string)folderName);
+            b.WriteStringWide( (string)projectPath);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult CreateProjectFolderInTreeItem(string folderName, int treeItemIndex)
+        public PbAutoResult CreateProjectFolderInTreeItem(string folderName, int treeItemIndex)
         {
             var b = new ByteUtil();
-            b.writeShort(157);
-            b.writeStringWide(folderName);
-            b.writeInt(treeItemIndex);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 157,error = 0 };
+            b.WriteShort(157);
+            b.WriteStringWide( (string)folderName);
+            b.WriteInt( (int)treeItemIndex);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult RemoveFolderFromProject(string projectPath)
+        public PbAutoResult RemoveFolderFromProject(string projectPath)
         {
             var b = new ByteUtil();
-            b.writeShort(123);
-            b.writeStringWide(projectPath);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 123,error = 0 };
+            b.WriteShort(123);
+            b.WriteStringWide( (string)projectPath);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetDeviceSelection(int siteId, int deviceId, int selectionMode)
+        public PbAutoResult SetDeviceSelection(int siteId, int deviceId, int selectionMode)
         {
             var b = new ByteUtil();
-            b.writeShort(86);
-            b.writeInt(siteId);
-            b.writeInt(deviceId);
-            b.writeInt(selectionMode);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 86,error = 0 };
+            b.WriteShort(86);
+            b.WriteInt( (int)siteId);
+            b.WriteInt( (int)deviceId);
+            b.WriteInt( (int)selectionMode);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetClxControllerFaderMapping(int faderId, int sequenceId)
+        public PbAutoResult SetClxControllerFaderMapping(int faderId, int sequenceId)
         {
             var b = new ByteUtil();
-            b.writeShort(90);
-            b.writeInt(faderId);
-            b.writeInt(sequenceId);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 90,error = 0 };
+            b.WriteShort(90);
+            b.WriteInt( (int)faderId);
+            b.WriteInt( (int)sequenceId);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetClxControllerCueMapping(int cueBtnId, int sequenceId, int cueId)
+        public PbAutoResult SetClxControllerCueMapping(int cueBtnId, int sequenceId, int cueId)
         {
             var b = new ByteUtil();
-            b.writeShort(92);
-            b.writeInt(cueBtnId);
-            b.writeInt(sequenceId);
-            b.writeInt(cueId);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 92,error = 0 };
+            b.WriteShort(92);
+            b.WriteInt( (int)cueBtnId);
+            b.WriteInt( (int)sequenceId);
+            b.WriteInt( (int)cueId);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult CreateCue(int sequenceId, int cueId, int hours, int minutes, int seconds, int frames, string cueName, int cueKindId)
+        public PbAutoResult CreateCue(int sequenceId, int cueId, int hours, int minutes, int seconds, int frames, string cueName, int cueKindId)
         {
             var b = new ByteUtil();
-            b.writeShort(93);
-            b.writeInt(sequenceId);
-            b.writeInt(cueId);
-            b.writeInt(hours);
-            b.writeInt(minutes);
-            b.writeInt(seconds);
-            b.writeInt(frames);
-            b.writeStringWide(cueName);
-            b.writeInt(cueKindId);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 93,error = 0 };
+            b.WriteShort(93);
+            b.WriteInt( (int)sequenceId);
+            b.WriteInt( (int)cueId);
+            b.WriteInt( (int)hours);
+            b.WriteInt( (int)minutes);
+            b.WriteInt( (int)seconds);
+            b.WriteInt( (int)frames);
+            b.WriteStringWide( (string)cueName);
+            b.WriteInt( (int)cueKindId);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult RemoveCueById(int sequenceId, int cueId)
+        public PbAutoResult RemoveCueById(int sequenceId, int cueId)
         {
             var b = new ByteUtil();
-            b.writeShort(94);
-            b.writeInt(sequenceId);
-            b.writeInt(cueId);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 94,error = 0 };
+            b.WriteShort(94);
+            b.WriteInt( (int)sequenceId);
+            b.WriteInt( (int)cueId);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult RemoveAllCues(int sequenceId)
+        public PbAutoResult RemoveAllCues(int sequenceId)
         {
             var b = new ByteUtil();
-            b.writeShort(95);
-            b.writeInt(sequenceId);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 95,error = 0 };
+            b.WriteShort(95);
+            b.WriteInt( (int)sequenceId);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
         public struct CreateVideoLayerGetIdResult
         {
-            public bool ok { get { return error == 0; } }
-            public short code; public int error;
-            public int layerId;
+            public bool Ok { get { return Error == 0; } }
+            public short Code; public int Error;
+            public int LayerId;
         }
         public CreateVideoLayerGetIdResult CreateVideoLayerGetId(int siteId, bool isGraphicLayer)
         {
             var b = new ByteUtil();
-            b.writeShort(110);
-            b.writeInt(siteId);
-            b.writeBool(isGraphicLayer);
-            b = c.Send(b, true);
+            b.WriteShort(110);
+            b.WriteInt( (int)siteId);
+            b.WriteBool( (bool)isGraphicLayer);
+            b = connector.Send(b, true);
             var r = new CreateVideoLayerGetIdResult();
-            r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else
             {
-                r.error = 0;
-                r.layerId = b.readInt();
+                r.Error = 0;
+                r.LayerId = b.ReadInt();
             }
             return r;
         }
 
-        public PBAutoResult RemoveLayer(int siteId, int layerId, bool isGraphicLayer)
+        public PbAutoResult RemoveLayer(int siteId, int layerId, bool isGraphicLayer)
         {
             var b = new ByteUtil();
-            b.writeShort(97);
-            b.writeInt(siteId);
-            b.writeInt(layerId);
-            b.writeBool(isGraphicLayer);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 97,error = 0 };
+            b.WriteShort(97);
+            b.WriteInt( (int)siteId);
+            b.WriteInt( (int)layerId);
+            b.WriteBool( (bool)isGraphicLayer);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetIsBackup(bool enable)
+        public PbAutoResult SetIsBackup(bool enable)
         {
             var b = new ByteUtil();
-            b.writeShort(102);
-            b.writeBool(enable);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 102,error = 0 };
+            b.WriteShort(102);
+            b.WriteBool( (bool)enable);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult ApplyView(int viewId)
+        public PbAutoResult ApplyView(int viewId)
         {
             var b = new ByteUtil();
-            b.writeShort(103);
-            b.writeInt(viewId);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 103,error = 0 };
+            b.WriteShort(103);
+            b.WriteInt( (int)viewId);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetSpareFromSpread(int siteId, bool spareFromSpread)
+        public PbAutoResult SetSpareFromSpread(int siteId, bool spareFromSpread)
         {
             var b = new ByteUtil();
-            b.writeShort(104);
-            b.writeInt(siteId);
-            b.writeBool(spareFromSpread);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 104,error = 0 };
+            b.WriteShort(104);
+            b.WriteInt( (int)siteId);
+            b.WriteBool( (bool)spareFromSpread);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
         public struct GetParamResourceResult
         {
-            public bool ok { get { return error == 0; } }
-            public short code; public int error;
-            public int dmxFolderId;
-            public int dmxFileId;
-            public string filePath;
-            public string resourcePath;
+            public bool Ok { get { return Error == 0; } }
+            public short Code; public int Error;
+            public int DmxFolderId;
+            public int DmxFileId;
+            public string FilePath;
+            public string ResourcePath;
         }
         public GetParamResourceResult GetParamResource(int siteId, int deviceId, bool isMedia, string parameterName)
         {
             var b = new ByteUtil();
-            b.writeShort(105);
-            b.writeInt(siteId);
-            b.writeInt(deviceId);
-            b.writeBool(isMedia);
-            b.writeStringNarrow(parameterName);
-            b = c.Send(b, true);
+            b.WriteShort(105);
+            b.WriteInt( (int)siteId);
+            b.WriteInt( (int)deviceId);
+            b.WriteBool( (bool)isMedia);
+            b.WriteStringNarrow( (string)parameterName);
+            b = connector.Send(b, true);
             var r = new GetParamResourceResult();
-            r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else
             {
-                r.error = 0;
-                r.dmxFolderId = b.readInt();
-                r.dmxFileId = b.readInt();
-                r.filePath = b.readStringNarrow();
-                r.resourcePath = b.readStringNarrow();
+                r.Error = 0;
+                r.DmxFolderId = b.ReadInt();
+                r.DmxFileId = b.ReadInt();
+                r.FilePath = b.ReadStringNarrow();
+                r.ResourcePath = b.ReadStringNarrow();
             }
             return r;
         }
 
         public struct GetMediaTransportModeResult
         {
-            public bool ok { get { return error == 0; } }
-            public short code; public int error;
-            public int transportMode;
+            public bool Ok { get { return Error == 0; } }
+            public short Code; public int Error;
+            public int TransportMode;
         }
         public GetMediaTransportModeResult GetMediaTransportMode(int siteId, int deviceId)
         {
             var b = new ByteUtil();
-            b.writeShort(108);
-            b.writeInt(siteId);
-            b.writeInt(deviceId);
-            b = c.Send(b, true);
+            b.WriteShort(108);
+            b.WriteInt( (int)siteId);
+            b.WriteInt( (int)deviceId);
+            b = connector.Send(b, true);
             var r = new GetMediaTransportModeResult();
-            r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else
             {
-                r.error = 0;
-                r.transportMode = b.readInt();
+                r.Error = 0;
+                r.TransportMode = b.ReadInt();
             }
             return r;
         }
 
         public struct GetIsSiteConnectedResult
         {
-            public bool ok { get { return error == 0; } }
-            public short code; public int error;
-            public bool isConnected;
+            public bool Ok { get { return Error == 0; } }
+            public short Code; public int Error;
+            public bool IsConnected;
         }
         public GetIsSiteConnectedResult GetIsSiteConnected(int siteId)
         {
             var b = new ByteUtil();
-            b.writeShort(109);
-            b.writeInt(siteId);
-            b = c.Send(b, true);
+            b.WriteShort(109);
+            b.WriteInt( (int)siteId);
+            b = connector.Send(b, true);
             var r = new GetIsSiteConnectedResult();
-            r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else
             {
-                r.error = 0;
-                r.isConnected = b.readBool();
+                r.Error = 0;
+                r.IsConnected = b.ReadBool();
             }
             return r;
         }
 
-        public PBAutoResult MoveLayerUp(int siteId, int deviceId)
+        public PbAutoResult MoveLayerUp(int siteId, int deviceId)
         {
             var b = new ByteUtil();
-            b.writeShort(111);
-            b.writeInt(siteId);
-            b.writeInt(deviceId);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 111,error = 0 };
+            b.WriteShort(111);
+            b.WriteInt( (int)siteId);
+            b.WriteInt( (int)deviceId);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult MoveLayerDown(int siteId, int deviceId)
+        public PbAutoResult MoveLayerDown(int siteId, int deviceId)
         {
             var b = new ByteUtil();
-            b.writeShort(112);
-            b.writeInt(siteId);
-            b.writeInt(deviceId);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 112,error = 0 };
+            b.WriteShort(112);
+            b.WriteInt( (int)siteId);
+            b.WriteInt( (int)deviceId);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult MoveLayerToFirstPosition(int siteId, int deviceId)
+        public PbAutoResult MoveLayerToFirstPosition(int siteId, int deviceId)
         {
             var b = new ByteUtil();
-            b.writeShort(113);
-            b.writeInt(siteId);
-            b.writeInt(deviceId);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 113,error = 0 };
+            b.WriteShort(113);
+            b.WriteInt( (int)siteId);
+            b.WriteInt( (int)deviceId);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult MoveLayerToLastPosition(int siteId, int deviceId)
+        public PbAutoResult MoveLayerToLastPosition(int siteId, int deviceId)
         {
             var b = new ByteUtil();
-            b.writeShort(114);
-            b.writeInt(siteId);
-            b.writeInt(deviceId);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 114,error = 0 };
+            b.WriteShort(114);
+            b.WriteInt( (int)siteId);
+            b.WriteInt( (int)deviceId);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetEnableClxController(byte forJogShuttle, bool enable)
+        public PbAutoResult SetEnableClxController(byte forJogShuttle, bool enable)
         {
             var b = new ByteUtil();
-            b.writeShort(117);
-            b.writeByte(forJogShuttle);
-            b.writeBool(enable);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 117,error = 0 };
+            b.WriteShort(117);
+            b.WriteByte( (byte)forJogShuttle);
+            b.WriteBool( (bool)enable);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
         public struct GetEnableClxControllerResult
         {
-            public bool ok { get { return error == 0; } }
-            public short code; public int error;
-            public bool isEnabled;
+            public bool Ok { get { return Error == 0; } }
+            public short Code; public int Error;
+            public bool IsEnabled;
         }
         public GetEnableClxControllerResult GetEnableClxController(byte forJogShuttle)
         {
             var b = new ByteUtil();
-            b.writeShort(116);
-            b.writeByte(forJogShuttle);
-            b = c.Send(b, true);
+            b.WriteShort(116);
+            b.WriteByte( (byte)forJogShuttle);
+            b = connector.Send(b, true);
             var r = new GetEnableClxControllerResult();
-            r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else
             {
-                r.error = 0;
-                r.isEnabled = b.readBool();
+                r.Error = 0;
+                r.IsEnabled = b.ReadBool();
             }
             return r;
         }
 
-        public PBAutoResult SetSequenceCueWaitTime(int sequenceId, int cueId, int hours, int minutes, int seconds, int frames)
+        public PbAutoResult SetSequenceCueWaitTime(int sequenceId, int cueId, int hours, int minutes, int seconds, int frames)
         {
             var b = new ByteUtil();
-            b.writeShort(118);
-            b.writeInt(sequenceId);
-            b.writeInt(cueId);
-            b.writeInt(hours);
-            b.writeInt(minutes);
-            b.writeInt(seconds);
-            b.writeInt(frames);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 118,error = 0 };
+            b.WriteShort(118);
+            b.WriteInt( (int)sequenceId);
+            b.WriteInt( (int)cueId);
+            b.WriteInt( (int)hours);
+            b.WriteInt( (int)minutes);
+            b.WriteInt( (int)seconds);
+            b.WriteInt( (int)frames);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetSequenceCueJumpTargetTime(int sequenceId, int cueId, int hours, int minutes, int seconds, int frames)
+        public PbAutoResult SetSequenceCueJumpTargetTime(int sequenceId, int cueId, int hours, int minutes, int seconds, int frames)
         {
             var b = new ByteUtil();
-            b.writeShort(119);
-            b.writeInt(sequenceId);
-            b.writeInt(cueId);
-            b.writeInt(hours);
-            b.writeInt(minutes);
-            b.writeInt(seconds);
-            b.writeInt(frames);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 119,error = 0 };
+            b.WriteShort(119);
+            b.WriteInt( (int)sequenceId);
+            b.WriteInt( (int)cueId);
+            b.WriteInt( (int)hours);
+            b.WriteInt( (int)minutes);
+            b.WriteInt( (int)seconds);
+            b.WriteInt( (int)frames);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetCueJumpCount(int sequenceId, int cueId, int jumpCount)
+        public PbAutoResult SetCueJumpCount(int sequenceId, int cueId, int jumpCount)
         {
             var b = new ByteUtil();
-            b.writeShort(120);
-            b.writeInt(sequenceId);
-            b.writeInt(cueId);
-            b.writeInt(jumpCount);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 120,error = 0 };
+            b.WriteShort(120);
+            b.WriteInt( (int)sequenceId);
+            b.WriteInt( (int)cueId);
+            b.WriteInt( (int)jumpCount);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult ResetCueTriggerCount(int sequenceId, int cueId)
+        public PbAutoResult ResetCueTriggerCount(int sequenceId, int cueId)
         {
             var b = new ByteUtil();
-            b.writeShort(121);
-            b.writeInt(sequenceId);
-            b.writeInt(cueId);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 121,error = 0 };
+            b.WriteShort(121);
+            b.WriteInt( (int)sequenceId);
+            b.WriteInt( (int)cueId);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
         public struct GetIsContentConsistentResult
         {
-            public bool ok { get { return error == 0; } }
-            public short code; public int error;
-            public int isContentInconsistent;
+            public bool Ok { get { return Error == 0; } }
+            public short Code; public int Error;
+            public int IsContentInconsistent;
         }
         public GetIsContentConsistentResult GetIsContentConsistent(int dmxFolderId, int dmxFileId)
         {
             var b = new ByteUtil();
-            b.writeShort(127);
-            b.writeInt(dmxFolderId);
-            b.writeInt(dmxFileId);
-            b = c.Send(b, true);
+            b.WriteShort(127);
+            b.WriteInt( (int)dmxFolderId);
+            b.WriteInt( (int)dmxFileId);
+            b = connector.Send(b, true);
             var r = new GetIsContentConsistentResult();
-            r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else
             {
-                r.error = 0;
-                r.isContentInconsistent = b.readInt();
+                r.Error = 0;
+                r.IsContentInconsistent = b.ReadInt();
             }
             return r;
         }
 
         public struct GetIsContentConsistentByNameResult
         {
-            public bool ok { get { return error == 0; } }
-            public short code; public int error;
-            public int isContentInconsistent;
+            public bool Ok { get { return Error == 0; } }
+            public short Code; public int Error;
+            public int IsContentInconsistent;
         }
         public GetIsContentConsistentByNameResult GetIsContentConsistentByName(string resourcePath)
         {
             var b = new ByteUtil();
-            b.writeShort(128);
-            b.writeStringWide(resourcePath);
-            b = c.Send(b, true);
+            b.WriteShort(128);
+            b.WriteStringWide( (string)resourcePath);
+            b = connector.Send(b, true);
             var r = new GetIsContentConsistentByNameResult();
-            r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else
             {
-                r.error = 0;
-                r.isContentInconsistent = b.readInt();
+                r.Error = 0;
+                r.IsContentInconsistent = b.ReadInt();
             }
             return r;
         }
 
         public struct CreateSequenceGetIdResult
         {
-            public bool ok { get { return error == 0; } }
-            public short code; public int error;
-            public int sequenceId;
+            public bool Ok { get { return Error == 0; } }
+            public short Code; public int Error;
+            public int SequenceId;
         }
         public CreateSequenceGetIdResult CreateSequenceGetId()
         {
             var b = new ByteUtil();
-            b.writeShort(130);
-            b = c.Send(b, true);
+            b.WriteShort(130);
+            b = connector.Send(b, true);
             var r = new CreateSequenceGetIdResult();
-            r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else
             {
-                r.error = 0;
-                r.sequenceId = b.readInt();
+                r.Error = 0;
+                r.SequenceId = b.ReadInt();
             }
             return r;
         }
 
-        public PBAutoResult RemoveSequence(int sequenceId)
+        public PbAutoResult RemoveSequence(int sequenceId)
         {
             var b = new ByteUtil();
-            b.writeShort(131);
-            b.writeInt(sequenceId);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 131,error = 0 };
+            b.WriteShort(131);
+            b.WriteInt( (int)sequenceId);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SendMouseInput(int siteId, int deviceId, int mouseEventType, int screenPosX, int screenPosY, bool firstPass)
+        public PbAutoResult SendMouseInput(int siteId, int deviceId, int mouseEventType, int screenPosX, int screenPosY, bool firstPass)
         {
             var b = new ByteUtil();
-            b.writeShort(136);
-            b.writeInt(siteId);
-            b.writeInt(deviceId);
-            b.writeInt(mouseEventType);
-            b.writeInt(screenPosX);
-            b.writeInt(screenPosY);
-            b.writeBool(firstPass);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 136,error = 0 };
+            b.WriteShort(136);
+            b.WriteInt( (int)siteId);
+            b.WriteInt( (int)deviceId);
+            b.WriteInt( (int)mouseEventType);
+            b.WriteInt( (int)screenPosX);
+            b.WriteInt( (int)screenPosY);
+            b.WriteBool( (bool)firstPass);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SendMouseScroll(int siteId, int deviceId, int scrollValue)
+        public PbAutoResult SendMouseScroll(int siteId, int deviceId, int scrollValue)
         {
             var b = new ByteUtil();
-            b.writeShort(233);
-            b.writeInt(siteId);
-            b.writeInt(deviceId);
-            b.writeInt(scrollValue);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 233,error = 0 };
+            b.WriteShort(233);
+            b.WriteInt( (int)siteId);
+            b.WriteInt( (int)deviceId);
+            b.WriteInt( (int)scrollValue);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SendTouchInput(int siteId, int deviceId, int touchId, int touchType, int screenPosX, int screenPosY, bool firstPass)
+        public PbAutoResult SendTouchInput(int siteId, int deviceId, int touchId, int touchType, int screenPosX, int screenPosY, bool firstPass)
         {
             var b = new ByteUtil();
-            b.writeShort(146);
-            b.writeInt(siteId);
-            b.writeInt(deviceId);
-            b.writeInt(touchId);
-            b.writeInt(touchType);
-            b.writeInt(screenPosX);
-            b.writeInt(screenPosY);
-            b.writeBool(firstPass);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 146,error = 0 };
+            b.WriteShort(146);
+            b.WriteInt( (int)siteId);
+            b.WriteInt( (int)deviceId);
+            b.WriteInt( (int)touchId);
+            b.WriteInt( (int)touchType);
+            b.WriteInt( (int)screenPosX);
+            b.WriteInt( (int)screenPosY);
+            b.WriteBool( (bool)firstPass);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SendKeyboardInput(int siteId, int keyboardEventType, int keyCode)
+        public PbAutoResult SendKeyboardInput(int siteId, int keyboardEventType, int keyCode)
         {
             var b = new ByteUtil();
-            b.writeShort(137);
-            b.writeInt(siteId);
-            b.writeInt(keyboardEventType);
-            b.writeInt(keyCode);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 137,error = 0 };
+            b.WriteShort(137);
+            b.WriteInt( (int)siteId);
+            b.WriteInt( (int)keyboardEventType);
+            b.WriteInt( (int)keyCode);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetShowCursorInFullscreen(int siteId, bool showCursor)
+        public PbAutoResult SetShowCursorInFullscreen(int siteId, bool showCursor)
         {
             var b = new ByteUtil();
-            b.writeShort(138);
-            b.writeInt(siteId);
-            b.writeBool(showCursor);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 138,error = 0 };
+            b.WriteShort(138);
+            b.WriteInt( (int)siteId);
+            b.WriteBool( (bool)showCursor);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetNodeOfSiteIsAudioClockMaster(int siteId, bool isMaster)
+        public PbAutoResult SetNodeOfSiteIsAudioClockMaster(int siteId, bool isMaster)
         {
             var b = new ByteUtil();
-            b.writeShort(145);
-            b.writeInt(siteId);
-            b.writeBool(isMaster);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 145,error = 0 };
+            b.WriteShort(145);
+            b.WriteInt( (int)siteId);
+            b.WriteBool( (bool)isMaster);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
         public struct AddEncryptionKeyGetIdResult
         {
-            public bool ok { get { return error == 0; } }
-            public short code; public int error;
-            public bool isKeyAdded;
+            public bool Ok { get { return Error == 0; } }
+            public short Code; public int Error;
+            public bool IsKeyAdded;
         }
         public AddEncryptionKeyGetIdResult AddEncryptionKeyGetId(string encryptionKey)
         {
             var b = new ByteUtil();
-            b.writeShort(164);
-            b.writeStringWide(encryptionKey);
-            b = c.Send(b, true);
+            b.WriteShort(164);
+            b.WriteStringWide( (string)encryptionKey);
+            b = connector.Send(b, true);
             var r = new AddEncryptionKeyGetIdResult();
-            r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else
             {
-                r.error = 0;
-                r.isKeyAdded = b.readBool();
+                r.Error = 0;
+                r.IsKeyAdded = b.ReadBool();
             }
             return r;
         }
 
         public struct AddEncryptionPolicyGetIdResult
         {
-            public bool ok { get { return error == 0; } }
-            public short code; public int error;
-            public bool isKeyAdded;
+            public bool Ok { get { return Error == 0; } }
+            public short Code; public int Error;
+            public bool IsKeyAdded;
         }
         public AddEncryptionPolicyGetIdResult AddEncryptionPolicyGetId(string encryptionPolicy)
         {
             var b = new ByteUtil();
-            b.writeShort(165);
-            b.writeStringWide(encryptionPolicy);
-            b = c.Send(b, true);
+            b.WriteShort(165);
+            b.WriteStringWide( (string)encryptionPolicy);
+            b = connector.Send(b, true);
             var r = new AddEncryptionPolicyGetIdResult();
-            r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else
             {
-                r.error = 0;
-                r.isKeyAdded = b.readBool();
+                r.Error = 0;
+                r.IsKeyAdded = b.ReadBool();
             }
             return r;
         }
 
-        public PBAutoResult SetRouteInputToLayer(int siteId, bool enableInputRouting)
+        public PbAutoResult SetRouteInputToLayer(int siteId, bool enableInputRouting)
         {
             var b = new ByteUtil();
-            b.writeShort(166);
-            b.writeInt(siteId);
-            b.writeBool(enableInputRouting);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 166,error = 0 };
+            b.WriteShort(166);
+            b.WriteInt( (int)siteId);
+            b.WriteBool( (bool)enableInputRouting);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetRouteInputToAutomation(int siteId, bool enableInputAutomation)
+        public PbAutoResult SetRouteInputToAutomation(int siteId, bool enableInputAutomation)
         {
             var b = new ByteUtil();
-            b.writeShort(167);
-            b.writeInt(siteId);
-            b.writeBool(enableInputAutomation);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 167,error = 0 };
+            b.WriteShort(167);
+            b.WriteInt( (int)siteId);
+            b.WriteBool( (bool)enableInputAutomation);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetEnableOutputForPicking(int siteId, int outputId, bool enableInputPicking)
+        public PbAutoResult SetEnableOutputForPicking(int siteId, int outputId, bool enableInputPicking)
         {
             var b = new ByteUtil();
-            b.writeShort(168);
-            b.writeInt(siteId);
-            b.writeInt(outputId);
-            b.writeBool(enableInputPicking);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 168,error = 0 };
+            b.WriteShort(168);
+            b.WriteInt( (int)siteId);
+            b.WriteInt( (int)outputId);
+            b.WriteBool( (bool)enableInputPicking);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetASIOMasterVolume(int siteId, double asioVolume)
+        public PbAutoResult SetASIOMasterVolume(int siteId, double asioVolume)
         {
             var b = new ByteUtil();
-            b.writeShort(169);
-            b.writeInt(siteId);
-            b.writeDouble(asioVolume);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 169,error = 0 };
+            b.WriteShort(169);
+            b.WriteInt( (int)siteId);
+            b.WriteDouble( (double)asioVolume);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
         public struct GetThumbnailByPathResult
         {
-            public bool ok { get { return error == 0; } }
-            public short code; public int error;
-            public int thumbnailWidth;
-            public int thumbnailHeight;
-            public byte[] thumbnailData;
+            public bool Ok { get { return Error == 0; } }
+            public short Code; public int Error;
+            public int ThumbnailWidth;
+            public int ThumbnailHeight;
+            public byte[] ThumbnailData;
         }
         public GetThumbnailByPathResult GetThumbnailByPath(string resourcePath)
         {
             var b = new ByteUtil();
-            b.writeShort(162);
-            b.writeStringWide(resourcePath);
-            b = c.Send(b, true);
+            b.WriteShort(162);
+            b.WriteStringWide( (string)resourcePath);
+            b = connector.Send(b, true);
             var r = new GetThumbnailByPathResult();
-            r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else
             {
-                r.error = 0;
-                r.thumbnailWidth = b.readInt();
-                r.thumbnailHeight = b.readInt();
-                r.thumbnailData = b.readByteBuffer();
+                r.Error = 0;
+                r.ThumbnailWidth = b.ReadInt();
+                r.ThumbnailHeight = b.ReadInt();
+                r.ThumbnailData = b.ReadByteBuffer();
             }
             return r;
         }
 
         public struct GetThumbnailByItemIndexResult
         {
-            public bool ok { get { return error == 0; } }
-            public short code; public int error;
-            public int thumbnailWidth;
-            public int thumbnailHeight;
-            public byte[] thumbnailData;
+            public bool Ok { get { return Error == 0; } }
+            public short Code; public int Error;
+            public int ThumbnailWidth;
+            public int ThumbnailHeight;
+            public byte[] ThumbnailData;
         }
         public GetThumbnailByItemIndexResult GetThumbnailByItemIndex(int treeItemIndex)
         {
             var b = new ByteUtil();
-            b.writeShort(163);
-            b.writeInt(treeItemIndex);
-            b = c.Send(b, true);
+            b.WriteShort(163);
+            b.WriteInt( (int)treeItemIndex);
+            b = connector.Send(b, true);
             var r = new GetThumbnailByItemIndexResult();
-            r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else
             {
-                r.error = 0;
-                r.thumbnailWidth = b.readInt();
-                r.thumbnailHeight = b.readInt();
-                r.thumbnailData = b.readByteBuffer();
+                r.Error = 0;
+                r.ThumbnailWidth = b.ReadInt();
+                r.ThumbnailHeight = b.ReadInt();
+                r.ThumbnailData = b.ReadByteBuffer();
             }
             return r;
         }
 
-        public PBAutoResult CreatePlaylist(bool doSetDmxIds, int dmxFolderId, int dmxFileId)
+        public PbAutoResult CreatePlaylist(bool doSetDmxIds, int dmxFolderId, int dmxFileId)
         {
             var b = new ByteUtil();
-            b.writeShort(176);
-            b.writeBool(doSetDmxIds);
-            b.writeInt(dmxFolderId);
-            b.writeInt(dmxFileId);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 176,error = 0 };
+            b.WriteShort(176);
+            b.WriteBool( (bool)doSetDmxIds);
+            b.WriteInt( (int)dmxFolderId);
+            b.WriteInt( (int)dmxFileId);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult CreatePlaylistInPath(string projectPath, bool doSetDmxIds, int dmxFolderId, int dmxFileId)
+        public PbAutoResult CreatePlaylistInPath(string projectPath, bool doSetDmxIds, int dmxFolderId, int dmxFileId)
         {
             var b = new ByteUtil();
-            b.writeShort(177);
-            b.writeStringNarrow(projectPath);
-            b.writeBool(doSetDmxIds);
-            b.writeInt(dmxFolderId);
-            b.writeInt(dmxFileId);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 177,error = 0 };
+            b.WriteShort(177);
+            b.WriteStringNarrow( (string)projectPath);
+            b.WriteBool( (bool)doSetDmxIds);
+            b.WriteInt( (int)dmxFolderId);
+            b.WriteInt( (int)dmxFileId);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult CreatePlaylistInItemId(int treeItemIndex, bool setdmxFileIds, int newDmxFolderId, int newdmxFileId)
+        public PbAutoResult CreatePlaylistInItemId(int treeItemIndex, bool setdmxFileIds, int newDmxFolderId, int newdmxFileId)
         {
             var b = new ByteUtil();
-            b.writeShort(178);
-            b.writeInt(treeItemIndex);
-            b.writeBool(setdmxFileIds);
-            b.writeInt(newDmxFolderId);
-            b.writeInt(newdmxFileId);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 178,error = 0 };
+            b.WriteShort(178);
+            b.WriteInt( (int)treeItemIndex);
+            b.WriteBool( (bool)setdmxFileIds);
+            b.WriteInt( (int)newDmxFolderId);
+            b.WriteInt( (int)newdmxFileId);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult CreatePlaylistInPathFromFolder(string projectPath, string sourceProjectPath, bool setdmxFileIds, int newDmxFolderId, int newdmxFileId)
+        public PbAutoResult CreatePlaylistInPathFromFolder(string projectPath, string sourceProjectPath, bool setdmxFileIds, int newDmxFolderId, int newdmxFileId)
         {
             var b = new ByteUtil();
-            b.writeShort(179);
-            b.writeStringNarrow(projectPath);
-            b.writeStringNarrow(sourceProjectPath);
-            b.writeBool(setdmxFileIds);
-            b.writeInt(newDmxFolderId);
-            b.writeInt(newdmxFileId);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 179,error = 0 };
+            b.WriteShort(179);
+            b.WriteStringNarrow( (string)projectPath);
+            b.WriteStringNarrow( (string)sourceProjectPath);
+            b.WriteBool( (bool)setdmxFileIds);
+            b.WriteInt( (int)newDmxFolderId);
+            b.WriteInt( (int)newdmxFileId);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult CreatePlaylistInTreeItemFromFolder(int treeItemIndex, int sourceFolderItemId, bool setdmxFileIds, int newDmxFolderId, int newdmxFileId)
+        public PbAutoResult CreatePlaylistInTreeItemFromFolder(int treeItemIndex, int sourceFolderItemId, bool setdmxFileIds, int newDmxFolderId, int newdmxFileId)
         {
             var b = new ByteUtil();
-            b.writeShort(180);
-            b.writeInt(treeItemIndex);
-            b.writeInt(sourceFolderItemId);
-            b.writeBool(setdmxFileIds);
-            b.writeInt(newDmxFolderId);
-            b.writeInt(newdmxFileId);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 180,error = 0 };
+            b.WriteShort(180);
+            b.WriteInt( (int)treeItemIndex);
+            b.WriteInt( (int)sourceFolderItemId);
+            b.WriteBool( (bool)setdmxFileIds);
+            b.WriteInt( (int)newDmxFolderId);
+            b.WriteInt( (int)newdmxFileId);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult PushBackPlaylistEntryByDmxId(int playlistDmxFolderId, int playlistdmxFileId, int resourceDmxFolderId, int resourceDmxFileId)
+        public PbAutoResult PushBackPlaylistEntryByDmxId(int playlistDmxFolderId, int playlistdmxFileId, int resourceDmxFolderId, int resourceDmxFileId)
         {
             var b = new ByteUtil();
-            b.writeShort(181);
-            b.writeInt(playlistDmxFolderId);
-            b.writeInt(playlistdmxFileId);
-            b.writeInt(resourceDmxFolderId);
-            b.writeInt(resourceDmxFileId);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 181,error = 0 };
+            b.WriteShort(181);
+            b.WriteInt( (int)playlistDmxFolderId);
+            b.WriteInt( (int)playlistdmxFileId);
+            b.WriteInt( (int)resourceDmxFolderId);
+            b.WriteInt( (int)resourceDmxFileId);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult PushBackPlaylistEntryByPath(string playlistPath, string resourcePath)
+        public PbAutoResult PushBackPlaylistEntryByPath(string playlistPath, string resourcePath)
         {
             var b = new ByteUtil();
-            b.writeShort(182);
-            b.writeStringNarrow(playlistPath);
-            b.writeStringNarrow(resourcePath);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 182,error = 0 };
+            b.WriteShort(182);
+            b.WriteStringNarrow( (string)playlistPath);
+            b.WriteStringNarrow( (string)resourcePath);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult PushBackPlaylistEntryByItemId(int playlistItemIndex, int resourceItemId)
+        public PbAutoResult PushBackPlaylistEntryByItemId(int playlistItemIndex, int resourceItemId)
         {
             var b = new ByteUtil();
-            b.writeShort(183);
-            b.writeInt(playlistItemIndex);
-            b.writeInt(resourceItemId);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 183,error = 0 };
+            b.WriteShort(183);
+            b.WriteInt( (int)playlistItemIndex);
+            b.WriteInt( (int)resourceItemId);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult InsertPlaylistEntryByDmxId(int playlistDmxFolderId, int playlistdmxFileId, int resourceDmxFolderId, int resourceDmxFileId, int index)
+        public PbAutoResult InsertPlaylistEntryByDmxId(int playlistDmxFolderId, int playlistdmxFileId, int resourceDmxFolderId, int resourceDmxFileId, int index)
         {
             var b = new ByteUtil();
-            b.writeShort(184);
-            b.writeInt(playlistDmxFolderId);
-            b.writeInt(playlistdmxFileId);
-            b.writeInt(resourceDmxFolderId);
-            b.writeInt(resourceDmxFileId);
-            b.writeInt(index);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 184,error = 0 };
+            b.WriteShort(184);
+            b.WriteInt( (int)playlistDmxFolderId);
+            b.WriteInt( (int)playlistdmxFileId);
+            b.WriteInt( (int)resourceDmxFolderId);
+            b.WriteInt( (int)resourceDmxFileId);
+            b.WriteInt( (int)index);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult InsertPlaylistEntryByPath(string playlistPath, string resourcePath, int index)
+        public PbAutoResult InsertPlaylistEntryByPath(string playlistPath, string resourcePath, int index)
         {
             var b = new ByteUtil();
-            b.writeShort(185);
-            b.writeStringNarrow(playlistPath);
-            b.writeStringNarrow(resourcePath);
-            b.writeInt(index);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 185,error = 0 };
+            b.WriteShort(185);
+            b.WriteStringNarrow( (string)playlistPath);
+            b.WriteStringNarrow( (string)resourcePath);
+            b.WriteInt( (int)index);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult InsertPlaylistEntryByItemId(int playlistItemIndex, int resourceItemId, int index)
+        public PbAutoResult InsertPlaylistEntryByItemId(int playlistItemIndex, int resourceItemId, int index)
         {
             var b = new ByteUtil();
-            b.writeShort(186);
-            b.writeInt(playlistItemIndex);
-            b.writeInt(resourceItemId);
-            b.writeInt(index);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 186,error = 0 };
+            b.WriteShort(186);
+            b.WriteInt( (int)playlistItemIndex);
+            b.WriteInt( (int)resourceItemId);
+            b.WriteInt( (int)index);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult RemovePlaylistEntryByDmxId(int playlistDmxFolderId, int playlistdmxFileId, int index)
+        public PbAutoResult RemovePlaylistEntryByDmxId(int playlistDmxFolderId, int playlistdmxFileId, int index)
         {
             var b = new ByteUtil();
-            b.writeShort(187);
-            b.writeInt(playlistDmxFolderId);
-            b.writeInt(playlistdmxFileId);
-            b.writeInt(index);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 187,error = 0 };
+            b.WriteShort(187);
+            b.WriteInt( (int)playlistDmxFolderId);
+            b.WriteInt( (int)playlistdmxFileId);
+            b.WriteInt( (int)index);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult RemovePlaylistEntryByPath(string playlistPath, int index)
+        public PbAutoResult RemovePlaylistEntryByPath(string playlistPath, int index)
         {
             var b = new ByteUtil();
-            b.writeShort(188);
-            b.writeStringNarrow(playlistPath);
-            b.writeInt(index);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 188,error = 0 };
+            b.WriteShort(188);
+            b.WriteStringNarrow( (string)playlistPath);
+            b.WriteInt( (int)index);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult RemovePlaylistEntryByItemId(int playlistItemIndex, int index)
+        public PbAutoResult RemovePlaylistEntryByItemId(int playlistItemIndex, int index)
         {
             var b = new ByteUtil();
-            b.writeShort(189);
-            b.writeInt(playlistItemIndex);
-            b.writeInt(index);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 189,error = 0 };
+            b.WriteShort(189);
+            b.WriteInt( (int)playlistItemIndex);
+            b.WriteInt( (int)index);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
         public struct GetPlaylistSizeByDmxIdResult
         {
-            public bool ok { get { return error == 0; } }
-            public short code; public int error;
-            public int playlistSize;
+            public bool Ok { get { return Error == 0; } }
+            public short Code; public int Error;
+            public int PlaylistSize;
         }
         public GetPlaylistSizeByDmxIdResult GetPlaylistSizeByDmxId(int playlistDmxFolderId, int playlistdmxFileId)
         {
             var b = new ByteUtil();
-            b.writeShort(190);
-            b.writeInt(playlistDmxFolderId);
-            b.writeInt(playlistdmxFileId);
-            b = c.Send(b, true);
+            b.WriteShort(190);
+            b.WriteInt( (int)playlistDmxFolderId);
+            b.WriteInt( (int)playlistdmxFileId);
+            b = connector.Send(b, true);
             var r = new GetPlaylistSizeByDmxIdResult();
-            r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else
             {
-                r.error = 0;
-                r.playlistSize = b.readInt();
+                r.Error = 0;
+                r.PlaylistSize = b.ReadInt();
             }
             return r;
         }
 
         public struct GetPlaylistSizeByPathResult
         {
-            public bool ok { get { return error == 0; } }
-            public short code; public int error;
-            public int playlistSize;
+            public bool Ok { get { return Error == 0; } }
+            public short Code; public int Error;
+            public int PlaylistSize;
         }
         public GetPlaylistSizeByPathResult GetPlaylistSizeByPath(string playlistPath)
         {
             var b = new ByteUtil();
-            b.writeShort(191);
-            b.writeStringNarrow(playlistPath);
-            b = c.Send(b, true);
+            b.WriteShort(191);
+            b.WriteStringNarrow( (string)playlistPath);
+            b = connector.Send(b, true);
             var r = new GetPlaylistSizeByPathResult();
-            r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else
             {
-                r.error = 0;
-                r.playlistSize = b.readInt();
+                r.Error = 0;
+                r.PlaylistSize = b.ReadInt();
             }
             return r;
         }
 
         public struct GetPlaylistSizeByItemIdResult
         {
-            public bool ok { get { return error == 0; } }
-            public short code; public int error;
-            public int playlistSize;
+            public bool Ok { get { return Error == 0; } }
+            public short Code; public int Error;
+            public int PlaylistSize;
         }
         public GetPlaylistSizeByItemIdResult GetPlaylistSizeByItemId(int playlistItemIndex)
         {
             var b = new ByteUtil();
-            b.writeShort(192);
-            b.writeInt(playlistItemIndex);
-            b = c.Send(b, true);
+            b.WriteShort(192);
+            b.WriteInt( (int)playlistItemIndex);
+            b = connector.Send(b, true);
             var r = new GetPlaylistSizeByItemIdResult();
-            r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else
             {
-                r.error = 0;
-                r.playlistSize = b.readInt();
+                r.Error = 0;
+                r.PlaylistSize = b.ReadInt();
             }
             return r;
         }
 
-        public PBAutoResult SetPlaylistEntryIndexByDmxId(int playlistDmxFolderId, int playlistdmxFileId, int index, int newIndex)
+        public PbAutoResult SetPlaylistEntryIndexByDmxId(int playlistDmxFolderId, int playlistdmxFileId, int index, int newIndex)
         {
             var b = new ByteUtil();
-            b.writeShort(199);
-            b.writeInt(playlistDmxFolderId);
-            b.writeInt(playlistdmxFileId);
-            b.writeInt(index);
-            b.writeInt(newIndex);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 199,error = 0 };
+            b.WriteShort(199);
+            b.WriteInt( (int)playlistDmxFolderId);
+            b.WriteInt( (int)playlistdmxFileId);
+            b.WriteInt( (int)index);
+            b.WriteInt( (int)newIndex);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetPlaylistEntryIndexByPath(string playlistPath, int index, int newIndex)
+        public PbAutoResult SetPlaylistEntryIndexByPath(string playlistPath, int index, int newIndex)
         {
             var b = new ByteUtil();
-            b.writeShort(200);
-            b.writeStringNarrow(playlistPath);
-            b.writeInt(index);
-            b.writeInt(newIndex);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 200,error = 0 };
+            b.WriteShort(200);
+            b.WriteStringNarrow( (string)playlistPath);
+            b.WriteInt( (int)index);
+            b.WriteInt( (int)newIndex);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetPlaylistEntryIndexByItemId(int playlistItemIndex, int index, int newIndex)
+        public PbAutoResult SetPlaylistEntryIndexByItemId(int playlistItemIndex, int index, int newIndex)
         {
             var b = new ByteUtil();
-            b.writeShort(201);
-            b.writeInt(playlistItemIndex);
-            b.writeInt(index);
-            b.writeInt(newIndex);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 201,error = 0 };
+            b.WriteShort(201);
+            b.WriteInt( (int)playlistItemIndex);
+            b.WriteInt( (int)index);
+            b.WriteInt( (int)newIndex);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetPlaylistEntryDurationByDmxId(int playlistDmxFolderId, int playlistdmxFileId, int index, int hours, int minutes, int seconds, int frames)
+        public PbAutoResult SetPlaylistEntryDurationByDmxId(int playlistDmxFolderId, int playlistdmxFileId, int index, int hours, int minutes, int seconds, int frames)
         {
             var b = new ByteUtil();
-            b.writeShort(202);
-            b.writeInt(playlistDmxFolderId);
-            b.writeInt(playlistdmxFileId);
-            b.writeInt(index);
-            b.writeInt(hours);
-            b.writeInt(minutes);
-            b.writeInt(seconds);
-            b.writeInt(frames);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 202,error = 0 };
+            b.WriteShort(202);
+            b.WriteInt( (int)playlistDmxFolderId);
+            b.WriteInt( (int)playlistdmxFileId);
+            b.WriteInt( (int)index);
+            b.WriteInt( (int)hours);
+            b.WriteInt( (int)minutes);
+            b.WriteInt( (int)seconds);
+            b.WriteInt( (int)frames);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetPlaylistEntryDurationByPath(string playlistPath, int index, int hours, int minutes, int seconds, int frames)
+        public PbAutoResult SetPlaylistEntryDurationByPath(string playlistPath, int index, int hours, int minutes, int seconds, int frames)
         {
             var b = new ByteUtil();
-            b.writeShort(203);
-            b.writeStringNarrow(playlistPath);
-            b.writeInt(index);
-            b.writeInt(hours);
-            b.writeInt(minutes);
-            b.writeInt(seconds);
-            b.writeInt(frames);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 203,error = 0 };
+            b.WriteShort(203);
+            b.WriteStringNarrow( (string)playlistPath);
+            b.WriteInt( (int)index);
+            b.WriteInt( (int)hours);
+            b.WriteInt( (int)minutes);
+            b.WriteInt( (int)seconds);
+            b.WriteInt( (int)frames);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetPlaylistEntryDurationByItemId(int playlistItemIndex, int index, int hours, int minutes, int seconds, int frames)
+        public PbAutoResult SetPlaylistEntryDurationByItemId(int playlistItemIndex, int index, int hours, int minutes, int seconds, int frames)
         {
             var b = new ByteUtil();
-            b.writeShort(204);
-            b.writeInt(playlistItemIndex);
-            b.writeInt(index);
-            b.writeInt(hours);
-            b.writeInt(minutes);
-            b.writeInt(seconds);
-            b.writeInt(frames);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 204,error = 0 };
+            b.WriteShort(204);
+            b.WriteInt( (int)playlistItemIndex);
+            b.WriteInt( (int)index);
+            b.WriteInt( (int)hours);
+            b.WriteInt( (int)minutes);
+            b.WriteInt( (int)seconds);
+            b.WriteInt( (int)frames);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetPlaylistEntryFadeOutTimeByDmxId(int playlistDmxFolderId, int playlistdmxFileId, int index, int hours, int minutes, int seconds, int frames)
+        public PbAutoResult SetPlaylistEntryFadeOutTimeByDmxId(int playlistDmxFolderId, int playlistdmxFileId, int index, int hours, int minutes, int seconds, int frames)
         {
             var b = new ByteUtil();
-            b.writeShort(205);
-            b.writeInt(playlistDmxFolderId);
-            b.writeInt(playlistdmxFileId);
-            b.writeInt(index);
-            b.writeInt(hours);
-            b.writeInt(minutes);
-            b.writeInt(seconds);
-            b.writeInt(frames);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 205,error = 0 };
+            b.WriteShort(205);
+            b.WriteInt( (int)playlistDmxFolderId);
+            b.WriteInt( (int)playlistdmxFileId);
+            b.WriteInt( (int)index);
+            b.WriteInt( (int)hours);
+            b.WriteInt( (int)minutes);
+            b.WriteInt( (int)seconds);
+            b.WriteInt( (int)frames);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetPlaylistEntryFadeOutTimeByPath(string playlistPath, int index, int hours, int minutes, int seconds, int frames)
+        public PbAutoResult SetPlaylistEntryFadeOutTimeByPath(string playlistPath, int index, int hours, int minutes, int seconds, int frames)
         {
             var b = new ByteUtil();
-            b.writeShort(206);
-            b.writeStringNarrow(playlistPath);
-            b.writeInt(index);
-            b.writeInt(hours);
-            b.writeInt(minutes);
-            b.writeInt(seconds);
-            b.writeInt(frames);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 206,error = 0 };
+            b.WriteShort(206);
+            b.WriteStringNarrow( (string)playlistPath);
+            b.WriteInt( (int)index);
+            b.WriteInt( (int)hours);
+            b.WriteInt( (int)minutes);
+            b.WriteInt( (int)seconds);
+            b.WriteInt( (int)frames);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetPlaylistEntryFadeOutTimeByItemId(int playlistItemIndex, int index, int hours, int minutes, int seconds, int frames)
+        public PbAutoResult SetPlaylistEntryFadeOutTimeByItemId(int playlistItemIndex, int index, int hours, int minutes, int seconds, int frames)
         {
             var b = new ByteUtil();
-            b.writeShort(207);
-            b.writeInt(playlistItemIndex);
-            b.writeInt(index);
-            b.writeInt(hours);
-            b.writeInt(minutes);
-            b.writeInt(seconds);
-            b.writeInt(frames);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 207,error = 0 };
+            b.WriteShort(207);
+            b.WriteInt( (int)playlistItemIndex);
+            b.WriteInt( (int)index);
+            b.WriteInt( (int)hours);
+            b.WriteInt( (int)minutes);
+            b.WriteInt( (int)seconds);
+            b.WriteInt( (int)frames);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetPlaylistEntryInPointByDmxId(int playlistDmxFolderId, int playlistdmxFileId, int index, int hours, int minutes, int seconds, int frames)
+        public PbAutoResult SetPlaylistEntryInPointByDmxId(int playlistDmxFolderId, int playlistdmxFileId, int index, int hours, int minutes, int seconds, int frames)
         {
             var b = new ByteUtil();
-            b.writeShort(208);
-            b.writeInt(playlistDmxFolderId);
-            b.writeInt(playlistdmxFileId);
-            b.writeInt(index);
-            b.writeInt(hours);
-            b.writeInt(minutes);
-            b.writeInt(seconds);
-            b.writeInt(frames);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 208,error = 0 };
+            b.WriteShort(208);
+            b.WriteInt( (int)playlistDmxFolderId);
+            b.WriteInt( (int)playlistdmxFileId);
+            b.WriteInt( (int)index);
+            b.WriteInt( (int)hours);
+            b.WriteInt( (int)minutes);
+            b.WriteInt( (int)seconds);
+            b.WriteInt( (int)frames);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetPlaylistEntryInPointByPath(string playlistPath, int index, int hours, int minutes, int seconds, int frames)
+        public PbAutoResult SetPlaylistEntryInPointByPath(string playlistPath, int index, int hours, int minutes, int seconds, int frames)
         {
             var b = new ByteUtil();
-            b.writeShort(210);
-            b.writeStringNarrow(playlistPath);
-            b.writeInt(index);
-            b.writeInt(hours);
-            b.writeInt(minutes);
-            b.writeInt(seconds);
-            b.writeInt(frames);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 210,error = 0 };
+            b.WriteShort(210);
+            b.WriteStringNarrow( (string)playlistPath);
+            b.WriteInt( (int)index);
+            b.WriteInt( (int)hours);
+            b.WriteInt( (int)minutes);
+            b.WriteInt( (int)seconds);
+            b.WriteInt( (int)frames);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetPlaylistEntryInPointByItemId(int playlistItemIndex, int index, int hours, int minutes, int seconds, int frames)
+        public PbAutoResult SetPlaylistEntryInPointByItemId(int playlistItemIndex, int index, int hours, int minutes, int seconds, int frames)
         {
             var b = new ByteUtil();
-            b.writeShort(211);
-            b.writeInt(playlistItemIndex);
-            b.writeInt(index);
-            b.writeInt(hours);
-            b.writeInt(minutes);
-            b.writeInt(seconds);
-            b.writeInt(frames);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 211,error = 0 };
+            b.WriteShort(211);
+            b.WriteInt( (int)playlistItemIndex);
+            b.WriteInt( (int)index);
+            b.WriteInt( (int)hours);
+            b.WriteInt( (int)minutes);
+            b.WriteInt( (int)seconds);
+            b.WriteInt( (int)frames);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetPlaylistEntryOutPointByDmxId(int playlistDmxFolderId, int playlistdmxFileId, int index, int hours, int minutes, int seconds, int frames)
+        public PbAutoResult SetPlaylistEntryOutPointByDmxId(int playlistDmxFolderId, int playlistdmxFileId, int index, int hours, int minutes, int seconds, int frames)
         {
             var b = new ByteUtil();
-            b.writeShort(212);
-            b.writeInt(playlistDmxFolderId);
-            b.writeInt(playlistdmxFileId);
-            b.writeInt(index);
-            b.writeInt(hours);
-            b.writeInt(minutes);
-            b.writeInt(seconds);
-            b.writeInt(frames);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 212,error = 0 };
+            b.WriteShort(212);
+            b.WriteInt( (int)playlistDmxFolderId);
+            b.WriteInt( (int)playlistdmxFileId);
+            b.WriteInt( (int)index);
+            b.WriteInt( (int)hours);
+            b.WriteInt( (int)minutes);
+            b.WriteInt( (int)seconds);
+            b.WriteInt( (int)frames);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetPlaylistEntryOutPointByPath(string playlistPath, int index, int hours, int minutes, int seconds, int frames)
+        public PbAutoResult SetPlaylistEntryOutPointByPath(string playlistPath, int index, int hours, int minutes, int seconds, int frames)
         {
             var b = new ByteUtil();
-            b.writeShort(213);
-            b.writeStringNarrow(playlistPath);
-            b.writeInt(index);
-            b.writeInt(hours);
-            b.writeInt(minutes);
-            b.writeInt(seconds);
-            b.writeInt(frames);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 213,error = 0 };
+            b.WriteShort(213);
+            b.WriteStringNarrow( (string)playlistPath);
+            b.WriteInt( (int)index);
+            b.WriteInt( (int)hours);
+            b.WriteInt( (int)minutes);
+            b.WriteInt( (int)seconds);
+            b.WriteInt( (int)frames);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetPlaylistEntryOutPointByItemId(int playlistItemIndex, int index, int hours, int minutes, int seconds, int frames)
+        public PbAutoResult SetPlaylistEntryOutPointByItemId(int playlistItemIndex, int index, int hours, int minutes, int seconds, int frames)
         {
             var b = new ByteUtil();
-            b.writeShort(214);
-            b.writeInt(playlistItemIndex);
-            b.writeInt(index);
-            b.writeInt(hours);
-            b.writeInt(minutes);
-            b.writeInt(seconds);
-            b.writeInt(frames);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 214,error = 0 };
+            b.WriteShort(214);
+            b.WriteInt( (int)playlistItemIndex);
+            b.WriteInt( (int)index);
+            b.WriteInt( (int)hours);
+            b.WriteInt( (int)minutes);
+            b.WriteInt( (int)seconds);
+            b.WriteInt( (int)frames);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetPlaylistEntryTransitionByDmxId(int playlistDmxFolderId, int playlistdmxFileId, int index, int fadeFxId)
+        public PbAutoResult SetPlaylistEntryTransitionByDmxId(int playlistDmxFolderId, int playlistdmxFileId, int index, int fadeFxId)
         {
             var b = new ByteUtil();
-            b.writeShort(215);
-            b.writeInt(playlistDmxFolderId);
-            b.writeInt(playlistdmxFileId);
-            b.writeInt(index);
-            b.writeInt(fadeFxId);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 215,error = 0 };
+            b.WriteShort(215);
+            b.WriteInt( (int)playlistDmxFolderId);
+            b.WriteInt( (int)playlistdmxFileId);
+            b.WriteInt( (int)index);
+            b.WriteInt( (int)fadeFxId);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetPlaylistEntryTransitionByPath(string playlistPath, int index, int fadeFxId)
+        public PbAutoResult SetPlaylistEntryTransitionByPath(string playlistPath, int index, int fadeFxId)
         {
             var b = new ByteUtil();
-            b.writeShort(216);
-            b.writeStringNarrow(playlistPath);
-            b.writeInt(index);
-            b.writeInt(fadeFxId);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 216,error = 0 };
+            b.WriteShort(216);
+            b.WriteStringNarrow( (string)playlistPath);
+            b.WriteInt( (int)index);
+            b.WriteInt( (int)fadeFxId);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetPlaylistEntryTransitionByItemId(int playlistItemIndex, int index, int fadeFxId)
+        public PbAutoResult SetPlaylistEntryTransitionByItemId(int playlistItemIndex, int index, int fadeFxId)
         {
             var b = new ByteUtil();
-            b.writeShort(217);
-            b.writeInt(playlistItemIndex);
-            b.writeInt(index);
-            b.writeInt(fadeFxId);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 217,error = 0 };
+            b.WriteShort(217);
+            b.WriteInt( (int)playlistItemIndex);
+            b.WriteInt( (int)index);
+            b.WriteInt( (int)fadeFxId);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetPlaylistEntryNoteByDmxId(int playlistDmxFolderId, int playlistdmxFileId, int index, string pNote)
+        public PbAutoResult SetPlaylistEntryNoteByDmxId(int playlistDmxFolderId, int playlistdmxFileId, int index, string pNote)
         {
             var b = new ByteUtil();
-            b.writeShort(218);
-            b.writeInt(playlistDmxFolderId);
-            b.writeInt(playlistdmxFileId);
-            b.writeInt(index);
-            b.writeStringNarrow(pNote);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 218,error = 0 };
+            b.WriteShort(218);
+            b.WriteInt( (int)playlistDmxFolderId);
+            b.WriteInt( (int)playlistdmxFileId);
+            b.WriteInt( (int)index);
+            b.WriteStringNarrow( (string)pNote);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetPlaylistEntryNoteByPath(string playlistPath, int index, string pNote)
+        public PbAutoResult SetPlaylistEntryNoteByPath(string playlistPath, int index, string pNote)
         {
             var b = new ByteUtil();
-            b.writeShort(219);
-            b.writeStringNarrow(playlistPath);
-            b.writeInt(index);
-            b.writeStringNarrow(pNote);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 219,error = 0 };
+            b.WriteShort(219);
+            b.WriteStringNarrow( (string)playlistPath);
+            b.WriteInt( (int)index);
+            b.WriteStringNarrow( (string)pNote);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetPlaylistEntryNoteByItemId(int playlistItemIndex, int index, string pNote)
+        public PbAutoResult SetPlaylistEntryNoteByItemId(int playlistItemIndex, int index, string pNote)
         {
             var b = new ByteUtil();
-            b.writeShort(220);
-            b.writeInt(playlistItemIndex);
-            b.writeInt(index);
-            b.writeStringNarrow(pNote);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 220,error = 0 };
+            b.WriteShort(220);
+            b.WriteInt( (int)playlistItemIndex);
+            b.WriteInt( (int)index);
+            b.WriteStringNarrow( (string)pNote);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult RecordLiveInputByDmxId(int folderID, int fileID, string pFilename, string encodingPresetName, int hours, int minutes, int seconds, int frames)
+        public PbAutoResult RecordLiveInputByDmxId(int folderID, int fileID, string pFilename, string encodingPresetName, int hours, int minutes, int seconds, int frames)
         {
             var b = new ByteUtil();
-            b.writeShort(222);
-            b.writeInt(folderID);
-            b.writeInt(fileID);
-            b.writeStringNarrow(pFilename);
-            b.writeStringNarrow(encodingPresetName);
-            b.writeInt(hours);
-            b.writeInt(minutes);
-            b.writeInt(seconds);
-            b.writeInt(frames);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 222,error = 0 };
+            b.WriteShort(222);
+            b.WriteInt( (int)folderID);
+            b.WriteInt( (int)fileID);
+            b.WriteStringNarrow( (string)pFilename);
+            b.WriteStringNarrow( (string)encodingPresetName);
+            b.WriteInt( (int)hours);
+            b.WriteInt( (int)minutes);
+            b.WriteInt( (int)seconds);
+            b.WriteInt( (int)frames);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult RecordLiveInputStartByDmxId(int folderID, int fileID, string pFilename, string encodingPresetName)
+        public PbAutoResult RecordLiveInputStartByDmxId(int folderID, int fileID, string pFilename, string encodingPresetName)
         {
             var b = new ByteUtil();
-            b.writeShort(223);
-            b.writeInt(folderID);
-            b.writeInt(fileID);
-            b.writeStringNarrow(pFilename);
-            b.writeStringNarrow(encodingPresetName);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 223,error = 0 };
+            b.WriteShort(223);
+            b.WriteInt( (int)folderID);
+            b.WriteInt( (int)fileID);
+            b.WriteStringNarrow( (string)pFilename);
+            b.WriteStringNarrow( (string)encodingPresetName);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult RecordLiveInputByName(string liveInputResourcePath, string pFilename, string encodingPresetName, int hours, int minutes, int seconds, int frames)
+        public PbAutoResult RecordLiveInputByName(string liveInputResourcePath, string pFilename, string encodingPresetName, int hours, int minutes, int seconds, int frames)
         {
             var b = new ByteUtil();
-            b.writeShort(225);
-            b.writeStringNarrow(liveInputResourcePath);
-            b.writeStringNarrow(pFilename);
-            b.writeStringNarrow(encodingPresetName);
-            b.writeInt(hours);
-            b.writeInt(minutes);
-            b.writeInt(seconds);
-            b.writeInt(frames);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 225,error = 0 };
+            b.WriteShort(225);
+            b.WriteStringNarrow( (string)liveInputResourcePath);
+            b.WriteStringNarrow( (string)pFilename);
+            b.WriteStringNarrow( (string)encodingPresetName);
+            b.WriteInt( (int)hours);
+            b.WriteInt( (int)minutes);
+            b.WriteInt( (int)seconds);
+            b.WriteInt( (int)frames);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult RecordLiveInputStartByName(string liveInputResourcePath, string pFilename, string encodingPresetName)
+        public PbAutoResult RecordLiveInputStartByName(string liveInputResourcePath, string pFilename, string encodingPresetName)
         {
             var b = new ByteUtil();
-            b.writeShort(226);
-            b.writeStringNarrow(liveInputResourcePath);
-            b.writeStringNarrow(pFilename);
-            b.writeStringNarrow(encodingPresetName);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 226,error = 0 };
+            b.WriteShort(226);
+            b.WriteStringNarrow( (string)liveInputResourcePath);
+            b.WriteStringNarrow( (string)pFilename);
+            b.WriteStringNarrow( (string)encodingPresetName);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult ExportVideo(string pFilename, string encodingPresetName, int sequenceId, int startHour, int startMinute, int startSecond, int startFrame, int endHour, int endMinute, int endSecond, int endFrame)
+        public PbAutoResult ExportVideo(string pFilename, string encodingPresetName, int sequenceId, int startHour, int startMinute, int startSecond, int startFrame, int endHour, int endMinute, int endSecond, int endFrame)
         {
             var b = new ByteUtil();
-            b.writeShort(227);
-            b.writeStringNarrow(pFilename);
-            b.writeStringNarrow(encodingPresetName);
-            b.writeInt(sequenceId);
-            b.writeInt(startHour);
-            b.writeInt(startMinute);
-            b.writeInt(startSecond);
-            b.writeInt(startFrame);
-            b.writeInt(endHour);
-            b.writeInt(endMinute);
-            b.writeInt(endSecond);
-            b.writeInt(endFrame);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 227,error = 0 };
+            b.WriteShort(227);
+            b.WriteStringNarrow( (string)pFilename);
+            b.WriteStringNarrow( (string)encodingPresetName);
+            b.WriteInt( (int)sequenceId);
+            b.WriteInt( (int)startHour);
+            b.WriteInt( (int)startMinute);
+            b.WriteInt( (int)startSecond);
+            b.WriteInt( (int)startFrame);
+            b.WriteInt( (int)endHour);
+            b.WriteInt( (int)endMinute);
+            b.WriteInt( (int)endSecond);
+            b.WriteInt( (int)endFrame);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult EncodeFileByName(string resourcePath, string encodingPreset)
+        public PbAutoResult EncodeFileByName(string resourcePath, string encodingPreset)
         {
             var b = new ByteUtil();
-            b.writeShort(228);
-            b.writeStringNarrow(resourcePath);
-            b.writeStringNarrow(encodingPreset);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 228,error = 0 };
+            b.WriteShort(228);
+            b.WriteStringNarrow( (string)resourcePath);
+            b.WriteStringNarrow( (string)encodingPreset);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult EncodeFileByDmxId(int folderID, int fileID, string encodingPreset)
+        public PbAutoResult EncodeFileByDmxId(int folderID, int fileID, string encodingPreset)
         {
             var b = new ByteUtil();
-            b.writeShort(230);
-            b.writeInt(folderID);
-            b.writeInt(fileID);
-            b.writeStringNarrow(encodingPreset);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 230,error = 0 };
+            b.WriteShort(230);
+            b.WriteInt( (int)folderID);
+            b.WriteInt( (int)fileID);
+            b.WriteStringNarrow( (string)encodingPreset);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult EncodeFileToPath(string resourcePath, string projectPath, bool overwriteExisting, string encodingPreset)
+        public PbAutoResult EncodeFileToPath(string resourcePath, string projectPath, bool overwriteExisting, string encodingPreset)
         {
             var b = new ByteUtil();
-            b.writeShort(229);
-            b.writeStringNarrow(resourcePath);
-            b.writeStringNarrow(projectPath);
-            b.writeBool(overwriteExisting);
-            b.writeStringNarrow(encodingPreset);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 229,error = 0 };
+            b.WriteShort(229);
+            b.WriteStringNarrow( (string)resourcePath);
+            b.WriteStringNarrow( (string)projectPath);
+            b.WriteBool( (bool)overwriteExisting);
+            b.WriteStringNarrow( (string)encodingPreset);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult EncodeFileByDmxId(int folderID, int fileID, string projectPath, bool overwriteExisting, string encodingPreset)
+        public PbAutoResult EncodeFileByDmxId(int folderID, int fileID, string projectPath, bool overwriteExisting, string encodingPreset)
         {
             var b = new ByteUtil();
-            b.writeShort(231);
-            b.writeInt(folderID);
-            b.writeInt(fileID);
-            b.writeStringNarrow(projectPath);
-            b.writeBool(overwriteExisting);
-            b.writeStringNarrow(encodingPreset);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 231,error = 0 };
+            b.WriteShort(231);
+            b.WriteInt( (int)folderID);
+            b.WriteInt( (int)fileID);
+            b.WriteStringNarrow( (string)projectPath);
+            b.WriteBool( (bool)overwriteExisting);
+            b.WriteStringNarrow( (string)encodingPreset);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetCanvasResolutionByDmxId(int canvasDmxFolderId, int canvasDmxFileId, int width, int height)
+        public PbAutoResult SetCanvasResolutionByDmxId(int canvasDmxFolderId, int canvasDmxFileId, int width, int height)
         {
             var b = new ByteUtil();
-            b.writeShort(239);
-            b.writeInt(canvasDmxFolderId);
-            b.writeInt(canvasDmxFileId);
-            b.writeInt(width);
-            b.writeInt(height);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 239,error = 0 };
+            b.WriteShort(239);
+            b.WriteInt( (int)canvasDmxFolderId);
+            b.WriteInt( (int)canvasDmxFileId);
+            b.WriteInt( (int)width);
+            b.WriteInt( (int)height);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetCanvasResolutionByPath(string canvasResourcePath, int width, int height)
+        public PbAutoResult SetCanvasResolutionByPath(string canvasResourcePath, int width, int height)
         {
             var b = new ByteUtil();
-            b.writeShort(240);
-            b.writeStringNarrow(canvasResourcePath);
-            b.writeInt(width);
-            b.writeInt(height);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 240,error = 0 };
+            b.WriteShort(240);
+            b.WriteStringNarrow( (string)canvasResourcePath);
+            b.WriteInt( (int)width);
+            b.WriteInt( (int)height);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetCanvasResolutionByItemId(int canvasItemIndex, int width, int height)
+        public PbAutoResult SetCanvasResolutionByItemId(int canvasItemIndex, int width, int height)
         {
             var b = new ByteUtil();
-            b.writeShort(241);
-            b.writeInt(canvasItemIndex);
-            b.writeInt(width);
-            b.writeInt(height);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 241,error = 0 };
+            b.WriteShort(241);
+            b.WriteInt( (int)canvasItemIndex);
+            b.WriteInt( (int)width);
+            b.WriteInt( (int)height);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult ClearCanvasByDmxId(int canvasDmxFolderId, int canvasDmxFileId)
+        public PbAutoResult ClearCanvasByDmxId(int canvasDmxFolderId, int canvasDmxFileId)
         {
             var b = new ByteUtil();
-            b.writeShort(242);
-            b.writeInt(canvasDmxFolderId);
-            b.writeInt(canvasDmxFileId);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 242,error = 0 };
+            b.WriteShort(242);
+            b.WriteInt( (int)canvasDmxFolderId);
+            b.WriteInt( (int)canvasDmxFileId);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult ClearCanvasByPath(string canvasResourcePath)
+        public PbAutoResult ClearCanvasByPath(string canvasResourcePath)
         {
             var b = new ByteUtil();
-            b.writeShort(243);
-            b.writeStringNarrow(canvasResourcePath);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 243,error = 0 };
+            b.WriteShort(243);
+            b.WriteStringNarrow( (string)canvasResourcePath);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult ClearCanvasByItemId(int canvasItemIndex)
+        public PbAutoResult ClearCanvasByItemId(int canvasItemIndex)
         {
             var b = new ByteUtil();
-            b.writeShort(244);
-            b.writeInt(canvasItemIndex);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 244,error = 0 };
+            b.WriteShort(244);
+            b.WriteInt( (int)canvasItemIndex);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult ExecuteCanvasCmdByDmxId(int canvasDmxFolderId, int canvasDmxFileId, string cmd, bool cmdContainsResourcePath)
+        public PbAutoResult ExecuteCanvasCmdByDmxId(int canvasDmxFolderId, int canvasDmxFileId, string cmd, bool cmdContainsResourcePath)
         {
             var b = new ByteUtil();
-            b.writeShort(245);
-            b.writeInt(canvasDmxFolderId);
-            b.writeInt(canvasDmxFileId);
-            b.writeStringNarrow(cmd);
-            b.writeBool(cmdContainsResourcePath);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 245,error = 0 };
+            b.WriteShort(245);
+            b.WriteInt( (int)canvasDmxFolderId);
+            b.WriteInt( (int)canvasDmxFileId);
+            b.WriteStringNarrow( (string)cmd);
+            b.WriteBool( (bool)cmdContainsResourcePath);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult ExecuteCanvasCmdByPath(string canvasResourcePath, string cmd, bool cmdContainsResourcePath)
+        public PbAutoResult ExecuteCanvasCmdByPath(string canvasResourcePath, string cmd, bool cmdContainsResourcePath)
         {
             var b = new ByteUtil();
-            b.writeShort(246);
-            b.writeStringNarrow(canvasResourcePath);
-            b.writeStringNarrow(cmd);
-            b.writeBool(cmdContainsResourcePath);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 246,error = 0 };
+            b.WriteShort(246);
+            b.WriteStringNarrow( (string)canvasResourcePath);
+            b.WriteStringNarrow( (string)cmd);
+            b.WriteBool( (bool)cmdContainsResourcePath);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult ExecuteCanvasCmdByItemId(int canvasItemIndex, string cmd, bool cmdContainsResourcePath)
+        public PbAutoResult ExecuteCanvasCmdByItemId(int canvasItemIndex, string cmd, bool cmdContainsResourcePath)
         {
             var b = new ByteUtil();
-            b.writeShort(247);
-            b.writeInt(canvasItemIndex);
-            b.writeStringNarrow(cmd);
-            b.writeBool(cmdContainsResourcePath);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 247,error = 0 };
+            b.WriteShort(247);
+            b.WriteInt( (int)canvasItemIndex);
+            b.WriteStringNarrow( (string)cmd);
+            b.WriteBool( (bool)cmdContainsResourcePath);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
         public struct GetCanvasDrawCommandsByDmxIdResult
         {
-            public bool ok { get { return error == 0; } }
-            public short code; public int error;
-            public string commands;
+            public bool Ok { get { return Error == 0; } }
+            public short Code; public int Error;
+            public string Commands;
         }
         public GetCanvasDrawCommandsByDmxIdResult GetCanvasDrawCommandsByDmxId(int canvasDmxFolderId, int canvasDmxFileId)
         {
             var b = new ByteUtil();
-            b.writeShort(248);
-            b.writeInt(canvasDmxFolderId);
-            b.writeInt(canvasDmxFileId);
-            b = c.Send(b, true);
+            b.WriteShort(248);
+            b.WriteInt( (int)canvasDmxFolderId);
+            b.WriteInt( (int)canvasDmxFileId);
+            b = connector.Send(b, true);
             var r = new GetCanvasDrawCommandsByDmxIdResult();
-            r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else
             {
-                r.error = 0;
-                r.commands = b.readStringNarrow();
+                r.Error = 0;
+                r.Commands = b.ReadStringNarrow();
             }
             return r;
         }
 
         public struct GetCanvasDrawCommandsByPathResult
         {
-            public bool ok { get { return error == 0; } }
-            public short code; public int error;
-            public string commands;
+            public bool Ok { get { return Error == 0; } }
+            public short Code; public int Error;
+            public string Commands;
         }
         public GetCanvasDrawCommandsByPathResult GetCanvasDrawCommandsByPath(string canvasResourcePath)
         {
             var b = new ByteUtil();
-            b.writeShort(249);
-            b.writeStringNarrow(canvasResourcePath);
-            b = c.Send(b, true);
+            b.WriteShort(249);
+            b.WriteStringNarrow( (string)canvasResourcePath);
+            b = connector.Send(b, true);
             var r = new GetCanvasDrawCommandsByPathResult();
-            r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else
             {
-                r.error = 0;
-                r.commands = b.readStringNarrow();
+                r.Error = 0;
+                r.Commands = b.ReadStringNarrow();
             }
             return r;
         }
 
         public struct GetCanvasDrawCommandsByItemIdResult
         {
-            public bool ok { get { return error == 0; } }
-            public short code; public int error;
-            public string commands;
+            public bool Ok { get { return Error == 0; } }
+            public short Code; public int Error;
+            public string Commands;
         }
         public GetCanvasDrawCommandsByItemIdResult GetCanvasDrawCommandsByItemId(int canvasItemIndex)
         {
             var b = new ByteUtil();
-            b.writeShort(250);
-            b.writeInt(canvasItemIndex);
-            b = c.Send(b, true);
+            b.WriteShort(250);
+            b.WriteInt( (int)canvasItemIndex);
+            b = connector.Send(b, true);
             var r = new GetCanvasDrawCommandsByItemIdResult();
-            r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else
             {
-                r.error = 0;
-                r.commands = b.readStringNarrow();
+                r.Error = 0;
+                r.Commands = b.ReadStringNarrow();
             }
             return r;
         }
 
         public struct GetMediaWidthByDmxIdResult
         {
-            public bool ok { get { return error == 0; } }
-            public short code; public int error;
-            public int width;
+            public bool Ok { get { return Error == 0; } }
+            public short Code; public int Error;
+            public int Width;
         }
         public GetMediaWidthByDmxIdResult GetMediaWidthByDmxId(int dmxFolderId, int dmxFileId)
         {
             var b = new ByteUtil();
-            b.writeShort(251);
-            b.writeInt(dmxFolderId);
-            b.writeInt(dmxFileId);
-            b = c.Send(b, true);
+            b.WriteShort(251);
+            b.WriteInt( (int)dmxFolderId);
+            b.WriteInt( (int)dmxFileId);
+            b = connector.Send(b, true);
             var r = new GetMediaWidthByDmxIdResult();
-            r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else
             {
-                r.error = 0;
-                r.width = b.readInt();
+                r.Error = 0;
+                r.Width = b.ReadInt();
             }
             return r;
         }
 
         public struct GetMediaWidthByPathResult
         {
-            public bool ok { get { return error == 0; } }
-            public short code; public int error;
-            public int width;
+            public bool Ok { get { return Error == 0; } }
+            public short Code; public int Error;
+            public int Width;
         }
         public GetMediaWidthByPathResult GetMediaWidthByPath(string folderPathToProject)
         {
             var b = new ByteUtil();
-            b.writeShort(252);
-            b.writeStringNarrow(folderPathToProject);
-            b = c.Send(b, true);
+            b.WriteShort(252);
+            b.WriteStringNarrow( (string)folderPathToProject);
+            b = connector.Send(b, true);
             var r = new GetMediaWidthByPathResult();
-            r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else
             {
-                r.error = 0;
-                r.width = b.readInt();
+                r.Error = 0;
+                r.Width = b.ReadInt();
             }
             return r;
         }
 
         public struct GetMediaWidthByItemIdResult
         {
-            public bool ok { get { return error == 0; } }
-            public short code; public int error;
-            public int width;
+            public bool Ok { get { return Error == 0; } }
+            public short Code; public int Error;
+            public int Width;
         }
         public GetMediaWidthByItemIdResult GetMediaWidthByItemId(int itemId)
         {
             var b = new ByteUtil();
-            b.writeShort(253);
-            b.writeInt(itemId);
-            b = c.Send(b, true);
+            b.WriteShort(253);
+            b.WriteInt( (int)itemId);
+            b = connector.Send(b, true);
             var r = new GetMediaWidthByItemIdResult();
-            r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else
             {
-                r.error = 0;
-                r.width = b.readInt();
+                r.Error = 0;
+                r.Width = b.ReadInt();
             }
             return r;
         }
 
         public struct GetMediaHeightByDmxIdResult
         {
-            public bool ok { get { return error == 0; } }
-            public short code; public int error;
-            public int height;
+            public bool Ok { get { return Error == 0; } }
+            public short Code; public int Error;
+            public int Height;
         }
         public GetMediaHeightByDmxIdResult GetMediaHeightByDmxId(int dmxFolderId, int dmxFileId)
         {
             var b = new ByteUtil();
-            b.writeShort(254);
-            b.writeInt(dmxFolderId);
-            b.writeInt(dmxFileId);
-            b = c.Send(b, true);
+            b.WriteShort(254);
+            b.WriteInt( (int)dmxFolderId);
+            b.WriteInt( (int)dmxFileId);
+            b = connector.Send(b, true);
             var r = new GetMediaHeightByDmxIdResult();
-            r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else
             {
-                r.error = 0;
-                r.height = b.readInt();
+                r.Error = 0;
+                r.Height = b.ReadInt();
             }
             return r;
         }
 
         public struct GetMediaHeightByPathResult
         {
-            public bool ok { get { return error == 0; } }
-            public short code; public int error;
-            public int height;
+            public bool Ok { get { return Error == 0; } }
+            public short Code; public int Error;
+            public int Height;
         }
         public GetMediaHeightByPathResult GetMediaHeightByPath(string folderPathToProject)
         {
             var b = new ByteUtil();
-            b.writeShort(255);
-            b.writeStringNarrow(folderPathToProject);
-            b = c.Send(b, true);
+            b.WriteShort(255);
+            b.WriteStringNarrow( (string)folderPathToProject);
+            b = connector.Send(b, true);
             var r = new GetMediaHeightByPathResult();
-            r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else
             {
-                r.error = 0;
-                r.height = b.readInt();
+                r.Error = 0;
+                r.Height = b.ReadInt();
             }
             return r;
         }
 
         public struct GetMediaHeightByItemIdResult
         {
-            public bool ok { get { return error == 0; } }
-            public short code; public int error;
-            public int height;
+            public bool Ok { get { return Error == 0; } }
+            public short Code; public int Error;
+            public int Height;
         }
         public GetMediaHeightByItemIdResult GetMediaHeightByItemId(int itemId)
         {
             var b = new ByteUtil();
-            b.writeShort(256);
-            b.writeInt(itemId);
-            b = c.Send(b, true);
+            b.WriteShort(256);
+            b.WriteInt( (int)itemId);
+            b = connector.Send(b, true);
             var r = new GetMediaHeightByItemIdResult();
-            r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else
             {
-                r.error = 0;
-                r.height = b.readInt();
+                r.Error = 0;
+                r.Height = b.ReadInt();
             }
             return r;
         }
 
         public struct GetProjectPathOnDiscResult
         {
-            public bool ok { get { return error == 0; } }
-            public short code; public int error;
-            public string commands;
+            public bool Ok { get { return Error == 0; } }
+            public short Code; public int Error;
+            public string Commands;
         }
         public GetProjectPathOnDiscResult GetProjectPathOnDisc()
         {
             var b = new ByteUtil();
-            b.writeShort(257);
-            b = c.Send(b, true);
+            b.WriteShort(257);
+            b = connector.Send(b, true);
             var r = new GetProjectPathOnDiscResult();
-            r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else
             {
-                r.error = 0;
-                r.commands = b.readStringNarrow();
+                r.Error = 0;
+                r.Commands = b.ReadStringNarrow();
             }
             return r;
         }
 
-        public PBAutoResult SaveProjectAs(string folderPathToProject, string projectXmlFileName)
+        public PbAutoResult SaveProjectAs(string folderPathToProject, string projectXmlFileName)
         {
             var b = new ByteUtil();
-            b.writeShort(258);
-            b.writeStringNarrow(folderPathToProject);
-            b.writeStringNarrow(projectXmlFileName);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 258,error = 0 };
+            b.WriteShort(258);
+            b.WriteStringNarrow( (string)folderPathToProject);
+            b.WriteStringNarrow( (string)projectXmlFileName);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SaveProjectCopy(string folderPathToProject, string projectXmlFileName)
+        public PbAutoResult SaveProjectCopy(string folderPathToProject, string projectXmlFileName)
         {
             var b = new ByteUtil();
-            b.writeShort(259);
-            b.writeStringNarrow(folderPathToProject);
-            b.writeStringNarrow(projectXmlFileName);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 259,error = 0 };
+            b.WriteShort(259);
+            b.WriteStringNarrow( (string)folderPathToProject);
+            b.WriteStringNarrow( (string)projectXmlFileName);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult BundleProject(string bundlePath, string bundleName)
+        public PbAutoResult BundleProject(string bundlePath, string bundleName)
         {
             var b = new ByteUtil();
-            b.writeShort(260);
-            b.writeStringNarrow(bundlePath);
-            b.writeStringNarrow(bundleName);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 260,error = 0 };
+            b.WriteShort(260);
+            b.WriteStringNarrow( (string)bundlePath);
+            b.WriteStringNarrow( (string)bundleName);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetResourceNameByPath(string resourcePath, string newResourceName)
+        public PbAutoResult SetResourceNameByPath(string resourcePath, string newResourceName)
         {
             var b = new ByteUtil();
-            b.writeShort(261);
-            b.writeStringNarrow(resourcePath);
-            b.writeStringNarrow(newResourceName);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 261,error = 0 };
+            b.WriteShort(261);
+            b.WriteStringNarrow( (string)resourcePath);
+            b.WriteStringNarrow( (string)newResourceName);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetResourceNameByItemIndex(int treeItemIndex, string newResourceName)
+        public PbAutoResult SetResourceNameByItemIndex(int treeItemIndex, string newResourceName)
         {
             var b = new ByteUtil();
-            b.writeShort(263);
-            b.writeInt(treeItemIndex);
-            b.writeStringNarrow(newResourceName);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 263,error = 0 };
+            b.WriteShort(263);
+            b.WriteInt( (int)treeItemIndex);
+            b.WriteStringNarrow( (string)newResourceName);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetResourceNameByDmxId(int dmxFolderId, int dmxFileId, string newResourceName)
+        public PbAutoResult SetResourceNameByDmxId(int dmxFolderId, int dmxFileId, string newResourceName)
         {
             var b = new ByteUtil();
-            b.writeShort(262);
-            b.writeInt(dmxFolderId);
-            b.writeInt(dmxFileId);
-            b.writeStringNarrow(newResourceName);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 262,error = 0 };
+            b.WriteShort(262);
+            b.WriteInt( (int)dmxFolderId);
+            b.WriteInt( (int)dmxFileId);
+            b.WriteStringNarrow( (string)newResourceName);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SendCanvasCmdsToStackByDmxId(int canvasDmxFolderId, int canvasDmxFileId, bool doAddToStack)
+        public PbAutoResult SendCanvasCmdsToStackByDmxId(int canvasDmxFolderId, int canvasDmxFileId, bool doAddToStack)
         {
             var b = new ByteUtil();
-            b.writeShort(265);
-            b.writeInt(canvasDmxFolderId);
-            b.writeInt(canvasDmxFileId);
-            b.writeBool(doAddToStack);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 265,error = 0 };
+            b.WriteShort(265);
+            b.WriteInt( (int)canvasDmxFolderId);
+            b.WriteInt( (int)canvasDmxFileId);
+            b.WriteBool( (bool)doAddToStack);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetAddCanvasCmdsToStackByPath(string canvasResourcePath, bool doAddToStack)
+        public PbAutoResult SetAddCanvasCmdsToStackByPath(string canvasResourcePath, bool doAddToStack)
         {
             var b = new ByteUtil();
-            b.writeShort(266);
-            b.writeStringNarrow(canvasResourcePath);
-            b.writeBool(doAddToStack);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 266,error = 0 };
+            b.WriteShort(266);
+            b.WriteStringNarrow( (string)canvasResourcePath);
+            b.WriteBool( (bool)doAddToStack);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetAddCanvasCmdsToStackByItemId(int canvasItemIndex, bool doAddToStack)
+        public PbAutoResult SetAddCanvasCmdsToStackByItemId(int canvasItemIndex, bool doAddToStack)
         {
             var b = new ByteUtil();
-            b.writeShort(267);
-            b.writeInt(canvasItemIndex);
-            b.writeBool(doAddToStack);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 267,error = 0 };
+            b.WriteShort(267);
+            b.WriteInt( (int)canvasItemIndex);
+            b.WriteBool( (bool)doAddToStack);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult ClearEmptyPlaylistEntriesByDmxId(int playlistDmxFolderId, int playlistdmxFileId)
+        public PbAutoResult ClearEmptyPlaylistEntriesByDmxId(int playlistDmxFolderId, int playlistdmxFileId)
         {
             var b = new ByteUtil();
-            b.writeShort(268);
-            b.writeInt(playlistDmxFolderId);
-            b.writeInt(playlistdmxFileId);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 268,error = 0 };
+            b.WriteShort(268);
+            b.WriteInt( (int)playlistDmxFolderId);
+            b.WriteInt( (int)playlistdmxFileId);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult ClearEmptyPlaylistEntriesByPath(string playlistPath)
+        public PbAutoResult ClearEmptyPlaylistEntriesByPath(string playlistPath)
         {
             var b = new ByteUtil();
-            b.writeShort(269);
-            b.writeStringNarrow(playlistPath);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 269,error = 0 };
+            b.WriteShort(269);
+            b.WriteStringNarrow( (string)playlistPath);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult ClearEmptyPlaylistEntriesByItemId(int playlistItemIndex)
+        public PbAutoResult ClearEmptyPlaylistEntriesByItemId(int playlistItemIndex)
         {
             var b = new ByteUtil();
-            b.writeShort(270);
-            b.writeInt(playlistItemIndex);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 270,error = 0 };
+            b.WriteShort(270);
+            b.WriteInt( (int)playlistItemIndex);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult ClearAllPlaylistEntriesByDmxId(int playlistDmxFolderId, int playlistdmxFileId)
+        public PbAutoResult ClearAllPlaylistEntriesByDmxId(int playlistDmxFolderId, int playlistdmxFileId)
         {
             var b = new ByteUtil();
-            b.writeShort(271);
-            b.writeInt(playlistDmxFolderId);
-            b.writeInt(playlistdmxFileId);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 271,error = 0 };
+            b.WriteShort(271);
+            b.WriteInt( (int)playlistDmxFolderId);
+            b.WriteInt( (int)playlistdmxFileId);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult ClearAllPlaylistEntriesByPath(string playlistPath)
+        public PbAutoResult ClearAllPlaylistEntriesByPath(string playlistPath)
         {
             var b = new ByteUtil();
-            b.writeShort(272);
-            b.writeStringNarrow(playlistPath);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 272,error = 0 };
+            b.WriteShort(272);
+            b.WriteStringNarrow( (string)playlistPath);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult ClearAllPlaylistEntriesByItemIndex(int playlistItemIndex)
+        public PbAutoResult ClearAllPlaylistEntriesByItemIndex(int playlistItemIndex)
         {
             var b = new ByteUtil();
-            b.writeShort(273);
-            b.writeInt(playlistItemIndex);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 273,error = 0 };
+            b.WriteShort(273);
+            b.WriteInt( (int)playlistItemIndex);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetSublayerParamOfKindDouble(int siteId, int deviceId, int sublayerId, int parameterKindId, double parameterValue, bool doSilent, bool doDirect)
+        public PbAutoResult SetSublayerParamOfKindDouble(int siteId, int deviceId, int sublayerId, int parameterKindId, double parameterValue, bool doSilent, bool doDirect)
         {
             var b = new ByteUtil();
-            b.writeShort(274);
-            b.writeInt(siteId);
-            b.writeInt(deviceId);
-            b.writeInt(sublayerId);
-            b.writeInt(parameterKindId);
-            b.writeDouble(parameterValue);
-            b.writeBool(doSilent);
-            b.writeBool(doDirect);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 274,error = 0 };
+            b.WriteShort(274);
+            b.WriteInt( (int)siteId);
+            b.WriteInt( (int)deviceId);
+            b.WriteInt( (int)sublayerId);
+            b.WriteInt( (int)parameterKindId);
+            b.WriteDouble( (double)parameterValue);
+            b.WriteBool( (bool)doSilent);
+            b.WriteBool( (bool)doDirect);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult HandleSublayer(int siteId, int deviceId, int action, int data)
+        public PbAutoResult HandleSublayer(int siteId, int deviceId, int action, int data)
         {
             var b = new ByteUtil();
-            b.writeShort(275);
-            b.writeInt(siteId);
-            b.writeInt(deviceId);
-            b.writeInt(action);
-            b.writeInt(data);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 275,error = 0 };
+            b.WriteShort(275);
+            b.WriteInt( (int)siteId);
+            b.WriteInt( (int)deviceId);
+            b.WriteInt( (int)action);
+            b.WriteInt( (int)data);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetCueName(int sequenceId, int cueId, string cueName)
+        public PbAutoResult SetCueName(int sequenceId, int cueId, string cueName)
         {
             var b = new ByteUtil();
-            b.writeShort(276);
-            b.writeInt(sequenceId);
-            b.writeInt(cueId);
-            b.writeStringNarrow(cueName);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 276,error = 0 };
+            b.WriteShort(276);
+            b.WriteInt( (int)sequenceId);
+            b.WriteInt( (int)cueId);
+            b.WriteStringNarrow( (string)cueName);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
         public struct GetCueNameResult
         {
-            public bool ok { get { return error == 0; } }
-            public short code; public int error;
-            public string cueName;
+            public bool Ok { get { return Error == 0; } }
+            public short Code; public int Error;
+            public string CueName;
         }
         public GetCueNameResult GetCueName(int sequenceId, int cueId)
         {
             var b = new ByteUtil();
-            b.writeShort(277);
-            b.writeInt(sequenceId);
-            b.writeInt(cueId);
-            b = c.Send(b, true);
+            b.WriteShort(277);
+            b.WriteInt( (int)sequenceId);
+            b.WriteInt( (int)cueId);
+            b = connector.Send(b, true);
             var r = new GetCueNameResult();
-            r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else
             {
-                r.error = 0;
-                r.cueName = b.readStringNarrow();
+                r.Error = 0;
+                r.CueName = b.ReadStringNarrow();
             }
             return r;
         }
 
-        public PBAutoResult StoreActiveSite(int sequenceId, int siteId)
+        public PbAutoResult StoreActiveSite(int sequenceId, int siteId)
         {
             var b = new ByteUtil();
-            b.writeShort(278);
-            b.writeInt(sequenceId);
-            b.writeInt(siteId);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 278,error = 0 };
+            b.WriteShort(278);
+            b.WriteInt( (int)sequenceId);
+            b.WriteInt( (int)siteId);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult StoreActiveDevice(int sequenceId, int siteId, int deviceId)
+        public PbAutoResult StoreActiveDevice(int sequenceId, int siteId, int deviceId)
         {
             var b = new ByteUtil();
-            b.writeShort(279);
-            b.writeInt(sequenceId);
-            b.writeInt(siteId);
-            b.writeInt(deviceId);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 279,error = 0 };
+            b.WriteShort(279);
+            b.WriteInt( (int)sequenceId);
+            b.WriteInt( (int)siteId);
+            b.WriteInt( (int)deviceId);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult StoreActiveParam(int sequenceId, int siteId, int deviceId, string parameterName)
+        public PbAutoResult StoreActiveParam(int sequenceId, int siteId, int deviceId, string parameterName)
         {
             var b = new ByteUtil();
-            b.writeShort(280);
-            b.writeInt(sequenceId);
-            b.writeInt(siteId);
-            b.writeInt(deviceId);
-            b.writeStringNarrow(parameterName);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 280,error = 0 };
+            b.WriteShort(280);
+            b.WriteInt( (int)sequenceId);
+            b.WriteInt( (int)siteId);
+            b.WriteInt( (int)deviceId);
+            b.WriteStringNarrow( (string)parameterName);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult AssignDeviceByName(int siteId, int deviceId, int sourceDeviceId, string parameterName)
+        public PbAutoResult AssignDeviceByName(int siteId, int deviceId, int sourceDeviceId, string parameterName)
         {
             var b = new ByteUtil();
-            b.writeShort(282);
-            b.writeInt(siteId);
-            b.writeInt(deviceId);
-            b.writeInt(sourceDeviceId);
-            b.writeStringNarrow(parameterName);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 282,error = 0 };
+            b.WriteShort(282);
+            b.WriteInt( (int)siteId);
+            b.WriteInt( (int)deviceId);
+            b.WriteInt( (int)sourceDeviceId);
+            b.WriteStringNarrow( (string)parameterName);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult AssignResourceToParam(int siteId, int deviceId, int dmxFolderId, int dmxFileId, bool forMesh, string parameterName)
+        public PbAutoResult AssignResourceToParam(int siteId, int deviceId, int dmxFolderId, int dmxFileId, bool forMesh, string parameterName)
         {
             var b = new ByteUtil();
-            b.writeShort(283);
-            b.writeInt(siteId);
-            b.writeInt(deviceId);
-            b.writeInt(dmxFolderId);
-            b.writeInt(dmxFileId);
-            b.writeBool(forMesh);
-            b.writeStringNarrow(parameterName);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 283,error = 0 };
+            b.WriteShort(283);
+            b.WriteInt( (int)siteId);
+            b.WriteInt( (int)deviceId);
+            b.WriteInt( (int)dmxFolderId);
+            b.WriteInt( (int)dmxFileId);
+            b.WriteBool( (bool)forMesh);
+            b.WriteStringNarrow( (string)parameterName);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult AddImageSequence(string folderPath, int siteId, int dmxFolderId, int dmxFileId, int fps)
+        public PbAutoResult AddImageSequence(string folderPath, int siteId, int dmxFolderId, int dmxFileId, int fps)
         {
             var b = new ByteUtil();
-            b.writeShort(284);
-            b.writeStringNarrow(folderPath);
-            b.writeInt(siteId);
-            b.writeInt(dmxFolderId);
-            b.writeInt(dmxFileId);
-            b.writeInt(fps);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 284,error = 0 };
+            b.WriteShort(284);
+            b.WriteStringNarrow( (string)folderPath);
+            b.WriteInt( (int)siteId);
+            b.WriteInt( (int)dmxFolderId);
+            b.WriteInt( (int)dmxFileId);
+            b.WriteInt( (int)fps);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult AddImageSequenceToFolder(string folderPath, int siteId, int dmxFolderId, int dmxFileId, int fps, string projectPath)
+        public PbAutoResult AddImageSequenceToFolder(string folderPath, int siteId, int dmxFolderId, int dmxFileId, int fps, string projectPath)
         {
             var b = new ByteUtil();
-            b.writeShort(285);
-            b.writeStringNarrow(folderPath);
-            b.writeInt(siteId);
-            b.writeInt(dmxFolderId);
-            b.writeInt(dmxFileId);
-            b.writeInt(fps);
-            b.writeStringNarrow(projectPath);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 285,error = 0 };
+            b.WriteShort(285);
+            b.WriteStringNarrow( (string)folderPath);
+            b.WriteInt( (int)siteId);
+            b.WriteInt( (int)dmxFolderId);
+            b.WriteInt( (int)dmxFileId);
+            b.WriteInt( (int)fps);
+            b.WriteStringNarrow( (string)projectPath);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult AddImageSequenceToTreeItem(string folderPath, int siteId, int dmxFolderId, int dmxFileId, int fps, int treeItemIndex)
+        public PbAutoResult AddImageSequenceToTreeItem(string folderPath, int siteId, int dmxFolderId, int dmxFileId, int fps, int treeItemIndex)
         {
             var b = new ByteUtil();
-            b.writeShort(286);
-            b.writeStringNarrow(folderPath);
-            b.writeInt(siteId);
-            b.writeInt(dmxFolderId);
-            b.writeInt(dmxFileId);
-            b.writeInt(fps);
-            b.writeInt(treeItemIndex);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 286,error = 0 };
+            b.WriteShort(286);
+            b.WriteStringNarrow( (string)folderPath);
+            b.WriteInt( (int)siteId);
+            b.WriteInt( (int)dmxFolderId);
+            b.WriteInt( (int)dmxFileId);
+            b.WriteInt( (int)fps);
+            b.WriteInt( (int)treeItemIndex);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult AddImageSequenceFromLocalNode(string folderPath, int fps)
+        public PbAutoResult AddImageSequenceFromLocalNode(string folderPath, int fps)
         {
             var b = new ByteUtil();
-            b.writeShort(287);
-            b.writeStringNarrow(folderPath);
-            b.writeInt(fps);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 287,error = 0 };
+            b.WriteShort(287);
+            b.WriteStringNarrow( (string)folderPath);
+            b.WriteInt( (int)fps);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult AddImageSequenceFromLocalNodeId(string folderPath, int fps, int dmxFolderId, int dmxFileId)
+        public PbAutoResult AddImageSequenceFromLocalNodeId(string folderPath, int fps, int dmxFolderId, int dmxFileId)
         {
             var b = new ByteUtil();
-            b.writeShort(288);
-            b.writeStringNarrow(folderPath);
-            b.writeInt(fps);
-            b.writeInt(dmxFolderId);
-            b.writeInt(dmxFileId);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 288,error = 0 };
+            b.WriteShort(288);
+            b.WriteStringNarrow( (string)folderPath);
+            b.WriteInt( (int)fps);
+            b.WriteInt( (int)dmxFolderId);
+            b.WriteInt( (int)dmxFileId);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult AddImageSequenceFromLocalNodeToFolder(string folderPath, int fps, string projectPath)
+        public PbAutoResult AddImageSequenceFromLocalNodeToFolder(string folderPath, int fps, string projectPath)
         {
             var b = new ByteUtil();
-            b.writeShort(289);
-            b.writeStringNarrow(folderPath);
-            b.writeInt(fps);
-            b.writeStringNarrow(projectPath);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 289,error = 0 };
+            b.WriteShort(289);
+            b.WriteStringNarrow( (string)folderPath);
+            b.WriteInt( (int)fps);
+            b.WriteStringNarrow( (string)projectPath);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult AddImageSequenceFromLocalNodeToFolderId(string folderPath, int fps, int dmxFolderId, int dmxFileId, string projectPath)
+        public PbAutoResult AddImageSequenceFromLocalNodeToFolderId(string folderPath, int fps, int dmxFolderId, int dmxFileId, string projectPath)
         {
             var b = new ByteUtil();
-            b.writeShort(290);
-            b.writeStringNarrow(folderPath);
-            b.writeInt(fps);
-            b.writeInt(dmxFolderId);
-            b.writeInt(dmxFileId);
-            b.writeStringNarrow(projectPath);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 290,error = 0 };
+            b.WriteShort(290);
+            b.WriteStringNarrow( (string)folderPath);
+            b.WriteInt( (int)fps);
+            b.WriteInt( (int)dmxFolderId);
+            b.WriteInt( (int)dmxFileId);
+            b.WriteStringNarrow( (string)projectPath);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult AddImageSequenceFromLocalNodeToTreeItem(string folderPath, int fps, int treeItemIndex)
+        public PbAutoResult AddImageSequenceFromLocalNodeToTreeItem(string folderPath, int fps, int treeItemIndex)
         {
             var b = new ByteUtil();
-            b.writeShort(291);
-            b.writeStringNarrow(folderPath);
-            b.writeInt(fps);
-            b.writeInt(treeItemIndex);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 291,error = 0 };
+            b.WriteShort(291);
+            b.WriteStringNarrow( (string)folderPath);
+            b.WriteInt( (int)fps);
+            b.WriteInt( (int)treeItemIndex);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult AddImageSequenceFromLocalNodeToTreeItemId(string folderPath, int fps, int dmxFolderId, int dmxFileId, int treeItemIndex)
+        public PbAutoResult AddImageSequenceFromLocalNodeToTreeItemId(string folderPath, int fps, int dmxFolderId, int dmxFileId, int treeItemIndex)
         {
             var b = new ByteUtil();
-            b.writeShort(292);
-            b.writeStringNarrow(folderPath);
-            b.writeInt(fps);
-            b.writeInt(dmxFolderId);
-            b.writeInt(dmxFileId);
-            b.writeInt(treeItemIndex);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 292,error = 0 };
+            b.WriteShort(292);
+            b.WriteStringNarrow( (string)folderPath);
+            b.WriteInt( (int)fps);
+            b.WriteInt( (int)dmxFolderId);
+            b.WriteInt( (int)dmxFileId);
+            b.WriteInt( (int)treeItemIndex);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetTextFormatted(int dmxFolderId, int dmxFileId, string text, bool isFormatted)
+        public PbAutoResult SetTextFormatted(int dmxFolderId, int dmxFileId, string text, bool isFormatted)
         {
             var b = new ByteUtil();
-            b.writeShort(293);
-            b.writeInt(dmxFolderId);
-            b.writeInt(dmxFileId);
-            b.writeStringNarrow(text);
-            b.writeBool(isFormatted);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 293,error = 0 };
+            b.WriteShort(293);
+            b.WriteInt( (int)dmxFolderId);
+            b.WriteInt( (int)dmxFileId);
+            b.WriteStringNarrow( (string)text);
+            b.WriteBool( (bool)isFormatted);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetTextFormattedWide(int dmxFolderId, int dmxFileId, string text, bool isFormatted)
+        public PbAutoResult SetTextFormattedWide(int dmxFolderId, int dmxFileId, string text, bool isFormatted)
         {
             var b = new ByteUtil();
-            b.writeShort(294);
-            b.writeInt(dmxFolderId);
-            b.writeInt(dmxFileId);
-            b.writeStringWide(text);
-            b.writeBool(isFormatted);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 294,error = 0 };
+            b.WriteShort(294);
+            b.WriteInt( (int)dmxFolderId);
+            b.WriteInt( (int)dmxFileId);
+            b.WriteStringWide( (string)text);
+            b.WriteBool( (bool)isFormatted);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
         public struct GetCurrentTimeCueInfoResult
         {
-            public bool ok { get { return error == 0; } }
-            public short code; public int error;
-            public int hours;
-            public int minutes;
-            public int seconds;
-            public int frames;
-            public int previousCueId;
-            public string previousCueName;
-            public int hoursPreviousCue;
-            public int minutesPreviousCue;
-            public int secondsPreviousCue;
-            public int framesPreviousCue;
-            public int previousCueMode;
-            public int nextCueId;
-            public string nextCueName;
-            public int hoursNextCue;
-            public int minutesNextCue;
-            public int secondsNextCue;
-            public int framesNextCue;
-            public int nextCueMode;
+            public bool Ok { get { return Error == 0; } }
+            public short Code; public int Error;
+            public int Hours;
+            public int Minutes;
+            public int Seconds;
+            public int Frames;
+            public int PreviousCueId;
+            public string PreviousCueName;
+            public int HoursPreviousCue;
+            public int MinutesPreviousCue;
+            public int SecondsPreviousCue;
+            public int FramesPreviousCue;
+            public int PreviousCueMode;
+            public int NextCueId;
+            public string NextCueName;
+            public int HoursNextCue;
+            public int MinutesNextCue;
+            public int SecondsNextCue;
+            public int FramesNextCue;
+            public int NextCueMode;
         }
         public GetCurrentTimeCueInfoResult GetCurrentTimeCueInfo(int sequenceId)
         {
             var b = new ByteUtil();
-            b.writeShort(295);
-            b.writeInt(sequenceId);
-            b = c.Send(b, true);
+            b.WriteShort(295);
+            b.WriteInt( (int)sequenceId);
+            b = connector.Send(b, true);
             var r = new GetCurrentTimeCueInfoResult();
-            r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else
             {
-                r.error = 0;
-                r.hours = b.readInt();
-                r.minutes = b.readInt();
-                r.seconds = b.readInt();
-                r.frames = b.readInt();
-                r.previousCueId = b.readInt();
-                r.previousCueName = b.readStringNarrow();
-                r.hoursPreviousCue = b.readInt();
-                r.minutesPreviousCue = b.readInt();
-                r.secondsPreviousCue = b.readInt();
-                r.framesPreviousCue = b.readInt();
-                r.previousCueMode = b.readInt();
-                r.nextCueId = b.readInt();
-                r.nextCueName = b.readStringNarrow();
-                r.hoursNextCue = b.readInt();
-                r.minutesNextCue = b.readInt();
-                r.secondsNextCue = b.readInt();
-                r.framesNextCue = b.readInt();
-                r.nextCueMode = b.readInt();
+                r.Error = 0;
+                r.Hours = b.ReadInt();
+                r.Minutes = b.ReadInt();
+                r.Seconds = b.ReadInt();
+                r.Frames = b.ReadInt();
+                r.PreviousCueId = b.ReadInt();
+                r.PreviousCueName = b.ReadStringNarrow();
+                r.HoursPreviousCue = b.ReadInt();
+                r.MinutesPreviousCue = b.ReadInt();
+                r.SecondsPreviousCue = b.ReadInt();
+                r.FramesPreviousCue = b.ReadInt();
+                r.PreviousCueMode = b.ReadInt();
+                r.NextCueId = b.ReadInt();
+                r.NextCueName = b.ReadStringNarrow();
+                r.HoursNextCue = b.ReadInt();
+                r.MinutesNextCue = b.ReadInt();
+                r.SecondsNextCue = b.ReadInt();
+                r.FramesNextCue = b.ReadInt();
+                r.NextCueMode = b.ReadInt();
             }
             return r;
         }
 
-        public PBAutoResult GetContentIsConsistentByTreeItem(int treeItemIndex)
+        public PbAutoResult GetContentIsConsistentByTreeItem(int treeItemIndex)
         {
             var b = new ByteUtil();
-            b.writeShort(296);
-            b.writeInt(treeItemIndex);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 296,error = 0 };
+            b.WriteShort(296);
+            b.WriteInt( (int)treeItemIndex);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SpreadToSite(string resourcePath, int siteId)
+        public PbAutoResult SpreadToSite(string resourcePath, int siteId)
         {
             var b = new ByteUtil();
-            b.writeShort(297);
-            b.writeStringNarrow(resourcePath);
-            b.writeInt(siteId);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 297,error = 0 };
+            b.WriteShort(297);
+            b.WriteStringNarrow( (string)resourcePath);
+            b.WriteInt( (int)siteId);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetGroupSelection(int groupIndex, int selectionMode)
+        public PbAutoResult SetGroupSelection(int groupIndex, int selectionMode)
         {
             var b = new ByteUtil();
-            b.writeShort(298);
-            b.writeInt(groupIndex);
-            b.writeInt(selectionMode);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 298,error = 0 };
+            b.WriteShort(298);
+            b.WriteInt( (int)groupIndex);
+            b.WriteInt( (int)selectionMode);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetSequenceSelection(int sequenceId)
+        public PbAutoResult SetSequenceSelection(int sequenceId)
         {
             var b = new ByteUtil();
-            b.writeShort(299);
-            b.writeInt(sequenceId);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 299,error = 0 };
+            b.WriteShort(299);
+            b.WriteInt( (int)sequenceId);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult CreatePlaylistWithName(bool doSetDmxIds, int dmxFolderId, int dmxFileId, string newResourceName)
+        public PbAutoResult CreatePlaylistWithName(bool doSetDmxIds, int dmxFolderId, int dmxFileId, string newResourceName)
         {
             var b = new ByteUtil();
-            b.writeShort(300);
-            b.writeBool(doSetDmxIds);
-            b.writeInt(dmxFolderId);
-            b.writeInt(dmxFileId);
-            b.writeStringNarrow(newResourceName);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 300,error = 0 };
+            b.WriteShort(300);
+            b.WriteBool( (bool)doSetDmxIds);
+            b.WriteInt( (int)dmxFolderId);
+            b.WriteInt( (int)dmxFileId);
+            b.WriteStringNarrow( (string)newResourceName);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult CreatePlaylistInPathWithName(string projectPath, bool doSetDmxIds, int dmxFolderId, int dmxFileId, string newResourceName)
+        public PbAutoResult CreatePlaylistInPathWithName(string projectPath, bool doSetDmxIds, int dmxFolderId, int dmxFileId, string newResourceName)
         {
             var b = new ByteUtil();
-            b.writeShort(301);
-            b.writeStringNarrow(projectPath);
-            b.writeBool(doSetDmxIds);
-            b.writeInt(dmxFolderId);
-            b.writeInt(dmxFileId);
-            b.writeStringNarrow(newResourceName);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 301,error = 0 };
+            b.WriteShort(301);
+            b.WriteStringNarrow( (string)projectPath);
+            b.WriteBool( (bool)doSetDmxIds);
+            b.WriteInt( (int)dmxFolderId);
+            b.WriteInt( (int)dmxFileId);
+            b.WriteStringNarrow( (string)newResourceName);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult CreatePlaylistInItemIdWithName(int treeItemIndex, bool setdmxFileIds, int newDmxFolderId, int newdmxFileId, string newResourceName)
+        public PbAutoResult CreatePlaylistInItemIdWithName(int treeItemIndex, bool setdmxFileIds, int newDmxFolderId, int newdmxFileId, string newResourceName)
         {
             var b = new ByteUtil();
-            b.writeShort(302);
-            b.writeInt(treeItemIndex);
-            b.writeBool(setdmxFileIds);
-            b.writeInt(newDmxFolderId);
-            b.writeInt(newdmxFileId);
-            b.writeStringNarrow(newResourceName);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 302,error = 0 };
+            b.WriteShort(302);
+            b.WriteInt( (int)treeItemIndex);
+            b.WriteBool( (bool)setdmxFileIds);
+            b.WriteInt( (int)newDmxFolderId);
+            b.WriteInt( (int)newdmxFileId);
+            b.WriteStringNarrow( (string)newResourceName);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult CreatePlaylistInPathFromFolderWithName(string projectPath, string sourceProjectPath, bool setdmxFileIds, int newDmxFolderId, int newdmxFileId, string newResourceName)
+        public PbAutoResult CreatePlaylistInPathFromFolderWithName(string projectPath, string sourceProjectPath, bool setdmxFileIds, int newDmxFolderId, int newdmxFileId, string newResourceName)
         {
             var b = new ByteUtil();
-            b.writeShort(303);
-            b.writeStringNarrow(projectPath);
-            b.writeStringNarrow(sourceProjectPath);
-            b.writeBool(setdmxFileIds);
-            b.writeInt(newDmxFolderId);
-            b.writeInt(newdmxFileId);
-            b.writeStringNarrow(newResourceName);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 303,error = 0 };
+            b.WriteShort(303);
+            b.WriteStringNarrow( (string)projectPath);
+            b.WriteStringNarrow( (string)sourceProjectPath);
+            b.WriteBool( (bool)setdmxFileIds);
+            b.WriteInt( (int)newDmxFolderId);
+            b.WriteInt( (int)newdmxFileId);
+            b.WriteStringNarrow( (string)newResourceName);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult CreatePlaylistInTreeItemFromFolderWithName(int treeItemIndex, int sourceFolderItemId, bool setdmxFileIds, int newDmxFolderId, int newdmxFileId, string newResourceName)
+        public PbAutoResult CreatePlaylistInTreeItemFromFolderWithName(int treeItemIndex, int sourceFolderItemId, bool setdmxFileIds, int newDmxFolderId, int newdmxFileId, string newResourceName)
         {
             var b = new ByteUtil();
-            b.writeShort(304);
-            b.writeInt(treeItemIndex);
-            b.writeInt(sourceFolderItemId);
-            b.writeBool(setdmxFileIds);
-            b.writeInt(newDmxFolderId);
-            b.writeInt(newdmxFileId);
-            b.writeStringNarrow(newResourceName);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 304,error = 0 };
+            b.WriteShort(304);
+            b.WriteInt( (int)treeItemIndex);
+            b.WriteInt( (int)sourceFolderItemId);
+            b.WriteBool( (bool)setdmxFileIds);
+            b.WriteInt( (int)newDmxFolderId);
+            b.WriteInt( (int)newdmxFileId);
+            b.WriteStringNarrow( (string)newResourceName);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetWatchedFolderProperty(string projectPath, int watchFolderProperty, bool enable)
+        public PbAutoResult SetWatchedFolderProperty(string projectPath, int watchFolderProperty, bool enable)
         {
             var b = new ByteUtil();
-            b.writeShort(305);
-            b.writeStringNarrow(projectPath);
-            b.writeInt(watchFolderProperty);
-            b.writeBool(enable);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 305,error = 0 };
+            b.WriteShort(305);
+            b.WriteStringNarrow( (string)projectPath);
+            b.WriteInt( (int)watchFolderProperty);
+            b.WriteBool( (bool)enable);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetWatchedFolderPropertyByItemId(int treeItemIndex, int watchFolderProperty, bool enable)
+        public PbAutoResult SetWatchedFolderPropertyByItemId(int treeItemIndex, int watchFolderProperty, bool enable)
         {
             var b = new ByteUtil();
-            b.writeShort(306);
-            b.writeInt(treeItemIndex);
-            b.writeInt(watchFolderProperty);
-            b.writeBool(enable);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 306,error = 0 };
+            b.WriteShort(306);
+            b.WriteInt( (int)treeItemIndex);
+            b.WriteInt( (int)watchFolderProperty);
+            b.WriteBool( (bool)enable);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetFolderSpreadToSite(string projectPath, int siteId, bool enable)
+        public PbAutoResult SetFolderSpreadToSite(string projectPath, int siteId, bool enable)
         {
             var b = new ByteUtil();
-            b.writeShort(307);
-            b.writeStringNarrow(projectPath);
-            b.writeInt(siteId);
-            b.writeBool(enable);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 307,error = 0 };
+            b.WriteShort(307);
+            b.WriteStringNarrow( (string)projectPath);
+            b.WriteInt( (int)siteId);
+            b.WriteBool( (bool)enable);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetFolderSpreadToSiteByItemId(int treeItemIndex, int siteId, bool enable)
+        public PbAutoResult SetFolderSpreadToSiteByItemId(int treeItemIndex, int siteId, bool enable)
         {
             var b = new ByteUtil();
-            b.writeShort(308);
-            b.writeInt(treeItemIndex);
-            b.writeInt(siteId);
-            b.writeBool(enable);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 308,error = 0 };
+            b.WriteShort(308);
+            b.WriteInt( (int)treeItemIndex);
+            b.WriteInt( (int)siteId);
+            b.WriteBool( (bool)enable);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult ClearStreamingText(int dmxFolderId, int dmxFileId, bool pendingOnly)
+        public PbAutoResult ClearStreamingText(int dmxFolderId, int dmxFileId, bool pendingOnly)
         {
             var b = new ByteUtil();
-            b.writeShort(309);
-            b.writeInt(dmxFolderId);
-            b.writeInt(dmxFileId);
-            b.writeBool(pendingOnly);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 309,error = 0 };
+            b.WriteShort(309);
+            b.WriteInt( (int)dmxFolderId);
+            b.WriteInt( (int)dmxFileId);
+            b.WriteBool( (bool)pendingOnly);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
         public struct GetWatchedFolderPropertyResult
         {
-            public bool ok { get { return error == 0; } }
-            public short code; public int error;
-            public bool isEnabled;
+            public bool Ok { get { return Error == 0; } }
+            public short Code; public int Error;
+            public bool IsEnabled;
         }
         public GetWatchedFolderPropertyResult GetWatchedFolderProperty(string projectPath, int watchFolderProperty)
         {
             var b = new ByteUtil();
-            b.writeShort(310);
-            b.writeStringNarrow(projectPath);
-            b.writeInt(watchFolderProperty);
-            b = c.Send(b, true);
+            b.WriteShort(310);
+            b.WriteStringNarrow( (string)projectPath);
+            b.WriteInt( (int)watchFolderProperty);
+            b = connector.Send(b, true);
             var r = new GetWatchedFolderPropertyResult();
-            r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else
             {
-                r.error = 0;
-                r.isEnabled = b.readBool();
+                r.Error = 0;
+                r.IsEnabled = b.ReadBool();
             }
             return r;
         }
 
         public struct GetWatchedFolderPropertyByItemIdResult
         {
-            public bool ok { get { return error == 0; } }
-            public short code; public int error;
-            public bool isEnabled;
+            public bool Ok { get { return Error == 0; } }
+            public short Code; public int Error;
+            public bool IsEnabled;
         }
         public GetWatchedFolderPropertyByItemIdResult GetWatchedFolderPropertyByItemId(int treeItemIndex, int watchFolderProperty)
         {
             var b = new ByteUtil();
-            b.writeShort(311);
-            b.writeInt(treeItemIndex);
-            b.writeInt(watchFolderProperty);
-            b = c.Send(b, true);
+            b.WriteShort(311);
+            b.WriteInt( (int)treeItemIndex);
+            b.WriteInt( (int)watchFolderProperty);
+            b = connector.Send(b, true);
             var r = new GetWatchedFolderPropertyByItemIdResult();
-            r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else
             {
-                r.error = 0;
-                r.isEnabled = b.readBool();
+                r.Error = 0;
+                r.IsEnabled = b.ReadBool();
             }
             return r;
         }
 
         public struct GetFolderSpreadToSiteResult
         {
-            public bool ok { get { return error == 0; } }
-            public short code; public int error;
-            public bool isEnabled;
+            public bool Ok { get { return Error == 0; } }
+            public short Code; public int Error;
+            public bool IsEnabled;
         }
         public GetFolderSpreadToSiteResult GetFolderSpreadToSite(string projectPath, int siteId)
         {
             var b = new ByteUtil();
-            b.writeShort(312);
-            b.writeStringNarrow(projectPath);
-            b.writeInt(siteId);
-            b = c.Send(b, true);
+            b.WriteShort(312);
+            b.WriteStringNarrow( (string)projectPath);
+            b.WriteInt( (int)siteId);
+            b = connector.Send(b, true);
             var r = new GetFolderSpreadToSiteResult();
-            r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else
             {
-                r.error = 0;
-                r.isEnabled = b.readBool();
+                r.Error = 0;
+                r.IsEnabled = b.ReadBool();
             }
             return r;
         }
 
         public struct GetFolderSpreadToSiteByItemIdResult
         {
-            public bool ok { get { return error == 0; } }
-            public short code; public int error;
-            public bool isEnabled;
+            public bool Ok { get { return Error == 0; } }
+            public short Code; public int Error;
+            public bool IsEnabled;
         }
         public GetFolderSpreadToSiteByItemIdResult GetFolderSpreadToSiteByItemId(int treeItemIndex, int siteId)
         {
             var b = new ByteUtil();
-            b.writeShort(313);
-            b.writeInt(treeItemIndex);
-            b.writeInt(siteId);
-            b = c.Send(b, true);
+            b.WriteShort(313);
+            b.WriteInt( (int)treeItemIndex);
+            b.WriteInt( (int)siteId);
+            b = connector.Send(b, true);
             var r = new GetFolderSpreadToSiteByItemIdResult();
-            r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else
             {
-                r.error = 0;
-                r.isEnabled = b.readBool();
+                r.Error = 0;
+                r.IsEnabled = b.ReadBool();
             }
             return r;
         }
 
-        public PBAutoResult InsertPlaylistEntryWithParametersByDmxId()
+        public PbAutoResult InsertPlaylistEntryWithParametersByDmxId()
         {
             var b = new ByteUtil();
-            b.writeShort(314);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 314,error = 0 };
+            b.WriteShort(314);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult InsertPlaylistEntryWithParametersByPath()
+        public PbAutoResult InsertPlaylistEntryWithParametersByPath()
         {
             var b = new ByteUtil();
-            b.writeShort(315);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 315,error = 0 };
+            b.WriteShort(315);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult InsertPlaylistEntryWithParametersByTreeItem()
+        public PbAutoResult InsertPlaylistEntryWithParametersByTreeItem()
         {
             var b = new ByteUtil();
-            b.writeShort(316);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 316,error = 0 };
+            b.WriteShort(316);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetParamRelative(int siteId, int deviceId, string parameterName, int parameterValue)
+        public PbAutoResult SetParamRelative(int siteId, int deviceId, string parameterName, int parameterValue)
         {
             var b = new ByteUtil();
-            b.writeShort(18);
-            b.writeInt(siteId);
-            b.writeInt(deviceId);
-            b.writeStringNarrow(parameterName);
-            b.writeInt(parameterValue);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 18,error = 0 };
+            b.WriteShort(18);
+            b.WriteInt( (int)siteId);
+            b.WriteInt( (int)deviceId);
+            b.WriteStringNarrow( (string)parameterName);
+            b.WriteInt( (int)parameterValue);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult AddContent(string filePath, int siteId, int dmxFolderId, int dmxFileId, bool autoIncrementDmxId)
+        public PbAutoResult AddContent(string filePath, int siteId, int dmxFolderId, int dmxFileId, bool autoIncrementDmxId)
         {
             var b = new ByteUtil();
-            b.writeShort(19);
-            b.writeStringNarrow(filePath);
-            b.writeInt(siteId);
-            b.writeInt(dmxFolderId);
-            b.writeInt(dmxFileId);
-            b.writeBool(autoIncrementDmxId);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 19,error = 0 };
+            b.WriteShort(19);
+            b.WriteStringNarrow( (string)filePath);
+            b.WriteInt( (int)siteId);
+            b.WriteInt( (int)dmxFolderId);
+            b.WriteInt( (int)dmxFileId);
+            b.WriteBool( (bool)autoIncrementDmxId);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
         public struct GetMediaInfoResult
         {
-            public bool ok { get { return error == 0; } }
-            public short code; public int error;
-            public int dmxFolderId;
-            public int dmxFileId;
-            public string resourceName;
-            public string resourcePath;
-            public string projectPath;
-            public int width;
-            public int height;
-            public int fps;
-            public int hours;
-            public int minutes;
-            public int seconds;
-            public int frames;
-            public int options;
+            public bool Ok { get { return Error == 0; } }
+            public short Code; public int Error;
+            public int DmxFolderId;
+            public int DmxFileId;
+            public string ResourceName;
+            public string ResourcePath;
+            public string ProjectPath;
+            public int Width;
+            public int Height;
+            public int Fps;
+            public int Hours;
+            public int Minutes;
+            public int Seconds;
+            public int Frames;
+            public int Options;
         }
         public GetMediaInfoResult GetMediaInfo(int treeItemsMediaIndex)
         {
             var b = new ByteUtil();
-            b.writeShort(76);
-            b.writeInt(treeItemsMediaIndex);
-            b = c.Send(b, true);
+            b.WriteShort(76);
+            b.WriteInt( (int)treeItemsMediaIndex);
+            b = connector.Send(b, true);
             var r = new GetMediaInfoResult();
-            r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else
             {
-                r.error = 0;
-                r.dmxFolderId = b.readInt();
-                r.dmxFileId = b.readInt();
-                r.resourceName = b.readStringNarrow();
-                r.resourcePath = b.readStringNarrow();
-                r.projectPath = b.readStringNarrow();
-                r.width = b.readInt();
-                r.height = b.readInt();
-                r.fps = b.readInt();
-                r.hours = b.readInt();
-                r.minutes = b.readInt();
-                r.seconds = b.readInt();
-                r.frames = b.readInt();
-                r.options = b.readInt();
+                r.Error = 0;
+                r.DmxFolderId = b.ReadInt();
+                r.DmxFileId = b.ReadInt();
+                r.ResourceName = b.ReadStringNarrow();
+                r.ResourcePath = b.ReadStringNarrow();
+                r.ProjectPath = b.ReadStringNarrow();
+                r.Width = b.ReadInt();
+                r.Height = b.ReadInt();
+                r.Fps = b.ReadInt();
+                r.Hours = b.ReadInt();
+                r.Minutes = b.ReadInt();
+                r.Seconds = b.ReadInt();
+                r.Frames = b.ReadInt();
+                r.Options = b.ReadInt();
             }
             return r;
         }
 
-        public PBAutoResult InsertPlaylistEntryWithParametersByDmxId(int playlistDmxFolderId, int playlistdmxFileId, int resourceDmxFolderId, int resourceDmxFileId, int index, int durationHours, int durationMinutes, int durationSeconds, int durationFrames, int fadeOutHour, int fadeOutMinute, int fadeOutSecond, int fadeOutFrame, int startHour, int startMinute, int startSecond, int startFrame, int endHour, int endMinute, int endSecond, int endFrame, int fadeFxId)
+        public PbAutoResult InsertPlaylistEntryWithParametersByDmxId(int playlistDmxFolderId, int playlistdmxFileId, int resourceDmxFolderId, int resourceDmxFileId, int index, int durationHours, int durationMinutes, int durationSeconds, int durationFrames, int fadeOutHour, int fadeOutMinute, int fadeOutSecond, int fadeOutFrame, int startHour, int startMinute, int startSecond, int startFrame, int endHour, int endMinute, int endSecond, int endFrame, int fadeFxId)
         {
             var b = new ByteUtil();
-            b.writeShort(314);
-            b.writeInt(playlistDmxFolderId);
-            b.writeInt(playlistdmxFileId);
-            b.writeInt(resourceDmxFolderId);
-            b.writeInt(resourceDmxFileId);
-            b.writeInt(index);
-            b.writeInt(durationHours);
-            b.writeInt(durationMinutes);
-            b.writeInt(durationSeconds);
-            b.writeInt(durationFrames);
-            b.writeInt(fadeOutHour);
-            b.writeInt(fadeOutMinute);
-            b.writeInt(fadeOutSecond);
-            b.writeInt(fadeOutFrame);
-            b.writeInt(startHour);
-            b.writeInt(startMinute);
-            b.writeInt(startSecond);
-            b.writeInt(startFrame);
-            b.writeInt(endHour);
-            b.writeInt(endMinute);
-            b.writeInt(endSecond);
-            b.writeInt(endFrame);
-            b.writeInt(fadeFxId);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 314,error = 0 };
+            b.WriteShort(314);
+            b.WriteInt( (int)playlistDmxFolderId);
+            b.WriteInt( (int)playlistdmxFileId);
+            b.WriteInt( (int)resourceDmxFolderId);
+            b.WriteInt( (int)resourceDmxFileId);
+            b.WriteInt( (int)index);
+            b.WriteInt( (int)durationHours);
+            b.WriteInt( (int)durationMinutes);
+            b.WriteInt( (int)durationSeconds);
+            b.WriteInt( (int)durationFrames);
+            b.WriteInt( (int)fadeOutHour);
+            b.WriteInt( (int)fadeOutMinute);
+            b.WriteInt( (int)fadeOutSecond);
+            b.WriteInt( (int)fadeOutFrame);
+            b.WriteInt( (int)startHour);
+            b.WriteInt( (int)startMinute);
+            b.WriteInt( (int)startSecond);
+            b.WriteInt( (int)startFrame);
+            b.WriteInt( (int)endHour);
+            b.WriteInt( (int)endMinute);
+            b.WriteInt( (int)endSecond);
+            b.WriteInt( (int)endFrame);
+            b.WriteInt( (int)fadeFxId);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult InsertPlaylistEntryWithParametersByPath(string playlistPath, string resourcePath, int index, int durationHours, int durationMinutes, int durationSeconds, int durationFrames, int fadeOutHour, int fadeOutMinute, int fadeOutSecond, int fadeOutFrame, int startHour, int startMinute, int startSecond, int startFrame, int endHour, int endMinute, int endSecond, int endFrame, int fadeFxId)
+        public PbAutoResult InsertPlaylistEntryWithParametersByPath(string playlistPath, string resourcePath, int index, int durationHours, int durationMinutes, int durationSeconds, int durationFrames, int fadeOutHour, int fadeOutMinute, int fadeOutSecond, int fadeOutFrame, int startHour, int startMinute, int startSecond, int startFrame, int endHour, int endMinute, int endSecond, int endFrame, int fadeFxId)
         {
             var b = new ByteUtil();
-            b.writeShort(315);
-            b.writeStringNarrow(playlistPath);
-            b.writeStringNarrow(resourcePath);
-            b.writeInt(index);
-            b.writeInt(durationHours);
-            b.writeInt(durationMinutes);
-            b.writeInt(durationSeconds);
-            b.writeInt(durationFrames);
-            b.writeInt(fadeOutHour);
-            b.writeInt(fadeOutMinute);
-            b.writeInt(fadeOutSecond);
-            b.writeInt(fadeOutFrame);
-            b.writeInt(startHour);
-            b.writeInt(startMinute);
-            b.writeInt(startSecond);
-            b.writeInt(startFrame);
-            b.writeInt(endHour);
-            b.writeInt(endMinute);
-            b.writeInt(endSecond);
-            b.writeInt(endFrame);
-            b.writeInt(fadeFxId);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 315,error = 0 };
+            b.WriteShort(315);
+            b.WriteStringNarrow( (string)playlistPath);
+            b.WriteStringNarrow( (string)resourcePath);
+            b.WriteInt( (int)index);
+            b.WriteInt( (int)durationHours);
+            b.WriteInt( (int)durationMinutes);
+            b.WriteInt( (int)durationSeconds);
+            b.WriteInt( (int)durationFrames);
+            b.WriteInt( (int)fadeOutHour);
+            b.WriteInt( (int)fadeOutMinute);
+            b.WriteInt( (int)fadeOutSecond);
+            b.WriteInt( (int)fadeOutFrame);
+            b.WriteInt( (int)startHour);
+            b.WriteInt( (int)startMinute);
+            b.WriteInt( (int)startSecond);
+            b.WriteInt( (int)startFrame);
+            b.WriteInt( (int)endHour);
+            b.WriteInt( (int)endMinute);
+            b.WriteInt( (int)endSecond);
+            b.WriteInt( (int)endFrame);
+            b.WriteInt( (int)fadeFxId);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult InsertPlaylistEntryWithParametersByTreeItem(int playlistItemIndex, int resourceItemId, int index, int durationHours, int durationMinutes, int durationSeconds, int durationFrames, int fadeOutHour, int fadeOutMinute, int fadeOutSecond, int fadeOutFrame, int startHour, int startMinute, int startSecond, int startFrame, int endHour, int endMinute, int endSecond, int endFrame, int fadeFxId)
+        public PbAutoResult InsertPlaylistEntryWithParametersByTreeItem(int playlistItemIndex, int resourceItemId, int index, int durationHours, int durationMinutes, int durationSeconds, int durationFrames, int fadeOutHour, int fadeOutMinute, int fadeOutSecond, int fadeOutFrame, int startHour, int startMinute, int startSecond, int startFrame, int endHour, int endMinute, int endSecond, int endFrame, int fadeFxId)
         {
             var b = new ByteUtil();
-            b.writeShort(316);
-            b.writeInt(playlistItemIndex);
-            b.writeInt(resourceItemId);
-            b.writeInt(index);
-            b.writeInt(durationHours);
-            b.writeInt(durationMinutes);
-            b.writeInt(durationSeconds);
-            b.writeInt(durationFrames);
-            b.writeInt(fadeOutHour);
-            b.writeInt(fadeOutMinute);
-            b.writeInt(fadeOutSecond);
-            b.writeInt(fadeOutFrame);
-            b.writeInt(startHour);
-            b.writeInt(startMinute);
-            b.writeInt(startSecond);
-            b.writeInt(startFrame);
-            b.writeInt(endHour);
-            b.writeInt(endMinute);
-            b.writeInt(endSecond);
-            b.writeInt(endFrame);
-            b.writeInt(fadeFxId);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 316,error = 0 };
+            b.WriteShort(316);
+            b.WriteInt( (int)playlistItemIndex);
+            b.WriteInt( (int)resourceItemId);
+            b.WriteInt( (int)index);
+            b.WriteInt( (int)durationHours);
+            b.WriteInt( (int)durationMinutes);
+            b.WriteInt( (int)durationSeconds);
+            b.WriteInt( (int)durationFrames);
+            b.WriteInt( (int)fadeOutHour);
+            b.WriteInt( (int)fadeOutMinute);
+            b.WriteInt( (int)fadeOutSecond);
+            b.WriteInt( (int)fadeOutFrame);
+            b.WriteInt( (int)startHour);
+            b.WriteInt( (int)startMinute);
+            b.WriteInt( (int)startSecond);
+            b.WriteInt( (int)startFrame);
+            b.WriteInt( (int)endHour);
+            b.WriteInt( (int)endMinute);
+            b.WriteInt( (int)endSecond);
+            b.WriteInt( (int)endFrame);
+            b.WriteInt( (int)fadeFxId);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetYawPitchRoll(int siteId, int deviceId, bool inRadians, double yaw, double pitch, double roll, bool doSilent, bool doDirect)
+        public PbAutoResult SetYawPitchRoll(int siteId, int deviceId, bool inRadians, double yaw, double pitch, double roll, bool doSilent, bool doDirect)
         {
             var b = new ByteUtil();
-            b.writeShort(323);
-            b.writeInt(siteId);
-            b.writeInt(deviceId);
-            b.writeBool(inRadians);
-            b.writeDouble(yaw);
-            b.writeDouble(pitch);
-            b.writeDouble(roll);
-            b.writeBool(doSilent);
-            b.writeBool(doDirect);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 323,error = 0 };
+            b.WriteShort(323);
+            b.WriteInt( (int)siteId);
+            b.WriteInt( (int)deviceId);
+            b.WriteBool( (bool)inRadians);
+            b.WriteDouble( (double)yaw);
+            b.WriteDouble( (double)pitch);
+            b.WriteDouble( (double)roll);
+            b.WriteBool( (bool)doSilent);
+            b.WriteBool( (bool)doDirect);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
         public struct GetYawPitchRollResult
         {
-            public bool ok { get { return error == 0; } }
-            public short code; public int error;
-            public double yaw;
-            public double pitch;
-            public double roll;
+            public bool Ok { get { return Error == 0; } }
+            public short Code; public int Error;
+            public double Yaw;
+            public double Pitch;
+            public double Roll;
         }
         public GetYawPitchRollResult GetYawPitchRoll(int siteId, int deviceId, bool inRadians)
         {
             var b = new ByteUtil();
-            b.writeShort(324);
-            b.writeInt(siteId);
-            b.writeInt(deviceId);
-            b.writeBool(inRadians);
-            b = c.Send(b, true);
+            b.WriteShort(324);
+            b.WriteInt( (int)siteId);
+            b.WriteInt( (int)deviceId);
+            b.WriteBool( (bool)inRadians);
+            b = connector.Send(b, true);
             var r = new GetYawPitchRollResult();
-            r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else
             {
-                r.error = 0;
-                r.yaw = b.readDouble();
-                r.pitch = b.readDouble();
-                r.roll = b.readDouble();
+                r.Error = 0;
+                r.Yaw = b.ReadDouble();
+                r.Pitch = b.ReadDouble();
+                r.Roll = b.ReadDouble();
             }
             return r;
         }
 
         public struct GetSiteIdsResult
         {
-            public bool ok { get { return error == 0; } }
-            public short code; public int error;
-            public int[] siteIds;
+            public bool Ok { get { return Error == 0; } }
+            public short Code; public int Error;
+            public int[] SiteIds;
         }
         public GetSiteIdsResult GetSiteIds()
         {
             var b = new ByteUtil();
-            b.writeShort(317);
-            b = c.Send(b, true);
+            b.WriteShort(317);
+            b = connector.Send(b, true);
             var r = new GetSiteIdsResult();
-            r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else
             {
-                r.error = 0;
-                r.siteIds = b.readIntBuffer();
+                r.Error = 0;
+                r.SiteIds = b.ReadIntBuffer();
             }
             return r;
         }
 
-        public PBAutoResult SetCompositingPassRenderTargetSize(int siteId, int deviceId, int width, int height)
+        public PbAutoResult SetCompositingPassRenderTargetSize(int siteId, int deviceId, int width, int height)
         {
             var b = new ByteUtil();
-            b.writeShort(341);
-            b.writeInt(siteId);
-            b.writeInt(deviceId);
-            b.writeInt(width);
-            b.writeInt(height);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 341,error = 0 };
+            b.WriteShort(341);
+            b.WriteInt( (int)siteId);
+            b.WriteInt( (int)deviceId);
+            b.WriteInt( (int)width);
+            b.WriteInt( (int)height);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetSoftedgeIsWarped(int siteId, int deviceId, bool isWarped)
+        public PbAutoResult SetSoftedgeIsWarped(int siteId, int deviceId, bool isWarped)
         {
             var b = new ByteUtil();
-            b.writeShort(342);
-            b.writeInt(siteId);
-            b.writeInt(deviceId);
-            b.writeBool(isWarped);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 342,error = 0 };
+            b.WriteShort(342);
+            b.WriteInt( (int)siteId);
+            b.WriteInt( (int)deviceId);
+            b.WriteBool( (bool)isWarped);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetCanvasTextureFormatByDmxId(int canvasDmxFolderId, int canvasDmxFileId, int textureFormat)
+        public PbAutoResult SetCanvasTextureFormatByDmxId(int canvasDmxFolderId, int canvasDmxFileId, int textureFormat)
         {
             var b = new ByteUtil();
-            b.writeShort(338);
-            b.writeInt(canvasDmxFolderId);
-            b.writeInt(canvasDmxFileId);
-            b.writeInt(textureFormat);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 338,error = 0 };
+            b.WriteShort(338);
+            b.WriteInt( (int)canvasDmxFolderId);
+            b.WriteInt( (int)canvasDmxFileId);
+            b.WriteInt( (int)textureFormat);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetCanvasTextureFormatByPath(string canvasResourcePath, int textureFormat)
+        public PbAutoResult SetCanvasTextureFormatByPath(string canvasResourcePath, int textureFormat)
         {
             var b = new ByteUtil();
-            b.writeShort(339);
-            b.writeStringNarrow(canvasResourcePath);
-            b.writeInt(textureFormat);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 339,error = 0 };
+            b.WriteShort(339);
+            b.WriteStringNarrow( (string)canvasResourcePath);
+            b.WriteInt( (int)textureFormat);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetCanvasTextureFormatByItemId(int canvasItemIndex, int textureFormat)
+        public PbAutoResult SetCanvasTextureFormatByItemId(int canvasItemIndex, int textureFormat)
         {
             var b = new ByteUtil();
-            b.writeShort(340);
-            b.writeInt(canvasItemIndex);
-            b.writeInt(textureFormat);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 340,error = 0 };
+            b.WriteShort(340);
+            b.WriteInt( (int)canvasItemIndex);
+            b.WriteInt( (int)textureFormat);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult ResetSockets()
+        public PbAutoResult ResetSockets()
         {
             var b = new ByteUtil();
-            b.writeShort(354);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 354,error = 0 };
+            b.WriteShort(354);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult ResetSerialLink(int siteId, int deviceId)
+        public PbAutoResult ResetSerialLink(int siteId, int deviceId)
         {
             var b = new ByteUtil();
-            b.writeShort(355);
-            b.writeInt(siteId);
-            b.writeInt(deviceId);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 355,error = 0 };
+            b.WriteShort(355);
+            b.WriteInt( (int)siteId);
+            b.WriteInt( (int)deviceId);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult AssignResourceToParamBlocked(int siteId, int deviceId, int dmxFolderId, int dmxFileId, bool forMesh, string parameterName)
+        public PbAutoResult AssignResourceToParamBlocked(int siteId, int deviceId, int dmxFolderId, int dmxFileId, bool forMesh, string parameterName)
         {
             var b = new ByteUtil();
-            b.writeShort(352);
-            b.writeInt(siteId);
-            b.writeInt(deviceId);
-            b.writeInt(dmxFolderId);
-            b.writeInt(dmxFileId);
-            b.writeBool(forMesh);
-            b.writeStringNarrow(parameterName);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 352,error = 0 };
+            b.WriteShort(352);
+            b.WriteInt( (int)siteId);
+            b.WriteInt( (int)deviceId);
+            b.WriteInt( (int)dmxFolderId);
+            b.WriteInt( (int)dmxFileId);
+            b.WriteBool( (bool)forMesh);
+            b.WriteStringNarrow( (string)parameterName);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult AssignResourceBlocked(int siteId, int deviceId, int dmxFolderId, int dmxFileId, bool forMesh)
+        public PbAutoResult AssignResourceBlocked(int siteId, int deviceId, int dmxFolderId, int dmxFileId, bool forMesh)
         {
             var b = new ByteUtil();
-            b.writeShort(353);
-            b.writeInt(siteId);
-            b.writeInt(deviceId);
-            b.writeInt(dmxFolderId);
-            b.writeInt(dmxFileId);
-            b.writeBool(forMesh);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 353,error = 0 };
+            b.WriteShort(353);
+            b.WriteInt( (int)siteId);
+            b.WriteInt( (int)deviceId);
+            b.WriteInt( (int)dmxFolderId);
+            b.WriteInt( (int)dmxFileId);
+            b.WriteBool( (bool)forMesh);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult JumpToPlayListEntryByDmxId(bool forward, int playlistDmxFolderId, int playlistdmxFileId, int siteId, int deviceId, string parameterName)
+        public PbAutoResult JumpToPlayListEntryByDmxId(bool forward, int playlistDmxFolderId, int playlistdmxFileId, int siteId, int deviceId, string parameterName)
         {
             var b = new ByteUtil();
-            b.writeShort(356);
-            b.writeBool(forward);
-            b.writeInt(playlistDmxFolderId);
-            b.writeInt(playlistdmxFileId);
-            b.writeInt(siteId);
-            b.writeInt(deviceId);
-            b.writeStringNarrow(parameterName);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 356,error = 0 };
+            b.WriteShort(356);
+            b.WriteBool( (bool)forward);
+            b.WriteInt( (int)playlistDmxFolderId);
+            b.WriteInt( (int)playlistdmxFileId);
+            b.WriteInt( (int)siteId);
+            b.WriteInt( (int)deviceId);
+            b.WriteStringNarrow( (string)parameterName);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult JumpToPlayListEntryByPath(bool forward, string playlistPath, int siteId, int deviceId, string parameterName)
+        public PbAutoResult JumpToPlayListEntryByPath(bool forward, string playlistPath, int siteId, int deviceId, string parameterName)
         {
             var b = new ByteUtil();
-            b.writeShort(357);
-            b.writeBool(forward);
-            b.writeStringNarrow(playlistPath);
-            b.writeInt(siteId);
-            b.writeInt(deviceId);
-            b.writeStringNarrow(parameterName);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 357,error = 0 };
+            b.WriteShort(357);
+            b.WriteBool( (bool)forward);
+            b.WriteStringNarrow( (string)playlistPath);
+            b.WriteInt( (int)siteId);
+            b.WriteInt( (int)deviceId);
+            b.WriteStringNarrow( (string)parameterName);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult JumpToPlayListEntryByItemId(bool forward, int playlistItemIndex, int siteId, int deviceId, string parameterName)
+        public PbAutoResult JumpToPlayListEntryByItemId(bool forward, int playlistItemIndex, int siteId, int deviceId, string parameterName)
         {
             var b = new ByteUtil();
-            b.writeShort(358);
-            b.writeBool(forward);
-            b.writeInt(playlistItemIndex);
-            b.writeInt(siteId);
-            b.writeInt(deviceId);
-            b.writeStringNarrow(parameterName);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 358,error = 0 };
+            b.WriteShort(358);
+            b.WriteBool( (bool)forward);
+            b.WriteInt( (int)playlistItemIndex);
+            b.WriteInt( (int)siteId);
+            b.WriteInt( (int)deviceId);
+            b.WriteStringNarrow( (string)parameterName);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult SetMediaTransportMode(int siteId, int deviceId, int transportMode)
+        public PbAutoResult SetMediaTransportMode(int siteId, int deviceId, int transportMode)
         {
             var b = new ByteUtil();
-            b.writeShort(359);
-            b.writeInt(siteId);
-            b.writeInt(deviceId);
-            b.writeInt(transportMode);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 359,error = 0 };
+            b.WriteShort(359);
+            b.WriteInt( (int)siteId);
+            b.WriteInt( (int)deviceId);
+            b.WriteInt( (int)transportMode);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult AssignDevice(int siteId, int deviceId, int sourceDeviceId)
+        public PbAutoResult AssignDevice(int siteId, int deviceId, int sourceDeviceId)
         {
             var b = new ByteUtil();
-            b.writeShort(281);
-            b.writeInt(siteId);
-            b.writeInt(deviceId);
-            b.writeInt(sourceDeviceId);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 281,error = 0 };
+            b.WriteShort(281);
+            b.WriteInt( (int)siteId);
+            b.WriteInt( (int)deviceId);
+            b.WriteInt( (int)sourceDeviceId);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult CreateCanvas(bool doSetDmxIds, int newDmxFolderId, int newdmxFileId)
+        public PbAutoResult CreateCanvas(bool doSetDmxIds, int newDmxFolderId, int newdmxFileId)
         {
             var b = new ByteUtil();
-            b.writeShort(236);
-            b.writeBool(doSetDmxIds);
-            b.writeInt(newDmxFolderId);
-            b.writeInt(newdmxFileId);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 236,error = 0 };
+            b.WriteShort(236);
+            b.WriteBool( (bool)doSetDmxIds);
+            b.WriteInt( (int)newDmxFolderId);
+            b.WriteInt( (int)newdmxFileId);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult CreateCanvasByPath(string canvasResourcePath, bool doSetDmxIds, int newDmxFolderId, int newdmxFileId)
+        public PbAutoResult CreateCanvasByPath(string canvasResourcePath, bool doSetDmxIds, int newDmxFolderId, int newdmxFileId)
         {
             var b = new ByteUtil();
-            b.writeShort(237);
-            b.writeStringNarrow(canvasResourcePath);
-            b.writeBool(doSetDmxIds);
-            b.writeInt(newDmxFolderId);
-            b.writeInt(newdmxFileId);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 237,error = 0 };
+            b.WriteShort(237);
+            b.WriteStringNarrow( (string)canvasResourcePath);
+            b.WriteBool( (bool)doSetDmxIds);
+            b.WriteInt( (int)newDmxFolderId);
+            b.WriteInt( (int)newdmxFileId);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult CreateCanvasByItemId(int folderItemIndex, bool doSetDmxIds, int newDmxFolderId, int newdmxFileId)
+        public PbAutoResult CreateCanvasByItemId(int folderItemIndex, bool doSetDmxIds, int newDmxFolderId, int newdmxFileId)
         {
             var b = new ByteUtil();
-            b.writeShort(238);
-            b.writeInt(folderItemIndex);
-            b.writeBool(doSetDmxIds);
-            b.writeInt(newDmxFolderId);
-            b.writeInt(newdmxFileId);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 238,error = 0 };
+            b.WriteShort(238);
+            b.WriteInt( (int)folderItemIndex);
+            b.WriteBool( (bool)doSetDmxIds);
+            b.WriteInt( (int)newDmxFolderId);
+            b.WriteInt( (int)newdmxFileId);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult RecordLiveInputStop()
+        public PbAutoResult RecordLiveInputStop()
         {
             var b = new ByteUtil();
-            b.writeShort(224);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 224,error = 0 };
+            b.WriteShort(224);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
-        public PBAutoResult CreateCanvasByPathFromTemplate(string canvasResourcePath, string newResourceName, string cmd, bool setDims, int width, int height, bool doSetDmxIds, int newDmxFolderId, int newdmxFileId)
+        public PbAutoResult CreateCanvasByPathFromTemplate(string canvasResourcePath, string newResourceName, string cmd, bool setDims, int width, int height, bool doSetDmxIds, int newDmxFolderId, int newdmxFileId)
         {
             var b = new ByteUtil();
-            b.writeShort(264);
-            b.writeStringNarrow(canvasResourcePath);
-            b.writeStringNarrow(newResourceName);
-            b.writeStringNarrow(cmd);
-            b.writeBool(setDims);
-            b.writeInt(width);
-            b.writeInt(height);
-            b.writeBool(doSetDmxIds);
-            b.writeInt(newDmxFolderId);
-            b.writeInt(newdmxFileId);
-            b = c.Send(b, false);return new PBAutoResult(){ code = 264,error = 0 };
+            b.WriteShort(264);
+            b.WriteStringNarrow( (string)canvasResourcePath);
+            b.WriteStringNarrow( (string)newResourceName);
+            b.WriteStringNarrow( (string)cmd);
+            b.WriteBool( (bool)setDims);
+            b.WriteInt( (int)width);
+            b.WriteInt( (int)height);
+            b.WriteBool( (bool)doSetDmxIds);
+            b.WriteInt( (int)newDmxFolderId);
+            b.WriteInt( (int)newdmxFileId);
+            b = connector.Send(b, false);
+            var r = new PbAutoResult();
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            return r;
         }
 
         public struct GetHostRevisionNumberResult
         {
-            public bool ok { get { return error == 0; } }
-            public short code; public int error;
-            public int revision;
+            public bool Ok { get { return Error == 0; } }
+            public short Code; public int Error;
+            public int Revision;
         }
         public GetHostRevisionNumberResult GetHostRevisionNumber()
         {
             var b = new ByteUtil();
-            b.writeShort(334);
-            b = c.Send(b, true);
+            b.WriteShort(334);
+            b = connector.Send(b, true);
             var r = new GetHostRevisionNumberResult();
-            r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else
             {
-                r.error = 0;
-                r.revision = b.readInt();
+                r.Error = 0;
+                r.Revision = b.ReadInt();
             }
             return r;
         }
 
         public struct GetTreeItemInfoResult
         {
-            public bool ok { get { return error == 0; } }
-            public short code; public int error;
-            public int resourceType;
-            public string resourcePath;
-            public string folderPath;
+            public bool Ok { get { return Error == 0; } }
+            public short Code; public int Error;
+            public int ResourceType;
+            public string ResourcePath;
+            public string FolderPath;
         }
         public GetTreeItemInfoResult GetTreeItemInfo(int treeItemIndex)
         {
             var b = new ByteUtil();
-            b.writeShort(151);
-            b.writeInt(treeItemIndex);
-            b = c.Send(b, true);
+            b.WriteShort(151);
+            b.WriteInt( (int)treeItemIndex);
+            b = connector.Send(b, true);
             var r = new GetTreeItemInfoResult();
-            r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else
             {
-                r.error = 0;
-                r.resourceType = b.readInt();
-                r.resourcePath = b.readStringWide();
-                r.folderPath = b.readStringWide();
+                r.Error = 0;
+                r.ResourceType = b.ReadInt();
+                r.ResourcePath = b.ReadStringWide();
+                r.FolderPath = b.ReadStringWide();
             }
             return r;
         }
 
         public struct GetMediaInfoByTreeItemIndexResult
         {
-            public bool ok { get { return error == 0; } }
-            public short code; public int error;
-            public int dmxFolderId;
-            public int dmxFileId;
-            public string resourceName;
-            public string resourcePath;
-            public string projectPath;
-            public int width;
-            public int height;
-            public int fps;
-            public int hours;
-            public int minutes;
-            public int seconds;
-            public int frames;
-            public int options;
+            public bool Ok { get { return Error == 0; } }
+            public short Code; public int Error;
+            public int DmxFolderId;
+            public int DmxFileId;
+            public string ResourceName;
+            public string ResourcePath;
+            public string ProjectPath;
+            public int Width;
+            public int Height;
+            public int Fps;
+            public int Hours;
+            public int Minutes;
+            public int Seconds;
+            public int Frames;
+            public int Options;
         }
         public GetMediaInfoByTreeItemIndexResult GetMediaInfoByTreeItemIndex(int index)
         {
             var b = new ByteUtil();
-            b.writeShort(152);
-            b.writeInt(index);
-            b = c.Send(b, true);
+            b.WriteShort(152);
+            b.WriteInt( (int)index);
+            b = connector.Send(b, true);
             var r = new GetMediaInfoByTreeItemIndexResult();
-            r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else
             {
-                r.error = 0;
-                r.dmxFolderId = b.readInt();
-                r.dmxFileId = b.readInt();
-                r.resourceName = b.readStringNarrow();
-                r.resourcePath = b.readStringNarrow();
-                r.projectPath = b.readStringNarrow();
-                r.width = b.readInt();
-                r.height = b.readInt();
-                r.fps = b.readInt();
-                r.hours = b.readInt();
-                r.minutes = b.readInt();
-                r.seconds = b.readInt();
-                r.frames = b.readInt();
-                r.options = b.readInt();
+                r.Error = 0;
+                r.DmxFolderId = b.ReadInt();
+                r.DmxFileId = b.ReadInt();
+                r.ResourceName = b.ReadStringNarrow();
+                r.ResourcePath = b.ReadStringNarrow();
+                r.ProjectPath = b.ReadStringNarrow();
+                r.Width = b.ReadInt();
+                r.Height = b.ReadInt();
+                r.Fps = b.ReadInt();
+                r.Hours = b.ReadInt();
+                r.Minutes = b.ReadInt();
+                r.Seconds = b.ReadInt();
+                r.Frames = b.ReadInt();
+                r.Options = b.ReadInt();
             }
             return r;
         }
 
         public struct GetPlaylistEntryByDmxIdResult
         {
-            public bool ok { get { return error == 0; } }
-            public short code; public int error;
-            public int treeItemIndex;
-            public string resourceName;
-            public string resourcePath;
-            public int durationHours;
-            public int durationMinutes;
-            public int durationSeconds;
-            public int durationFrames;
-            public int fadeOutHour;
-            public int fadeOutMinute;
-            public int fadeOutSecond;
-            public int fadeOutFrame;
-            public int startHour;
-            public int startMinute;
-            public int startSecond;
-            public int startFrame;
-            public int endHour;
-            public int endMinute;
-            public int endSecond;
-            public int endFrame;
-            public int fadeFxId;
+            public bool Ok { get { return Error == 0; } }
+            public short Code; public int Error;
+            public int TreeItemIndex;
+            public string ResourceName;
+            public string ResourcePath;
+            public int DurationHours;
+            public int DurationMinutes;
+            public int DurationSeconds;
+            public int DurationFrames;
+            public int FadeOutHour;
+            public int FadeOutMinute;
+            public int FadeOutSecond;
+            public int FadeOutFrame;
+            public int StartHour;
+            public int StartMinute;
+            public int StartSecond;
+            public int StartFrame;
+            public int EndHour;
+            public int EndMinute;
+            public int EndSecond;
+            public int EndFrame;
+            public int FadeFxId;
         }
         public GetPlaylistEntryByDmxIdResult GetPlaylistEntryByDmxId(int playlistDmxFolderId, int playlistdmxFileId, int playlistEntryIndex)
         {
             var b = new ByteUtil();
-            b.writeShort(193);
-            b.writeInt(playlistDmxFolderId);
-            b.writeInt(playlistdmxFileId);
-            b.writeInt(playlistEntryIndex);
-            b = c.Send(b, true);
+            b.WriteShort(193);
+            b.WriteInt( (int)playlistDmxFolderId);
+            b.WriteInt( (int)playlistdmxFileId);
+            b.WriteInt( (int)playlistEntryIndex);
+            b = connector.Send(b, true);
             var r = new GetPlaylistEntryByDmxIdResult();
-            r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else
             {
-                r.error = 0;
-                r.treeItemIndex = b.readInt();
-                r.resourceName = b.readStringNarrow();
-                r.resourcePath = b.readStringNarrow();
-                r.durationHours = b.readInt();
-                r.durationMinutes = b.readInt();
-                r.durationSeconds = b.readInt();
-                r.durationFrames = b.readInt();
-                r.fadeOutHour = b.readInt();
-                r.fadeOutMinute = b.readInt();
-                r.fadeOutSecond = b.readInt();
-                r.fadeOutFrame = b.readInt();
-                r.startHour = b.readInt();
-                r.startMinute = b.readInt();
-                r.startSecond = b.readInt();
-                r.startFrame = b.readInt();
-                r.endHour = b.readInt();
-                r.endMinute = b.readInt();
-                r.endSecond = b.readInt();
-                r.endFrame = b.readInt();
-                r.fadeFxId = b.readInt();
+                r.Error = 0;
+                r.TreeItemIndex = b.ReadInt();
+                r.ResourceName = b.ReadStringNarrow();
+                r.ResourcePath = b.ReadStringNarrow();
+                r.DurationHours = b.ReadInt();
+                r.DurationMinutes = b.ReadInt();
+                r.DurationSeconds = b.ReadInt();
+                r.DurationFrames = b.ReadInt();
+                r.FadeOutHour = b.ReadInt();
+                r.FadeOutMinute = b.ReadInt();
+                r.FadeOutSecond = b.ReadInt();
+                r.FadeOutFrame = b.ReadInt();
+                r.StartHour = b.ReadInt();
+                r.StartMinute = b.ReadInt();
+                r.StartSecond = b.ReadInt();
+                r.StartFrame = b.ReadInt();
+                r.EndHour = b.ReadInt();
+                r.EndMinute = b.ReadInt();
+                r.EndSecond = b.ReadInt();
+                r.EndFrame = b.ReadInt();
+                r.FadeFxId = b.ReadInt();
             }
             return r;
         }
 
         public struct GetPlaylistEntryByPathResult
         {
-            public bool ok { get { return error == 0; } }
-            public short code; public int error;
-            public int treeItemIndex;
-            public string resourceName;
-            public string resourcePath;
-            public int durationHours;
-            public int durationMinutes;
-            public int durationSeconds;
-            public int durationFrames;
-            public int fadeOutHour;
-            public int fadeOutMinute;
-            public int fadeOutSecond;
-            public int fadeOutFrame;
-            public int startHour;
-            public int startMinute;
-            public int startSecond;
-            public int startFrame;
-            public int endHour;
-            public int endMinute;
-            public int endSecond;
-            public int endFrame;
-            public int fadeFxId;
+            public bool Ok { get { return Error == 0; } }
+            public short Code; public int Error;
+            public int TreeItemIndex;
+            public string ResourceName;
+            public string ResourcePath;
+            public int DurationHours;
+            public int DurationMinutes;
+            public int DurationSeconds;
+            public int DurationFrames;
+            public int FadeOutHour;
+            public int FadeOutMinute;
+            public int FadeOutSecond;
+            public int FadeOutFrame;
+            public int StartHour;
+            public int StartMinute;
+            public int StartSecond;
+            public int StartFrame;
+            public int EndHour;
+            public int EndMinute;
+            public int EndSecond;
+            public int EndFrame;
+            public int FadeFxId;
         }
         public GetPlaylistEntryByPathResult GetPlaylistEntryByPath(string playlistPath, int playlistEntryIndex)
         {
             var b = new ByteUtil();
-            b.writeShort(194);
-            b.writeStringNarrow(playlistPath);
-            b.writeInt(playlistEntryIndex);
-            b = c.Send(b, true);
+            b.WriteShort(194);
+            b.WriteStringNarrow( (string)playlistPath);
+            b.WriteInt( (int)playlistEntryIndex);
+            b = connector.Send(b, true);
             var r = new GetPlaylistEntryByPathResult();
-            r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else
             {
-                r.error = 0;
-                r.treeItemIndex = b.readInt();
-                r.resourceName = b.readStringNarrow();
-                r.resourcePath = b.readStringNarrow();
-                r.durationHours = b.readInt();
-                r.durationMinutes = b.readInt();
-                r.durationSeconds = b.readInt();
-                r.durationFrames = b.readInt();
-                r.fadeOutHour = b.readInt();
-                r.fadeOutMinute = b.readInt();
-                r.fadeOutSecond = b.readInt();
-                r.fadeOutFrame = b.readInt();
-                r.startHour = b.readInt();
-                r.startMinute = b.readInt();
-                r.startSecond = b.readInt();
-                r.startFrame = b.readInt();
-                r.endHour = b.readInt();
-                r.endMinute = b.readInt();
-                r.endSecond = b.readInt();
-                r.endFrame = b.readInt();
-                r.fadeFxId = b.readInt();
+                r.Error = 0;
+                r.TreeItemIndex = b.ReadInt();
+                r.ResourceName = b.ReadStringNarrow();
+                r.ResourcePath = b.ReadStringNarrow();
+                r.DurationHours = b.ReadInt();
+                r.DurationMinutes = b.ReadInt();
+                r.DurationSeconds = b.ReadInt();
+                r.DurationFrames = b.ReadInt();
+                r.FadeOutHour = b.ReadInt();
+                r.FadeOutMinute = b.ReadInt();
+                r.FadeOutSecond = b.ReadInt();
+                r.FadeOutFrame = b.ReadInt();
+                r.StartHour = b.ReadInt();
+                r.StartMinute = b.ReadInt();
+                r.StartSecond = b.ReadInt();
+                r.StartFrame = b.ReadInt();
+                r.EndHour = b.ReadInt();
+                r.EndMinute = b.ReadInt();
+                r.EndSecond = b.ReadInt();
+                r.EndFrame = b.ReadInt();
+                r.FadeFxId = b.ReadInt();
             }
             return r;
         }
 
         public struct GetPlaylistEntryByItemIdResult
         {
-            public bool ok { get { return error == 0; } }
-            public short code; public int error;
-            public int treeItemIndex;
-            public string resourceName;
-            public string resourcePath;
-            public int durationHours;
-            public int durationMinutes;
-            public int durationSeconds;
-            public int durationFrames;
-            public int fadeOutHour;
-            public int fadeOutMinute;
-            public int fadeOutSecond;
-            public int fadeOutFrame;
-            public int startHour;
-            public int startMinute;
-            public int startSecond;
-            public int startFrame;
-            public int endHour;
-            public int endMinute;
-            public int endSecond;
-            public int endFrame;
-            public int fadeFxId;
+            public bool Ok { get { return Error == 0; } }
+            public short Code; public int Error;
+            public int TreeItemIndex;
+            public string ResourceName;
+            public string ResourcePath;
+            public int DurationHours;
+            public int DurationMinutes;
+            public int DurationSeconds;
+            public int DurationFrames;
+            public int FadeOutHour;
+            public int FadeOutMinute;
+            public int FadeOutSecond;
+            public int FadeOutFrame;
+            public int StartHour;
+            public int StartMinute;
+            public int StartSecond;
+            public int StartFrame;
+            public int EndHour;
+            public int EndMinute;
+            public int EndSecond;
+            public int EndFrame;
+            public int FadeFxId;
         }
         public GetPlaylistEntryByItemIdResult GetPlaylistEntryByItemId(int playlistItemIndex, int playlistEntryIndex)
         {
             var b = new ByteUtil();
-            b.writeShort(195);
-            b.writeInt(playlistItemIndex);
-            b.writeInt(playlistEntryIndex);
-            b = c.Send(b, true);
+            b.WriteShort(195);
+            b.WriteInt( (int)playlistItemIndex);
+            b.WriteInt( (int)playlistEntryIndex);
+            b = connector.Send(b, true);
             var r = new GetPlaylistEntryByItemIdResult();
-            r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else
             {
-                r.error = 0;
-                r.treeItemIndex = b.readInt();
-                r.resourceName = b.readStringNarrow();
-                r.resourcePath = b.readStringNarrow();
-                r.durationHours = b.readInt();
-                r.durationMinutes = b.readInt();
-                r.durationSeconds = b.readInt();
-                r.durationFrames = b.readInt();
-                r.fadeOutHour = b.readInt();
-                r.fadeOutMinute = b.readInt();
-                r.fadeOutSecond = b.readInt();
-                r.fadeOutFrame = b.readInt();
-                r.startHour = b.readInt();
-                r.startMinute = b.readInt();
-                r.startSecond = b.readInt();
-                r.startFrame = b.readInt();
-                r.endHour = b.readInt();
-                r.endMinute = b.readInt();
-                r.endSecond = b.readInt();
-                r.endFrame = b.readInt();
-                r.fadeFxId = b.readInt();
+                r.Error = 0;
+                r.TreeItemIndex = b.ReadInt();
+                r.ResourceName = b.ReadStringNarrow();
+                r.ResourcePath = b.ReadStringNarrow();
+                r.DurationHours = b.ReadInt();
+                r.DurationMinutes = b.ReadInt();
+                r.DurationSeconds = b.ReadInt();
+                r.DurationFrames = b.ReadInt();
+                r.FadeOutHour = b.ReadInt();
+                r.FadeOutMinute = b.ReadInt();
+                r.FadeOutSecond = b.ReadInt();
+                r.FadeOutFrame = b.ReadInt();
+                r.StartHour = b.ReadInt();
+                r.StartMinute = b.ReadInt();
+                r.StartSecond = b.ReadInt();
+                r.StartFrame = b.ReadInt();
+                r.EndHour = b.ReadInt();
+                r.EndMinute = b.ReadInt();
+                r.EndSecond = b.ReadInt();
+                r.EndFrame = b.ReadInt();
+                r.FadeFxId = b.ReadInt();
             }
             return r;
         }
 
         public struct GetPlaylistEntryIndicesByDmxIdResult
         {
-            public bool ok { get { return error == 0; } }
-            public short code; public int error;
-            public int[] treeItemIds;
+            public bool Ok { get { return Error == 0; } }
+            public short Code; public int Error;
+            public int[] TreeItemIds;
         }
         public GetPlaylistEntryIndicesByDmxIdResult GetPlaylistEntryIndicesByDmxId(int playlistDmxFolderId, int playlistdmxFileId)
         {
             var b = new ByteUtil();
-            b.writeShort(196);
-            b.writeInt(playlistDmxFolderId);
-            b.writeInt(playlistdmxFileId);
-            b = c.Send(b, true);
+            b.WriteShort(196);
+            b.WriteInt( (int)playlistDmxFolderId);
+            b.WriteInt( (int)playlistdmxFileId);
+            b = connector.Send(b, true);
             var r = new GetPlaylistEntryIndicesByDmxIdResult();
-            r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else
             {
-                r.error = 0;
-                r.treeItemIds = b.readIntBuffer();
+                r.Error = 0;
+                r.TreeItemIds = b.ReadIntBuffer();
             }
             return r;
         }
 
         public struct GetPlaylistEntryIndicesByPathResult
         {
-            public bool ok { get { return error == 0; } }
-            public short code; public int error;
-            public int[] treeItemIds;
+            public bool Ok { get { return Error == 0; } }
+            public short Code; public int Error;
+            public int[] TreeItemIds;
         }
         public GetPlaylistEntryIndicesByPathResult GetPlaylistEntryIndicesByPath(string playlistPath)
         {
             var b = new ByteUtil();
-            b.writeShort(197);
-            b.writeStringNarrow(playlistPath);
-            b = c.Send(b, true);
+            b.WriteShort(197);
+            b.WriteStringNarrow( (string)playlistPath);
+            b = connector.Send(b, true);
             var r = new GetPlaylistEntryIndicesByPathResult();
-            r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else
             {
-                r.error = 0;
-                r.treeItemIds = b.readIntBuffer();
+                r.Error = 0;
+                r.TreeItemIds = b.ReadIntBuffer();
             }
             return r;
         }
 
         public struct GetPlaylistEntryIndicesByItemIdResult
         {
-            public bool ok { get { return error == 0; } }
-            public short code; public int error;
-            public int[] treeItemIds;
+            public bool Ok { get { return Error == 0; } }
+            public short Code; public int Error;
+            public int[] TreeItemIds;
         }
         public GetPlaylistEntryIndicesByItemIdResult GetPlaylistEntryIndicesByItemId(int playlistItemIndex)
         {
             var b = new ByteUtil();
-            b.writeShort(198);
-            b.writeInt(playlistItemIndex);
-            b = c.Send(b, true);
+            b.WriteShort(198);
+            b.WriteInt( (int)playlistItemIndex);
+            b = connector.Send(b, true);
             var r = new GetPlaylistEntryIndicesByItemIdResult();
-            r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else
             {
-                r.error = 0;
-                r.treeItemIds = b.readIntBuffer();
+                r.Error = 0;
+                r.TreeItemIds = b.ReadIntBuffer();
             }
             return r;
         }
 
         public struct CreateGraphicLayerGetIdResult
         {
-            public bool ok { get { return error == 0; } }
-            public short code; public int error;
-            public int layerId;
+            public bool Ok { get { return Error == 0; } }
+            public short Code; public int Error;
+            public int LayerId;
         }
         public CreateGraphicLayerGetIdResult CreateGraphicLayerGetId(int siteId, bool isGraphicLayer)
         {
             var b = new ByteUtil();
-            b.writeShort(96);
-            b.writeInt(siteId);
-            b.writeBool(isGraphicLayer);
-            b = c.Send(b, true);
+            b.WriteShort(96);
+            b.WriteInt( (int)siteId);
+            b.WriteBool( (bool)isGraphicLayer);
+            b = connector.Send(b, true);
             var r = new CreateGraphicLayerGetIdResult();
-            r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            r.Code = b.ReadShort();
+            if (r.Code < 0) r.Error = b.ReadInt(); else
             {
-                r.error = 0;
-                r.layerId = b.readInt();
+                r.Error = 0;
+                r.LayerId = b.ReadInt();
             }
             return r;
         }
     }
+
+
+    enum ErrorCode
+    {
+        None = 0,
+        NoConnection = 1,
+        WrongParam = 2,
+        AddressTranslation = 3,
+        CouldNotConnectToSocket = 4,
+        HandshakeFailed = 5,
+        RequestTimedOut = 6,
+        WrongMessageReturned = 7,
+        ParamPointer = 8,
+        WrongClient = 9,
+        HostInvalidLayer = 10,
+        HostInvalidSequence = 11,
+        HostInvalidPointer = 12,
+        HostInvalidParameterName = 13,
+        HostInvalidParam = 14,
+        InvalidPort = 15,
+        WrongNetworkProtocol = 16,
+        AlreadyConnected = 17,
+        InvalidCueId = 18,
+        InvalidCueButtonId = 19,
+        InvalidDomainNr = 20,
+        GraphicLayerNotCreated = 21,
+        InvalidSiteId = 22,
+        InvalidViewId = 23,
+        InvalidCast = 24,
+        AddingVideoLayerNotAllowed = 25,
+        InvalidLayerMoveTarget = 26,
+        InvalidFolderPath = 27,
+        DmxResourceNotFound = 28,
+        NoAdditionalSequenceAllowed = 29,
+        InvalidContentPath = 30,
+        HandshakeTimeout = 31,
+        FunctionNotSupportedByOs = 32,
+        TreeItemIndexNoMediaFile = 33,
+        TreeItemNotFound = 34,
+        InvalidTreeItemIndex = 35,
+        NoThumbnailAvailable = 36,
+        EncryptionKeyNotValid = 37,
+        EncryptionPolicyNotValid = 38,
+        NoEncryptionManager = 39,
+        InvalidMessageId = 40,
+        WatchedFolderUnkownProperty = 41,
+        FolderNotWatched = 42,
+        Unknown = 43,
+        NoProject = 44,
+        HostInvalidAttributeName = 45
+    }
+
+    enum ParamKind
+    {
+        No = 0,
+        Opacity = 1,
+        Mesh = 2,
+        Media = 3,
+        Inpoint = 4,
+        Outpoint = 5,
+        Transport = 6,
+        XPos = 8,
+        YPos = 9,
+        ZPos = 10,
+        XAngle = 11,
+        YAngle = 12,
+        ZAngle = 13,
+        XScale = 14,
+        YScale = 15,
+        ZScale = 16,
+        XAxis = 25,
+        YAxis = 26,
+        ZAxis = 27,
+        XOffset = 29,
+        YOffset = 30,
+        KSL = 32,
+        Kslr = 33,
+        Ksr = 34,
+        Ksrr = 35,
+        Kst = 36,
+        Kstr = 37,
+        Ksb = 38,
+        Ksbr = 39,
+        LinX = 40,
+        LinY = 41,
+        Sel = 42,
+        Selc = 43,
+        Ser = 44,
+        Serc = 45,
+        Set = 46,
+        Setc = 47,
+        Seb = 48,
+        Sebc = 49,
+        Volume = 50,
+        X = 51,
+        Z = 52,
+        RoomSize = 53,
+        Ambience = 54,
+        Diffusion = 55,
+        BlendMode = 56,
+        FxHue = 57,
+        FxSaturation = 58,
+        FxBrightness = 59,
+        MultiFxList = 60,
+        VideoSpeed = 61,
+        AudioPan = 62,
+        RotPivotXPos = 63,
+        RotPivotYPos = 64,
+        RotPivotZPos = 65,
+        ScalePivotXPos = 66,
+        ScalePivotYPos = 67,
+        ScalePivotZPos = 68,
+        XRotSpeed = 69,
+        YRotSpeed = 70,
+        ZRotSpeed = 71,
+        CamTargetXPos = 72,
+        CamTargetYPos = 73,
+        CamTargetZPos = 74,
+        CamFov = 75,
+        CamNearPlane = 76,
+        CamFarPlane = 77,
+        CamAspect = 78,
+        CamZRoll = 79,
+        CamPostBypass = 80,
+        CamProjMode = 81,
+        ParticleGravity = 82,
+        ParticleSpawnRate = 83,
+        ParticleSpeed = 84,
+        ParticleTimeToLive = 85,
+        ParticleWind = 86,
+        ParticleWindPosX = 87,
+        ParticleWindPosY = 88,
+        ParticleWindPosZ = 89,
+        ParticleWindRotX = 90,
+        ParticleWindRotY = 91,
+        ParticleWindRotZ = 92,
+        ParticleEmitterType = 93,
+        ParticleEmitterRadius = 94,
+        ParticleEmitterRadiusOption = 95,
+        ParticleMass = 96,
+        ParticleEmissionAngle = 97,
+        ParticleAlignment = 98,
+        ParticleDrag = 99,
+        ParticleEmissionRange = 100,
+        CamState = 101,
+        AudioVolume = 102,
+        ParticleColor = 103,
+        ParticleOpacity = 104,
+        Selm = 105,
+        Selmw = 106,
+        Serm = 107,
+        Sermw = 108,
+        Setm = 109,
+        Setmw = 110,
+        Sebm = 111,
+        Sebmw = 112,
+        ParticleXScale = 113,
+        ParticleYScale = 114,
+        ParticleZScale = 115,
+        PsOpacity = 116,
+        ParticleRotationX = 117,
+        ParticleRotationY = 118,
+        ParticleRotationZ = 119,
+        XRotMode = 120,
+        YRotMode = 121,
+        ZRotMode = 122,
+        LightXPos = 123,
+        LightYPos = 124,
+        LightZPos = 125,
+        LightTargetXPos = 126,
+        LightTargetYPos = 127,
+        LightTargetZPos = 128,
+        LightAngle = 129,
+        LightMedia = 130,
+        LightIntensity = 131,
+        LightColorRed = 132,
+        LightColorGreen = 133,
+        LightColorBlue = 134,
+        LightAspect = 135,
+        LightZRoll = 136,
+        LightTolerance = 137,
+        ShadowSoftness = 138,
+        WidgetValue1 = 140,
+        WidgetValue2 = 141,
+        WidgetValue3 = 142,
+        WidgetValue4 = 143,
+        WidgetValue5 = 144,
+        WidgetValue6 = 145,
+        WidgetValue7 = 146,
+        WidgetValue8 = 147,
+        WidgetValue9 = 148,
+        WidgetValue10 = 149,
+        WidgetValue11 = 150,
+        WidgetValue12 = 151,
+        MatrixMix = 152,
+        MatrixTexture = 153,
+        MatrixPatch = 154,
+        PointerLoopInPoint = 155,
+        PointerOutDelay = 156,
+        PointerOffsetX = 157,
+        PointerOffsetY = 158,
+        RtClearColorRed = 159,
+        RtClearColorGreen = 160,
+        RtClearColorBlue = 161,
+        RtClearColorAlpha = 162,
+        GenPerspTargetPt1X = 163,
+        GenPerspTargetPt1Y = 164,
+        GenPerspTargetPt1Z = 165,
+        GenPerspTargetPt2X = 166,
+        GenPerspTargetPt2Y = 167,
+        GenPerspTargetPt2Z = 168,
+        GenPerspTargetPt3X = 169,
+        GenPerspTargetPt3Y = 170,
+        GenPerspTargetPt3Z = 171,
+        EngineGlobalParam = 172,
+        BrowserUrl = 173,
+        CameraPre = 174,
+        LightProjMode = 175,
+        DefaultMeshShadingWireRed = 176,
+        DefaultMeshShadingWireGreen = 177,
+        DefaultMeshShadingWireBlue = 178,
+        DefaultMeshShadingWireAlpha = 179,
+        DefaultMeshShadingFillRed = 180,
+        DefaultMeshShadingFillGreen = 181,
+        DefaultMeshShadingFillBlue = 182,
+        DefaultMeshShadingFillAlpha = 183,
+        DefaultMeshShadingWireWidth = 184,
+        DefaultMeshShadingAmbient = 185,
+        DefaultMeshShadingDiffuse = 186,
+        DefaultMeshShadingSpecular = 187,
+        DefaultMeshShadingShininess = 188,
+        DefaultMeshShadingWireBrightnessFactor = 189
+    }
+
+    enum ClxHardware
+    {
+        FaderExtension = 0,
+        JogShuttle = 1
+    }
+
+    enum Consistency
+    {
+        Inconsistent = 1,
+        Consistent = 0
+    }
+
+    enum SelectionMode
+    {
+        SetSelection = 0,
+        AddSelection = 1,
+        Unselect = 2,
+        UnselectAll = 3
+    }
+
+    enum WatchFolderProperty
+    {
+        IncludeSubdirectories = 1,
+        DeleteInProject = 2,
+        DeleteInClients = 3
+    }
+
+    enum TransportMode
+    {
+        Play = 1,
+        Pause = 3,
+        Stop = 2
+    }
+
+    enum SequenceSmpteMode
+    {
+        No = 0,
+        Send = 1,
+        Receive = 2
+    }
+
+    enum SequenceSmpteStopMode
+    {
+        No = 0,
+        Stop = 1,
+        Pause = 2,
+        Continue = 3
+    }
+
+    enum MediaOption
+    {
+        AnisotropicFiltering = 1,
+        IgnoreThumbnail = 2,
+        VideoAlphaChannel = 4,
+        FluidFrame = 8,
+        OptimizeMpegColorspace = 16,
+        Underscan = 32,
+        OptimizeLooping = 64,
+        MuteSound = 128
+    }
+
 
     /// <summary>
     /// Contains extension methods for conversion between native format and byte arrays
     /// </summary>
     public static class PBUtil
     {
-        public static byte PBAutoChecksum(this byte[] message)
+        public static byte PbAutoChecksum(this byte[] message)
         {
-            if (message.Length < 17) throw new ArgumentException("Byte array is not a PBAuto header! Length != 17");
+            if (message.Length < 17) throw new ArgumentException("Byte array is not a PbAuto header! Length != 17");
             var checksum = 0;
             for(int i=4;i<16;i++)
             {
@@ -4337,26 +5704,26 @@ namespace PandorasBox
         }
         public static long GetInt64(this byte[] bytes, int offset = 0)
         {
-            byte[] value_bytes = new byte[8];
-            Array.Copy(bytes, offset, value_bytes, 0, 8);
-            if (BitConverter.IsLittleEndian) { Array.Reverse(value_bytes); }
-            return BitConverter.ToInt64(value_bytes, 0);
+            byte[] valueBytes = new byte[8];
+            Array.Copy(bytes, offset, valueBytes, 0, 8);
+            if (BitConverter.IsLittleEndian) { Array.Reverse(valueBytes); }
+            return BitConverter.ToInt64(valueBytes, 0);
         }
 
         public static int GetInt32(this byte[] bytes, int offset = 0)
         {
-            byte[] value_bytes = new byte[4];
-            Array.Copy(bytes, offset, value_bytes, 0, 4);
-            if (BitConverter.IsLittleEndian) { Array.Reverse(value_bytes); }
-            return BitConverter.ToInt32(value_bytes, 0);
+            byte[] valueBytes = new byte[4];
+            Array.Copy(bytes, offset, valueBytes, 0, 4);
+            if (BitConverter.IsLittleEndian) { Array.Reverse(valueBytes); }
+            return BitConverter.ToInt32(valueBytes, 0);
         }
 
         public static short GetInt16(this byte[] bytes, int offset = 0)
         {
-            byte[] value_bytes = new byte[2];
-            Array.Copy(bytes, offset, value_bytes, 0, 2);
-            if (BitConverter.IsLittleEndian) { Array.Reverse(value_bytes); }
-            return BitConverter.ToInt16(value_bytes, 0);
+            byte[] valueBytes = new byte[2];
+            Array.Copy(bytes, offset, valueBytes, 0, 2);
+            if (BitConverter.IsLittleEndian) { Array.Reverse(valueBytes); }
+            return BitConverter.ToInt16(valueBytes, 0);
         }
 
         public static byte[] GetBytesNetworkOrder(this Int64 value)
@@ -4386,80 +5753,151 @@ namespace PandorasBox
     public class ByteUtil
     {
         // Holds the bytes
-        private List<byte> list_bytes;
-        private byte[] read_bytes;
-        
-        // Position for reading
+        private List<byte> listBytes;
+        private byte[] readBytes;
+
+        // Position for Reading
         private int position = 0;
 
         // Constructors
         public ByteUtil()
         {
-            list_bytes = new List<byte>();
+            listBytes = new List<byte>();
         }
         public ByteUtil(byte[] data)
         {
-            read_bytes = data;
+            readBytes = data;
         }
 
-        public void CopyTo(byte[] bytes, int offset) { list_bytes.CopyTo(bytes, offset); }
-        public int Length { get { return list_bytes.Count; } }
+        // default responses
+        public static ByteUtil ErrorNotConnected()
+        {
+            ByteUtil b = new ByteUtil();
+            b.WriteShort(-1);
+            b.WriteInt((int)ErrorCode.NoConnection);
+            return b;
+        }
+        public static ByteUtil ErrorWrongMessageReturned()
+        {
+            ByteUtil b = new ByteUtil();
+            b.WriteShort(-1);
+            b.WriteInt((int)ErrorCode.WrongMessageReturned);
+            return b;
+        }
+        public static ByteUtil ResponseOk()
+        {
+            ByteUtil b = new ByteUtil();
+            b.WriteShort(0);
+            return b;
+        }     
+
+        public void CopyTo(byte[] bytes, int offset) { listBytes.CopyTo(bytes, offset); }
+        public int Length { get { return listBytes.Count; } }
 
         // Writing
-        public void writeBool(bool value) { list_bytes.Add((byte)(value ? 1 : 0)); }
-        public void writeByte(byte value) { list_bytes.Add(value); }
-        public void writeShort(short value) { list_bytes.AddRange(value.GetBytesNetworkOrder() ); }
-        public void writeInt(int value) { list_bytes.AddRange(value.GetBytesNetworkOrder()); }
-        public void writeInt64(long value) { list_bytes.AddRange(value.GetBytesNetworkOrder()); }
-        public void writeDouble(double value) { list_bytes.AddRange(BitConverter.GetBytes(value)); }
-        public void writeStringNarrow(string value) { writeShort((short)value.Length); list_bytes.AddRange(Encoding.UTF8.GetBytes(value)); }
-        public void writeStringWide(string value) { writeShort((short)value.Length); list_bytes.AddRange(Encoding.BigEndianUnicode.GetBytes(value)); }
-        public void writeByteBuffer(byte[] value) { writeInt(value.Length); list_bytes.AddRange(value); }
-        public void writeIntBuffer(int[] value) { writeInt(value.Length); foreach (var i in value) { list_bytes.AddRange(i.GetBytesNetworkOrder()); } }
+        public void WriteBool(bool value) { listBytes.Add((byte)(value ? 1 : 0)); }
+        public void WriteByte(byte value) { listBytes.Add(value); }
+        public void WriteShort(short value) { listBytes.AddRange(value.GetBytesNetworkOrder() ); }
+        public void WriteInt(int value) { listBytes.AddRange(value.GetBytesNetworkOrder()); }
+        public void WriteInt64(long value) { listBytes.AddRange(value.GetBytesNetworkOrder()); }
+        public void WriteDouble(double value) { listBytes.AddRange(BitConverter.GetBytes(value)); }
+        public void WriteStringNarrow(string value) { WriteShort((short)value.Length); listBytes.AddRange(Encoding.UTF8.GetBytes(value)); }
+        public void WriteStringWide(string value) { WriteShort((short)value.Length); listBytes.AddRange(Encoding.BigEndianUnicode.GetBytes(value)); }
+        public void WriteByteBuffer(byte[] value) { WriteInt(value.Length); listBytes.AddRange(value); }
+        public void WriteIntBuffer(int[] value) { WriteInt(value.Length); foreach (var i in value) { listBytes.AddRange(i.GetBytesNetworkOrder()); } }
 
         // Reading
-        private byte[] _readBlock(int length) { var ret = new byte[length]; Array.Copy(read_bytes, position, ret, 0, length);position += length;return ret; }
-        public bool readBool() { var result = read_bytes[position];position++;return result == 1; }
-        public byte readByte() { var result = read_bytes[position];position++;return result; }
-        public short readShort() { return _readBlock(2).GetInt16(); }
-        public int readInt() { return _readBlock(4).GetInt32(); }
-        public long readInt64() { return _readBlock(8).GetInt64(); }
-        public double readDouble() { return BitConverter.ToDouble(_readBlock(8), 0); }
-        public string readStringNarrow() { int length = readShort(); return Encoding.UTF8.GetString(_readBlock(length)); }
-        public string readStringWide() { int length = readShort(); return Encoding.BigEndianUnicode.GetString(_readBlock(length)); }
-        public byte[] readByteBuffer() { int length = readInt(); return _readBlock(length); }
-        public int[] readIntBuffer() { int length = readInt(); int[] result = new int[length]; for (int i = 0;i < length; i++) { result[i] = _readBlock(4).GetInt32(); }; return result; }
+        private byte[] _readBlock(int length) { var ret = new byte[length]; Array.Copy(readBytes, position, ret, 0, length);position += length;return ret; }
+        public bool ReadBool() { var result = readBytes[position];position++;return result == 1; }
+        public byte ReadByte() { var result = readBytes[position];position++;return result; }
+        public short ReadShort() { return _readBlock(2).GetInt16(); }
+        public int ReadInt() { return _readBlock(4).GetInt32(); }
+        public long ReadInt64() { return _readBlock(8).GetInt64(); }
+        public double ReadDouble() { return BitConverter.ToDouble(_readBlock(8), 0); }
+        public string ReadStringNarrow() { int length = ReadShort(); return Encoding.UTF8.GetString(_readBlock(length)); }
+        public string ReadStringWide() { int length = ReadShort(); return Encoding.BigEndianUnicode.GetString(_readBlock(length)); }
+        public byte[] ReadByteBuffer() { int length = ReadInt(); return _readBlock(length); }
+        public int[] ReadIntBuffer() { int length = ReadInt(); int[] result = new int[length]; for (int i = 0;i < length; i++) { result[i] = _readBlock(4).GetInt32(); }; return result; }
     }
 
     /// <summary>
-    /// Interface that allows PBAuto to transmit messages
+    /// Interface that allows PbAuto to transmit messages
     /// </summary>
-    public interface Connector
+    public interface IConnector : IDisposable
     {
-        ByteUtil Send(ByteUtil data, bool has_reponse);
+        // Returns a ByteUtil instance
+        ByteUtil Send(ByteUtil data, bool hasResponse);
+
+        // returns false if the connection is known to be broken, may return false positives
+        bool IsConnected();
     }
 
     /// <summary>
     /// Implements the Connector interface using TCP as the underlying protocol
     /// </summary>
-    public class TCP : Connector
+    public class TcpConnector : IConnector
     {
+        private bool disposed = false;
         private string ip;
         private int domain;
-        private TcpClient client;
+        private TcpClient tcpClient;
         private const int PORT = 6211;
 
-        public TCP(string ip, int domain = 0)
+        public TcpConnector(string ip, int domain = 0)
         {
             this.ip = ip;
             this.domain = domain;
-            client = new TcpClient();
-            client.NoDelay = true;
-            client.Connect(System.Net.IPAddress.Parse(ip), PORT);
+            tcpClient = new TcpClient();
+            tcpClient.NoDelay = true;
+
+            System.Net.IPAddress ipAddress;
+            try
+            {
+                ipAddress = System.Net.IPAddress.Parse(ip);
+            }
+            catch(FormatException)
+            {
+                return;
+            }
+
+            tcpClient.Connect(ipAddress, PORT);
         }
 
-        public ByteUtil Send(ByteUtil data, bool has_response)
+        public void Dispose()
         {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        public void Dispose(bool disposing)
+        {
+            if(disposed)
+            {
+                return;
+            }
+
+            if(disposing)
+            {
+                tcpClient.Close();
+            }
+
+            disposed = true;
+        }
+
+        ~TcpConnector()
+        {
+            Dispose(false);
+        }
+
+        /// If successful returns ByteUtil
+        public ByteUtil Send(ByteUtil data, bool hasResponse)
+        {
+            // quick check to see if client connection is known to be broken
+            if(!tcpClient.Client.Connected)
+            {
+                return ByteUtil.ErrorNotConnected();
+            }
+
             byte[] header = new byte[17] {
                 (byte)'P', (byte)'B', (byte)'A', (byte)'U', //# header consists of magic "PBAU" sequence
                 1,                                          //# + protocol version (byte, currently 1)
@@ -4470,48 +5908,52 @@ namespace PandorasBox
                 0,                                          //# + checksum
             };
 
-            // write domain id to header
+            // Write domain id to header
             domain.GetBytesNetworkOrder().CopyTo(header, 5);
-            // write message length
+            // Write message length
             ((short)data.Length).GetBytesNetworkOrder().CopyTo(header, 9);
-            // calculate checksum and write
-            header[16] = header.PBAutoChecksum();
+            // calculate checksum and Write
+            header[16] = header.PbAutoChecksum();
 
             var message = new byte[17 + data.Length];
             header.CopyTo(message, 0);
             data.CopyTo(message, 17);
 
-            var stream = client.GetStream();
+            var stream = tcpClient.GetStream();
             stream.Write(message, 0, message.Length);
             stream.Flush();
 
-            if( !has_response )
+            if( !hasResponse )
             {
-                return null;
+                return ByteUtil.ResponseOk();
             }
 
-            int bytesread = 0;
-            while(bytesread < 17)
+            int bytesRead = 0;
+            while(bytesRead < 17)
             {
-                bytesread += stream.Read(header, bytesread, 17 - bytesread);
+                bytesRead += stream.Read(header, bytesRead, 17 - bytesRead);
             }
 
-            if(header[0] != 0x50 || header[1] != 0x42 || header[2] != 0x41 || header[3] != 0x55 || header.PBAutoChecksum() != header[16])
+            if(header[0] != 0x50 || header[1] != 0x42 || header[2] != 0x41 || header[3] != 0x55 || header.PbAutoChecksum() != header[16])
             {
-                // Not a PB Header or checksum fail
-                throw new ApplicationException("Error when communicating with Pandoras Box: Invalid response");
+                return ByteUtil.ErrorWrongMessageReturned();
             }
 
-            int message_length = header.GetInt16(9);
-            message = new byte[message_length];
+            int messageLength = header.GetInt16(9);
+            message = new byte[messageLength];
 
-            bytesread = 0;
-            while (bytesread < message_length)
+            bytesRead = 0;
+            while (bytesRead < messageLength)
             {
-                bytesread += stream.Read(message, bytesread, message_length - bytesread);
+                bytesRead += stream.Read(message, bytesRead, messageLength - bytesRead);
             }
 
             return new ByteUtil(message);
+        }
+
+        public bool IsConnected()
+        {
+            return tcpClient.Client.Connected;
         }
     }
 }

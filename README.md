@@ -8,32 +8,32 @@ This project is part of the Pandoras Box SDK. It implements an interface to acce
 The code is currently distributed as a single file. Either copy the code right into your project files or add **PandorasBox.cs** to your project
 
 ## Usage
-The PBAuto class expects a connector in the constructor. Currently there is only the TCP connector.
+The PbAuto class expects a connector in the constructor. Currently there only is the TCP connector.
 
 ```csharp
 ip = "127.0.0.1"
 domain = 0
 
-connector = Tcp(ip, domain)
-pb = PBAuto(connector)
+connector = TcpConnector(ip, domain)
+pb = PbAuto(connector)
 
 // alternatively use the convenience function
-pb = PBAuto.ConnectTcp(ip, domain)
+pb = PbAuto.ConnectTcp(ip, domain)
 ```
 
-You can then proceed to use all api functions. All functions return a struct that contains the members **ok**, **code** and **error**.
+You can then proceed to use all api functions. All functions return a struct that contains the members **Ok**, **Code** and **Error**.
 
-Use **ok** to check if the request was successful. **error** will return the error id if something went wrong.
+Use **Ok** to check if the request was successful. **Error** will return the error id if something went wrong.
 
 If there are values to be returned then the struct will contain them as members as well.
 
 ```csharp
 pb.GetSelectedDeviceCount()
 // returns a GetSelectedDeviceCountResult
-// .selectedDevicesCount = 2
-// .ok = true
-// .code = 81
-// .error = undefined (because ok is true)
+// .SelectedDevicesCount = 2
+// .Ok = true
+// .Code = 81
+// .Error = undefined (because ok is true)
 ```
 
 ## Versioning
@@ -44,4 +44,4 @@ If the major version changes, then these changes are incompatible with prior ver
 Most of the files in this repository are generated. Please contribute to the template files instead.
 https://github.com/PandorasBoxSDK/pbauto-generator
 
-v0.2.12086, generated on 2016-02-23
+TESTING v0.0.13077, generated on 2016-05-31
