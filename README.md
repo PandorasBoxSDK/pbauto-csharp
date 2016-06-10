@@ -44,4 +44,4 @@ If the major version changes, then these changes are incompatible with prior ver
 Most of the files in this repository are generated. Please contribute to the template files instead.
 https://github.com/PandorasBoxSDK/pbauto-generator
 
-TESTING v0.0.13077, generated on 2016-05-31
+v0.0.13077 TESTING, generated on 2016-06-10

@@ -1,4 +1,4 @@
-/* Pandoras Box Automation TESTING - pbauto-csharp v0.0.13077 @2016-05-31 <support@coolux.de> */
+/* Pandoras Box Automation - pbauto-csharp TESTING v0.0.13077 @2016-06-10 <support@coolux.de> */
 
 using System;
 using System.Collections.Generic;
@@ -141,7 +141,7 @@ namespace PandorasBox
             return r;
         }
 
-        public PbAutoResult SetParamOfKind(int siteId, int deviceId, int parameterKindId, int parameterValue, bool doSilent, bool doDirect)
+        public PbAutoResult SetParamOfKind(int siteId, int deviceId, ParamKind parameterKindId, int parameterValue, bool doSilent, bool doDirect)
         {
             var b = new ByteUtil();
             b.WriteShort(39);
@@ -158,7 +158,7 @@ namespace PandorasBox
             return r;
         }
 
-        public PbAutoResult SetParamOfKindDouble(int siteId, int deviceId, int parameterKindId, double parameterValue, bool doSilent, bool doDirect)
+        public PbAutoResult SetParamOfKindDouble(int siteId, int deviceId, ParamKind parameterKindId, double parameterValue, bool doSilent, bool doDirect)
         {
             var b = new ByteUtil();
             b.WriteShort(85);
@@ -181,7 +181,7 @@ namespace PandorasBox
             public short Code; public int Error;
             public double ParameterValue;
         }
-        public GetParamOfKindResult GetParamOfKind(int siteId, int deviceId, int parameterKindId)
+        public GetParamOfKindResult GetParamOfKind(int siteId, int deviceId, ParamKind parameterKindId)
         {
             var b = new ByteUtil();
             b.WriteShort(80);
@@ -225,7 +225,7 @@ namespace PandorasBox
             return r;
         }
 
-        public PbAutoResult SetParamOfKindInSelection(int parameterKindId, int parameterValue)
+        public PbAutoResult SetParamOfKindInSelection(ParamKind parameterKindId, int parameterValue)
         {
             var b = new ByteUtil();
             b.WriteShort(59);
@@ -238,7 +238,7 @@ namespace PandorasBox
             return r;
         }
 
-        public PbAutoResult SetParamOfKindInSelectionDouble(int parameterKindId, double parameterValue)
+        public PbAutoResult SetParamOfKindInSelectionDouble(ParamKind parameterKindId, double parameterValue)
         {
             var b = new ByteUtil();
             b.WriteShort(100);
@@ -426,7 +426,7 @@ namespace PandorasBox
             return r;
         }
 
-        public PbAutoResult SetSequenceTransportMode(int sequenceId, int transportMode)
+        public PbAutoResult SetSequenceTransportMode(int sequenceId, TransportMode transportMode)
         {
             var b = new ByteUtil();
             b.WriteShort(3);
@@ -443,7 +443,7 @@ namespace PandorasBox
         {
             public bool Ok { get { return Error == 0; } }
             public short Code; public int Error;
-            public int TransportMode;
+            public TransportMode TransportMode;
         }
         public GetSequenceTransportModeResult GetSequenceTransportMode(int sequenceId)
         {
@@ -456,7 +456,7 @@ namespace PandorasBox
             if (r.Code < 0) r.Error = b.ReadInt(); else
             {
                 r.Error = 0;
-                r.TransportMode = b.ReadInt();
+                r.TransportMode = (TransportMode)b.ReadInt();
             }
             return r;
         }
@@ -579,7 +579,7 @@ namespace PandorasBox
             return r;
         }
 
-        public PbAutoResult SetSequenceSMTPETimeCodeMode(int sequenceId, int timeCodeMode)
+        public PbAutoResult SetSequenceSMTPETimeCodeMode(int sequenceId, SequenceSmpteMode timeCodeMode)
         {
             var b = new ByteUtil();
             b.WriteShort(41);
@@ -608,7 +608,7 @@ namespace PandorasBox
             return r;
         }
 
-        public PbAutoResult SetSequenceSMTPETimeCodeStopAction(int sequenceId, int stopAction)
+        public PbAutoResult SetSequenceSMTPETimeCodeStopAction(int sequenceId, SequenceSmpteStopMode stopAction)
         {
             var b = new ByteUtil();
             b.WriteShort(43);
@@ -1824,7 +1824,7 @@ namespace PandorasBox
             return r;
         }
 
-        public PbAutoResult SetDeviceSelection(int siteId, int deviceId, int selectionMode)
+        public PbAutoResult SetDeviceSelection(int siteId, int deviceId, SelectionMode selectionMode)
         {
             var b = new ByteUtil();
             b.WriteShort(86);
@@ -2018,7 +2018,7 @@ namespace PandorasBox
         {
             public bool Ok { get { return Error == 0; } }
             public short Code; public int Error;
-            public int TransportMode;
+            public TransportMode TransportMode;
         }
         public GetMediaTransportModeResult GetMediaTransportMode(int siteId, int deviceId)
         {
@@ -2032,7 +2032,7 @@ namespace PandorasBox
             if (r.Code < 0) r.Error = b.ReadInt(); else
             {
                 r.Error = 0;
-                r.TransportMode = b.ReadInt();
+                r.TransportMode = (TransportMode)b.ReadInt();
             }
             return r;
         }
@@ -2111,7 +2111,7 @@ namespace PandorasBox
             return r;
         }
 
-        public PbAutoResult SetEnableClxController(byte forJogShuttle, bool enable)
+        public PbAutoResult SetEnableClxController(ClxHardware forJogShuttle, bool enable)
         {
             var b = new ByteUtil();
             b.WriteShort(117);
@@ -2130,7 +2130,7 @@ namespace PandorasBox
             public short Code; public int Error;
             public bool IsEnabled;
         }
-        public GetEnableClxControllerResult GetEnableClxController(byte forJogShuttle)
+        public GetEnableClxControllerResult GetEnableClxController(ClxHardware forJogShuttle)
         {
             var b = new ByteUtil();
             b.WriteShort(116);
@@ -2211,7 +2211,7 @@ namespace PandorasBox
         {
             public bool Ok { get { return Error == 0; } }
             public short Code; public int Error;
-            public int IsContentInconsistent;
+            public Consistency IsContentInconsistent;
         }
         public GetIsContentConsistentResult GetIsContentConsistent(int dmxFolderId, int dmxFileId)
         {
@@ -2225,7 +2225,7 @@ namespace PandorasBox
             if (r.Code < 0) r.Error = b.ReadInt(); else
             {
                 r.Error = 0;
-                r.IsContentInconsistent = b.ReadInt();
+                r.IsContentInconsistent = (Consistency)b.ReadInt();
             }
             return r;
         }
@@ -2234,7 +2234,7 @@ namespace PandorasBox
         {
             public bool Ok { get { return Error == 0; } }
             public short Code; public int Error;
-            public int IsContentInconsistent;
+            public Consistency IsContentInconsistent;
         }
         public GetIsContentConsistentByNameResult GetIsContentConsistentByName(string resourcePath)
         {
@@ -2247,7 +2247,7 @@ namespace PandorasBox
             if (r.Code < 0) r.Error = b.ReadInt(); else
             {
                 r.Error = 0;
-                r.IsContentInconsistent = b.ReadInt();
+                r.IsContentInconsistent = (Consistency)b.ReadInt();
             }
             return r;
         }
@@ -3812,7 +3812,7 @@ namespace PandorasBox
             return r;
         }
 
-        public PbAutoResult SetSublayerParamOfKindDouble(int siteId, int deviceId, int sublayerId, int parameterKindId, double parameterValue, bool doSilent, bool doDirect)
+        public PbAutoResult SetSublayerParamOfKindDouble(int siteId, int deviceId, int sublayerId, ParamKind parameterKindId, double parameterValue, bool doSilent, bool doDirect)
         {
             var b = new ByteUtil();
             b.WriteShort(274);
@@ -4205,7 +4205,7 @@ namespace PandorasBox
             return r;
         }
 
-        public PbAutoResult SetGroupSelection(int groupIndex, int selectionMode)
+        public PbAutoResult SetGroupSelection(int groupIndex, SelectionMode selectionMode)
         {
             var b = new ByteUtil();
             b.WriteShort(298);
@@ -4311,7 +4311,7 @@ namespace PandorasBox
             return r;
         }
 
-        public PbAutoResult SetWatchedFolderProperty(string projectPath, int watchFolderProperty, bool enable)
+        public PbAutoResult SetWatchedFolderProperty(string projectPath, WatchFolderProperty watchFolderProperty, bool enable)
         {
             var b = new ByteUtil();
             b.WriteShort(305);
@@ -4325,7 +4325,7 @@ namespace PandorasBox
             return r;
         }
 
-        public PbAutoResult SetWatchedFolderPropertyByItemId(int treeItemIndex, int watchFolderProperty, bool enable)
+        public PbAutoResult SetWatchedFolderPropertyByItemId(int treeItemIndex, WatchFolderProperty watchFolderProperty, bool enable)
         {
             var b = new ByteUtil();
             b.WriteShort(306);
@@ -4387,7 +4387,7 @@ namespace PandorasBox
             public short Code; public int Error;
             public bool IsEnabled;
         }
-        public GetWatchedFolderPropertyResult GetWatchedFolderProperty(string projectPath, int watchFolderProperty)
+        public GetWatchedFolderPropertyResult GetWatchedFolderProperty(string projectPath, WatchFolderProperty watchFolderProperty)
         {
             var b = new ByteUtil();
             b.WriteShort(310);
@@ -4410,7 +4410,7 @@ namespace PandorasBox
             public short Code; public int Error;
             public bool IsEnabled;
         }
-        public GetWatchedFolderPropertyByItemIdResult GetWatchedFolderPropertyByItemId(int treeItemIndex, int watchFolderProperty)
+        public GetWatchedFolderPropertyByItemIdResult GetWatchedFolderPropertyByItemId(int treeItemIndex, WatchFolderProperty watchFolderProperty)
         {
             var b = new ByteUtil();
             b.WriteShort(311);
@@ -4775,46 +4775,6 @@ namespace PandorasBox
             return r;
         }
 
-        public PbAutoResult SetCanvasTextureFormatByDmxId(int canvasDmxFolderId, int canvasDmxFileId, int textureFormat)
-        {
-            var b = new ByteUtil();
-            b.WriteShort(338);
-            b.WriteInt( (int)canvasDmxFolderId);
-            b.WriteInt( (int)canvasDmxFileId);
-            b.WriteInt( (int)textureFormat);
-            b = connector.Send(b, false);
-            var r = new PbAutoResult();
-            r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
-            return r;
-        }
-
-        public PbAutoResult SetCanvasTextureFormatByPath(string canvasResourcePath, int textureFormat)
-        {
-            var b = new ByteUtil();
-            b.WriteShort(339);
-            b.WriteStringNarrow( (string)canvasResourcePath);
-            b.WriteInt( (int)textureFormat);
-            b = connector.Send(b, false);
-            var r = new PbAutoResult();
-            r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
-            return r;
-        }
-
-        public PbAutoResult SetCanvasTextureFormatByItemId(int canvasItemIndex, int textureFormat)
-        {
-            var b = new ByteUtil();
-            b.WriteShort(340);
-            b.WriteInt( (int)canvasItemIndex);
-            b.WriteInt( (int)textureFormat);
-            b = connector.Send(b, false);
-            var r = new PbAutoResult();
-            r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
-            return r;
-        }
-
         public PbAutoResult ResetSockets()
         {
             var b = new ByteUtil();
@@ -4921,7 +4881,7 @@ namespace PandorasBox
             return r;
         }
 
-        public PbAutoResult SetMediaTransportMode(int siteId, int deviceId, int transportMode)
+        public PbAutoResult SetMediaTransportMode(int siteId, int deviceId, TransportMode transportMode)
         {
             var b = new ByteUtil();
             b.WriteShort(359);
@@ -5049,7 +5009,7 @@ namespace PandorasBox
         {
             public bool Ok { get { return Error == 0; } }
             public short Code; public int Error;
-            public int ResourceType;
+            public ResourceType ResourceType;
             public string ResourcePath;
             public string FolderPath;
         }
@@ -5064,7 +5024,7 @@ namespace PandorasBox
             if (r.Code < 0) r.Error = b.ReadInt(); else
             {
                 r.Error = 0;
-                r.ResourceType = b.ReadInt();
+                r.ResourceType = (ResourceType)b.ReadInt();
                 r.ResourcePath = b.ReadStringWide();
                 r.FolderPath = b.ReadStringWide();
             }
@@ -5393,7 +5353,7 @@ namespace PandorasBox
     }
 
 
-    enum ErrorCode
+    public enum ErrorCode
     {
         None = 0,
         NoConnection = 1,
@@ -5443,7 +5403,7 @@ namespace PandorasBox
         HostInvalidAttributeName = 45
     }
 
-    enum ParamKind
+    public enum ParamKind
     {
         No = 0,
         Opacity = 1,
@@ -5625,19 +5585,19 @@ namespace PandorasBox
         DefaultMeshShadingWireBrightnessFactor = 189
     }
 
-    enum ClxHardware
+    public enum ClxHardware
     {
         FaderExtension = 0,
         JogShuttle = 1
     }
 
-    enum Consistency
+    public enum Consistency
     {
         Inconsistent = 1,
         Consistent = 0
     }
 
-    enum SelectionMode
+    public enum SelectionMode
     {
         SetSelection = 0,
         AddSelection = 1,
@@ -5645,28 +5605,28 @@ namespace PandorasBox
         UnselectAll = 3
     }
 
-    enum WatchFolderProperty
+    public enum WatchFolderProperty
     {
         IncludeSubdirectories = 1,
         DeleteInProject = 2,
         DeleteInClients = 3
     }
 
-    enum TransportMode
+    public enum TransportMode
     {
         Play = 1,
         Pause = 3,
         Stop = 2
     }
 
-    enum SequenceSmpteMode
+    public enum SequenceSmpteMode
     {
         No = 0,
         Send = 1,
         Receive = 2
     }
 
-    enum SequenceSmpteStopMode
+    public enum SequenceSmpteStopMode
     {
         No = 0,
         Stop = 1,
@@ -5674,7 +5634,7 @@ namespace PandorasBox
         Continue = 3
     }
 
-    enum MediaOption
+    public enum MediaOption
     {
         AnisotropicFiltering = 1,
         IgnoreThumbnail = 2,
@@ -5684,6 +5644,25 @@ namespace PandorasBox
         Underscan = 32,
         OptimizeLooping = 64,
         MuteSound = 128
+    }
+
+    public enum ResourceType
+    {
+        Unknown = 0,
+        Folder = 1,
+        Media = 2,
+        Mesh = 3,
+        TextInput = 4,
+        Browser = 5,
+        Canvas = 6,
+        Reserved0 = 7,
+        Reserved1 = 8
+    }
+
+    public enum SublayerAction
+    {
+        Create = 1,
+        Remove = 2
     }
 
 
