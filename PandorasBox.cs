@@ -1,4 +1,4 @@
-/* Pandoras Box Automation - pbauto-csharp v0.0.13077 TESTING @2016-06-10 <support@coolux.de> */
+/* Pandoras Box Automation - pbauto-csharp v0.0.13077 TESTING @2016-06-13 <support@coolux.de> */
 
 using System;
 using System.Collections.Generic;
@@ -5775,12 +5775,19 @@ namespace PandorasBox
             readBytes = data;
         }
 
+        public void Commit()
+        {
+            readBytes = listBytes.ToArray();
+            listBytes.Clear();
+        }
+
         // default responses
         public static ByteUtil ErrorNotConnected()
         {
             ByteUtil b = new ByteUtil();
             b.WriteShort(-1);
             b.WriteInt((int)ErrorCode.NoConnection);
+            b.Commit();
             return b;
         }
         public static ByteUtil ErrorWrongMessageReturned()
@@ -5788,12 +5795,14 @@ namespace PandorasBox
             ByteUtil b = new ByteUtil();
             b.WriteShort(-1);
             b.WriteInt((int)ErrorCode.WrongMessageReturned);
+            b.Commit();
             return b;
         }
         public static ByteUtil ResponseOk()
         {
             ByteUtil b = new ByteUtil();
             b.WriteShort(0);
+            b.Commit();
             return b;
         }     
 
