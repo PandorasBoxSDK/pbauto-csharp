@@ -1,4 +1,4 @@
-/* Pandoras Box Automation - pbauto-csharp v0.2.12086 @2016-02-23 <support@coolux.de> */
+/* Pandoras Box Automation - pbauto-csharp v0.3.12086 @2016-06-16 <support@coolux.de> */
 
 using System;
 using System.Collections.Generic;
@@ -87,7 +87,17 @@ namespace PandorasBox
             b = c.Send(b, true);
             var r = new GetParamResult();
             r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            if(r.code < 0)
+            {
+                r.error = b.readInt();
+            }
+            else if(r.code != 79)
+            {
+            	r.code = -1;
+            	r.error = 7; // WrongMessageReturned
+            	return r;
+            }
+            else
             {
                 r.error = 0;
                 r.parameterValue = b.readDouble();
@@ -112,7 +122,17 @@ namespace PandorasBox
             b = c.Send(b, true);
             var r = new GetParamByteTuplesResult();
             r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            if(r.code < 0)
+            {
+                r.error = b.readInt();
+            }
+            else if(r.code != 132)
+            {
+            	r.code = -1;
+            	r.error = 7; // WrongMessageReturned
+            	return r;
+            }
+            else
             {
                 r.error = 0;
                 r.tupleDimension = b.readInt();
@@ -163,7 +183,17 @@ namespace PandorasBox
             b = c.Send(b, true);
             var r = new GetParamOfKindResult();
             r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            if(r.code < 0)
+            {
+                r.error = b.readInt();
+            }
+            else if(r.code != 80)
+            {
+            	r.code = -1;
+            	r.error = 7; // WrongMessageReturned
+            	return r;
+            }
+            else
             {
                 r.error = 0;
                 r.parameterValue = b.readDouble();
@@ -233,7 +263,17 @@ namespace PandorasBox
             b = c.Send(b, true);
             var r = new GetIsDeviceSelectedResult();
             r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            if(r.code < 0)
+            {
+                r.error = b.readInt();
+            }
+            else if(r.code != 74)
+            {
+            	r.code = -1;
+            	r.error = 7; // WrongMessageReturned
+            	return r;
+            }
+            else
             {
                 r.error = 0;
                 r.isSelected = b.readByte();
@@ -254,7 +294,17 @@ namespace PandorasBox
             b = c.Send(b, true);
             var r = new GetSelectedDeviceCountResult();
             r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            if(r.code < 0)
+            {
+                r.error = b.readInt();
+            }
+            else if(r.code != 81)
+            {
+            	r.code = -1;
+            	r.error = 7; // WrongMessageReturned
+            	return r;
+            }
+            else
             {
                 r.error = 0;
                 r.selectedDevicesCount = b.readInt();
@@ -277,7 +327,17 @@ namespace PandorasBox
             b = c.Send(b, true);
             var r = new GetSelectedDeviceResult();
             r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            if(r.code < 0)
+            {
+                r.error = b.readInt();
+            }
+            else if(r.code != 75)
+            {
+            	r.code = -1;
+            	r.error = 7; // WrongMessageReturned
+            	return r;
+            }
+            else
             {
                 r.error = 0;
                 r.siteId = b.readInt();
@@ -377,7 +437,17 @@ namespace PandorasBox
             b = c.Send(b, true);
             var r = new GetSequenceTransportModeResult();
             r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            if(r.code < 0)
+            {
+                r.error = b.readInt();
+            }
+            else if(r.code != 72)
+            {
+            	r.code = -1;
+            	r.error = 7; // WrongMessageReturned
+            	return r;
+            }
+            else
             {
                 r.error = 0;
                 r.transportMode = b.readInt();
@@ -414,7 +484,17 @@ namespace PandorasBox
             b = c.Send(b, true);
             var r = new GetSequenceTimeResult();
             r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            if(r.code < 0)
+            {
+                r.error = b.readInt();
+            }
+            else if(r.code != 73)
+            {
+            	r.code = -1;
+            	r.error = 7; // WrongMessageReturned
+            	return r;
+            }
+            else
             {
                 r.error = 0;
                 r.hours = b.readInt();
@@ -475,7 +555,17 @@ namespace PandorasBox
             b = c.Send(b, true);
             var r = new GetSequenceTransparencyResult();
             r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            if(r.code < 0)
+            {
+                r.error = b.readInt();
+            }
+            else if(r.code != 91)
+            {
+            	r.code = -1;
+            	r.error = 7; // WrongMessageReturned
+            	return r;
+            }
+            else
             {
                 r.error = 0;
                 r.transparency = b.readInt();
@@ -1273,7 +1363,17 @@ namespace PandorasBox
             b = c.Send(b, true);
             var r = new GetClipRemainingTimeResult();
             r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            if(r.code < 0)
+            {
+                r.error = b.readInt();
+            }
+            else if(r.code != 77)
+            {
+            	r.code = -1;
+            	r.error = 7; // WrongMessageReturned
+            	return r;
+            }
+            else
             {
                 r.error = 0;
                 r.hours = b.readInt();
@@ -1301,7 +1401,17 @@ namespace PandorasBox
             b = c.Send(b, true);
             var r = new GetRemainingTimeUntilNextCueResult();
             r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            if(r.code < 0)
+            {
+                r.error = b.readInt();
+            }
+            else if(r.code != 78)
+            {
+            	r.code = -1;
+            	r.error = 7; // WrongMessageReturned
+            	return r;
+            }
+            else
             {
                 r.error = 0;
                 r.hours = b.readInt();
@@ -1325,7 +1435,17 @@ namespace PandorasBox
             b = c.Send(b, true);
             var r = new GetResourceCountResult();
             r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            if(r.code < 0)
+            {
+                r.error = b.readInt();
+            }
+            else if(r.code != 82)
+            {
+            	r.code = -1;
+            	r.error = 7; // WrongMessageReturned
+            	return r;
+            }
+            else
             {
                 r.error = 0;
                 r.mediaCount = b.readInt();
@@ -1346,7 +1466,17 @@ namespace PandorasBox
             b = c.Send(b, true);
             var r = new GetTreeItemCountResult();
             r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            if(r.code < 0)
+            {
+                r.error = b.readInt();
+            }
+            else if(r.code != 150)
+            {
+            	r.code = -1;
+            	r.error = 7; // WrongMessageReturned
+            	return r;
+            }
+            else
             {
                 r.error = 0;
                 r.treeItemCount = b.readInt();
@@ -1464,7 +1594,17 @@ namespace PandorasBox
             b = c.Send(b, true);
             var r = new CreateVideoLayerGetIdResult();
             r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            if(r.code < 0)
+            {
+                r.error = b.readInt();
+            }
+            else if(r.code != 110)
+            {
+            	r.code = -1;
+            	r.error = 7; // WrongMessageReturned
+            	return r;
+            }
+            else
             {
                 r.error = 0;
                 r.layerId = b.readInt();
@@ -1527,7 +1667,17 @@ namespace PandorasBox
             b = c.Send(b, true);
             var r = new GetParamResourceResult();
             r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            if(r.code < 0)
+            {
+                r.error = b.readInt();
+            }
+            else if(r.code != 105)
+            {
+            	r.code = -1;
+            	r.error = 7; // WrongMessageReturned
+            	return r;
+            }
+            else
             {
                 r.error = 0;
                 r.dmxFolderId = b.readInt();
@@ -1553,7 +1703,17 @@ namespace PandorasBox
             b = c.Send(b, true);
             var r = new GetMediaTransportModeResult();
             r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            if(r.code < 0)
+            {
+                r.error = b.readInt();
+            }
+            else if(r.code != 108)
+            {
+            	r.code = -1;
+            	r.error = 7; // WrongMessageReturned
+            	return r;
+            }
+            else
             {
                 r.error = 0;
                 r.transportMode = b.readInt();
@@ -1575,7 +1735,17 @@ namespace PandorasBox
             b = c.Send(b, true);
             var r = new GetIsSiteConnectedResult();
             r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            if(r.code < 0)
+            {
+                r.error = b.readInt();
+            }
+            else if(r.code != 109)
+            {
+            	r.code = -1;
+            	r.error = 7; // WrongMessageReturned
+            	return r;
+            }
+            else
             {
                 r.error = 0;
                 r.isConnected = b.readBool();
@@ -1642,7 +1812,17 @@ namespace PandorasBox
             b = c.Send(b, true);
             var r = new GetEnableClxControllerResult();
             r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            if(r.code < 0)
+            {
+                r.error = b.readInt();
+            }
+            else if(r.code != 116)
+            {
+            	r.code = -1;
+            	r.error = 7; // WrongMessageReturned
+            	return r;
+            }
+            else
             {
                 r.error = 0;
                 r.isEnabled = b.readBool();
@@ -1710,7 +1890,17 @@ namespace PandorasBox
             b = c.Send(b, true);
             var r = new GetIsContentConsistentResult();
             r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            if(r.code < 0)
+            {
+                r.error = b.readInt();
+            }
+            else if(r.code != 127)
+            {
+            	r.code = -1;
+            	r.error = 7; // WrongMessageReturned
+            	return r;
+            }
+            else
             {
                 r.error = 0;
                 r.isContentInconsistent = b.readInt();
@@ -1732,7 +1922,17 @@ namespace PandorasBox
             b = c.Send(b, true);
             var r = new GetIsContentConsistentByNameResult();
             r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            if(r.code < 0)
+            {
+                r.error = b.readInt();
+            }
+            else if(r.code != 128)
+            {
+            	r.code = -1;
+            	r.error = 7; // WrongMessageReturned
+            	return r;
+            }
+            else
             {
                 r.error = 0;
                 r.isContentInconsistent = b.readInt();
@@ -1753,7 +1953,17 @@ namespace PandorasBox
             b = c.Send(b, true);
             var r = new CreateSequenceGetIdResult();
             r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            if(r.code < 0)
+            {
+                r.error = b.readInt();
+            }
+            else if(r.code != 130)
+            {
+            	r.code = -1;
+            	r.error = 7; // WrongMessageReturned
+            	return r;
+            }
+            else
             {
                 r.error = 0;
                 r.sequenceId = b.readInt();
@@ -1848,7 +2058,17 @@ namespace PandorasBox
             b = c.Send(b, true);
             var r = new AddEncryptionKeyGetIdResult();
             r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            if(r.code < 0)
+            {
+                r.error = b.readInt();
+            }
+            else if(r.code != 164)
+            {
+            	r.code = -1;
+            	r.error = 7; // WrongMessageReturned
+            	return r;
+            }
+            else
             {
                 r.error = 0;
                 r.isKeyAdded = b.readBool();
@@ -1870,7 +2090,17 @@ namespace PandorasBox
             b = c.Send(b, true);
             var r = new AddEncryptionPolicyGetIdResult();
             r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            if(r.code < 0)
+            {
+                r.error = b.readInt();
+            }
+            else if(r.code != 165)
+            {
+            	r.code = -1;
+            	r.error = 7; // WrongMessageReturned
+            	return r;
+            }
+            else
             {
                 r.error = 0;
                 r.isKeyAdded = b.readBool();
@@ -1931,7 +2161,17 @@ namespace PandorasBox
             b = c.Send(b, true);
             var r = new GetThumbnailByPathResult();
             r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            if(r.code < 0)
+            {
+                r.error = b.readInt();
+            }
+            else if(r.code != 162)
+            {
+            	r.code = -1;
+            	r.error = 7; // WrongMessageReturned
+            	return r;
+            }
+            else
             {
                 r.error = 0;
                 r.thumbnailWidth = b.readInt();
@@ -1957,7 +2197,17 @@ namespace PandorasBox
             b = c.Send(b, true);
             var r = new GetThumbnailByItemIndexResult();
             r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            if(r.code < 0)
+            {
+                r.error = b.readInt();
+            }
+            else if(r.code != 163)
+            {
+            	r.code = -1;
+            	r.error = 7; // WrongMessageReturned
+            	return r;
+            }
+            else
             {
                 r.error = 0;
                 r.thumbnailWidth = b.readInt();
@@ -2127,7 +2377,17 @@ namespace PandorasBox
             b = c.Send(b, true);
             var r = new GetPlaylistSizeByDmxIdResult();
             r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            if(r.code < 0)
+            {
+                r.error = b.readInt();
+            }
+            else if(r.code != 190)
+            {
+            	r.code = -1;
+            	r.error = 7; // WrongMessageReturned
+            	return r;
+            }
+            else
             {
                 r.error = 0;
                 r.playlistSize = b.readInt();
@@ -2149,7 +2409,17 @@ namespace PandorasBox
             b = c.Send(b, true);
             var r = new GetPlaylistSizeByPathResult();
             r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            if(r.code < 0)
+            {
+                r.error = b.readInt();
+            }
+            else if(r.code != 191)
+            {
+            	r.code = -1;
+            	r.error = 7; // WrongMessageReturned
+            	return r;
+            }
+            else
             {
                 r.error = 0;
                 r.playlistSize = b.readInt();
@@ -2171,7 +2441,17 @@ namespace PandorasBox
             b = c.Send(b, true);
             var r = new GetPlaylistSizeByItemIdResult();
             r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            if(r.code < 0)
+            {
+                r.error = b.readInt();
+            }
+            else if(r.code != 192)
+            {
+            	r.code = -1;
+            	r.error = 7; // WrongMessageReturned
+            	return r;
+            }
+            else
             {
                 r.error = 0;
                 r.playlistSize = b.readInt();
@@ -2644,7 +2924,17 @@ namespace PandorasBox
             b = c.Send(b, true);
             var r = new GetCanvasDrawCommandsByDmxIdResult();
             r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            if(r.code < 0)
+            {
+                r.error = b.readInt();
+            }
+            else if(r.code != 248)
+            {
+            	r.code = -1;
+            	r.error = 7; // WrongMessageReturned
+            	return r;
+            }
+            else
             {
                 r.error = 0;
                 r.commands = b.readStringNarrow();
@@ -2666,7 +2956,17 @@ namespace PandorasBox
             b = c.Send(b, true);
             var r = new GetCanvasDrawCommandsByPathResult();
             r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            if(r.code < 0)
+            {
+                r.error = b.readInt();
+            }
+            else if(r.code != 249)
+            {
+            	r.code = -1;
+            	r.error = 7; // WrongMessageReturned
+            	return r;
+            }
+            else
             {
                 r.error = 0;
                 r.commands = b.readStringNarrow();
@@ -2688,7 +2988,17 @@ namespace PandorasBox
             b = c.Send(b, true);
             var r = new GetCanvasDrawCommandsByItemIdResult();
             r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            if(r.code < 0)
+            {
+                r.error = b.readInt();
+            }
+            else if(r.code != 250)
+            {
+            	r.code = -1;
+            	r.error = 7; // WrongMessageReturned
+            	return r;
+            }
+            else
             {
                 r.error = 0;
                 r.commands = b.readStringNarrow();
@@ -2711,7 +3021,17 @@ namespace PandorasBox
             b = c.Send(b, true);
             var r = new GetMediaWidthByDmxIdResult();
             r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            if(r.code < 0)
+            {
+                r.error = b.readInt();
+            }
+            else if(r.code != 251)
+            {
+            	r.code = -1;
+            	r.error = 7; // WrongMessageReturned
+            	return r;
+            }
+            else
             {
                 r.error = 0;
                 r.width = b.readInt();
@@ -2733,7 +3053,17 @@ namespace PandorasBox
             b = c.Send(b, true);
             var r = new GetMediaWidthByPathResult();
             r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            if(r.code < 0)
+            {
+                r.error = b.readInt();
+            }
+            else if(r.code != 252)
+            {
+            	r.code = -1;
+            	r.error = 7; // WrongMessageReturned
+            	return r;
+            }
+            else
             {
                 r.error = 0;
                 r.width = b.readInt();
@@ -2755,7 +3085,17 @@ namespace PandorasBox
             b = c.Send(b, true);
             var r = new GetMediaWidthByItemIdResult();
             r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            if(r.code < 0)
+            {
+                r.error = b.readInt();
+            }
+            else if(r.code != 253)
+            {
+            	r.code = -1;
+            	r.error = 7; // WrongMessageReturned
+            	return r;
+            }
+            else
             {
                 r.error = 0;
                 r.width = b.readInt();
@@ -2778,7 +3118,17 @@ namespace PandorasBox
             b = c.Send(b, true);
             var r = new GetMediaHeightByDmxIdResult();
             r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            if(r.code < 0)
+            {
+                r.error = b.readInt();
+            }
+            else if(r.code != 254)
+            {
+            	r.code = -1;
+            	r.error = 7; // WrongMessageReturned
+            	return r;
+            }
+            else
             {
                 r.error = 0;
                 r.height = b.readInt();
@@ -2800,7 +3150,17 @@ namespace PandorasBox
             b = c.Send(b, true);
             var r = new GetMediaHeightByPathResult();
             r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            if(r.code < 0)
+            {
+                r.error = b.readInt();
+            }
+            else if(r.code != 255)
+            {
+            	r.code = -1;
+            	r.error = 7; // WrongMessageReturned
+            	return r;
+            }
+            else
             {
                 r.error = 0;
                 r.height = b.readInt();
@@ -2822,7 +3182,17 @@ namespace PandorasBox
             b = c.Send(b, true);
             var r = new GetMediaHeightByItemIdResult();
             r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            if(r.code < 0)
+            {
+                r.error = b.readInt();
+            }
+            else if(r.code != 256)
+            {
+            	r.code = -1;
+            	r.error = 7; // WrongMessageReturned
+            	return r;
+            }
+            else
             {
                 r.error = 0;
                 r.height = b.readInt();
@@ -2843,7 +3213,17 @@ namespace PandorasBox
             b = c.Send(b, true);
             var r = new GetProjectPathOnDiscResult();
             r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            if(r.code < 0)
+            {
+                r.error = b.readInt();
+            }
+            else if(r.code != 257)
+            {
+            	r.code = -1;
+            	r.error = 7; // WrongMessageReturned
+            	return r;
+            }
+            else
             {
                 r.error = 0;
                 r.commands = b.readStringNarrow();
@@ -3034,7 +3414,17 @@ namespace PandorasBox
             b = c.Send(b, true);
             var r = new GetCueNameResult();
             r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            if(r.code < 0)
+            {
+                r.error = b.readInt();
+            }
+            else if(r.code != 277)
+            {
+            	r.code = -1;
+            	r.error = 7; // WrongMessageReturned
+            	return r;
+            }
+            else
             {
                 r.error = 0;
                 r.cueName = b.readStringNarrow();
@@ -3251,7 +3641,17 @@ namespace PandorasBox
             b = c.Send(b, true);
             var r = new GetCurrentTimeCueInfoResult();
             r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            if(r.code < 0)
+            {
+                r.error = b.readInt();
+            }
+            else if(r.code != 295)
+            {
+            	r.code = -1;
+            	r.error = 7; // WrongMessageReturned
+            	return r;
+            }
+            else
             {
                 r.error = 0;
                 r.hours = b.readInt();
@@ -3436,7 +3836,17 @@ namespace PandorasBox
             b = c.Send(b, true);
             var r = new GetWatchedFolderPropertyResult();
             r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            if(r.code < 0)
+            {
+                r.error = b.readInt();
+            }
+            else if(r.code != 310)
+            {
+            	r.code = -1;
+            	r.error = 7; // WrongMessageReturned
+            	return r;
+            }
+            else
             {
                 r.error = 0;
                 r.isEnabled = b.readBool();
@@ -3459,7 +3869,17 @@ namespace PandorasBox
             b = c.Send(b, true);
             var r = new GetWatchedFolderPropertyByItemIdResult();
             r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            if(r.code < 0)
+            {
+                r.error = b.readInt();
+            }
+            else if(r.code != 311)
+            {
+            	r.code = -1;
+            	r.error = 7; // WrongMessageReturned
+            	return r;
+            }
+            else
             {
                 r.error = 0;
                 r.isEnabled = b.readBool();
@@ -3482,7 +3902,17 @@ namespace PandorasBox
             b = c.Send(b, true);
             var r = new GetFolderSpreadToSiteResult();
             r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            if(r.code < 0)
+            {
+                r.error = b.readInt();
+            }
+            else if(r.code != 312)
+            {
+            	r.code = -1;
+            	r.error = 7; // WrongMessageReturned
+            	return r;
+            }
+            else
             {
                 r.error = 0;
                 r.isEnabled = b.readBool();
@@ -3505,7 +3935,17 @@ namespace PandorasBox
             b = c.Send(b, true);
             var r = new GetFolderSpreadToSiteByItemIdResult();
             r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            if(r.code < 0)
+            {
+                r.error = b.readInt();
+            }
+            else if(r.code != 313)
+            {
+            	r.code = -1;
+            	r.error = 7; // WrongMessageReturned
+            	return r;
+            }
+            else
             {
                 r.error = 0;
                 r.isEnabled = b.readBool();
@@ -3583,7 +4023,17 @@ namespace PandorasBox
             b = c.Send(b, true);
             var r = new GetMediaInfoResult();
             r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            if(r.code < 0)
+            {
+                r.error = b.readInt();
+            }
+            else if(r.code != 76)
+            {
+            	r.code = -1;
+            	r.error = 7; // WrongMessageReturned
+            	return r;
+            }
+            else
             {
                 r.error = 0;
                 r.dmxFolderId = b.readInt();
@@ -3719,7 +4169,17 @@ namespace PandorasBox
             b = c.Send(b, true);
             var r = new GetYawPitchRollResult();
             r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            if(r.code < 0)
+            {
+                r.error = b.readInt();
+            }
+            else if(r.code != 324)
+            {
+            	r.code = -1;
+            	r.error = 7; // WrongMessageReturned
+            	return r;
+            }
+            else
             {
                 r.error = 0;
                 r.yaw = b.readDouble();
@@ -3742,7 +4202,17 @@ namespace PandorasBox
             b = c.Send(b, true);
             var r = new GetSiteIdsResult();
             r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            if(r.code < 0)
+            {
+                r.error = b.readInt();
+            }
+            else if(r.code != 317)
+            {
+            	r.code = -1;
+            	r.error = 7; // WrongMessageReturned
+            	return r;
+            }
+            else
             {
                 r.error = 0;
                 r.siteIds = b.readIntBuffer();
@@ -3965,7 +4435,17 @@ namespace PandorasBox
             b = c.Send(b, true);
             var r = new GetHostRevisionNumberResult();
             r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            if(r.code < 0)
+            {
+                r.error = b.readInt();
+            }
+            else if(r.code != 334)
+            {
+            	r.code = -1;
+            	r.error = 7; // WrongMessageReturned
+            	return r;
+            }
+            else
             {
                 r.error = 0;
                 r.revision = b.readInt();
@@ -3989,7 +4469,17 @@ namespace PandorasBox
             b = c.Send(b, true);
             var r = new GetTreeItemInfoResult();
             r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            if(r.code < 0)
+            {
+                r.error = b.readInt();
+            }
+            else if(r.code != 151)
+            {
+            	r.code = -1;
+            	r.error = 7; // WrongMessageReturned
+            	return r;
+            }
+            else
             {
                 r.error = 0;
                 r.resourceType = b.readInt();
@@ -4025,7 +4515,17 @@ namespace PandorasBox
             b = c.Send(b, true);
             var r = new GetMediaInfoByTreeItemIndexResult();
             r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            if(r.code < 0)
+            {
+                r.error = b.readInt();
+            }
+            else if(r.code != 152)
+            {
+            	r.code = -1;
+            	r.error = 7; // WrongMessageReturned
+            	return r;
+            }
+            else
             {
                 r.error = 0;
                 r.dmxFolderId = b.readInt();
@@ -4080,7 +4580,17 @@ namespace PandorasBox
             b = c.Send(b, true);
             var r = new GetPlaylistEntryByDmxIdResult();
             r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            if(r.code < 0)
+            {
+                r.error = b.readInt();
+            }
+            else if(r.code != 193)
+            {
+            	r.code = -1;
+            	r.error = 7; // WrongMessageReturned
+            	return r;
+            }
+            else
             {
                 r.error = 0;
                 r.treeItemIndex = b.readInt();
@@ -4141,7 +4651,17 @@ namespace PandorasBox
             b = c.Send(b, true);
             var r = new GetPlaylistEntryByPathResult();
             r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            if(r.code < 0)
+            {
+                r.error = b.readInt();
+            }
+            else if(r.code != 194)
+            {
+            	r.code = -1;
+            	r.error = 7; // WrongMessageReturned
+            	return r;
+            }
+            else
             {
                 r.error = 0;
                 r.treeItemIndex = b.readInt();
@@ -4202,7 +4722,17 @@ namespace PandorasBox
             b = c.Send(b, true);
             var r = new GetPlaylistEntryByItemIdResult();
             r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            if(r.code < 0)
+            {
+                r.error = b.readInt();
+            }
+            else if(r.code != 195)
+            {
+            	r.code = -1;
+            	r.error = 7; // WrongMessageReturned
+            	return r;
+            }
+            else
             {
                 r.error = 0;
                 r.treeItemIndex = b.readInt();
@@ -4244,7 +4774,17 @@ namespace PandorasBox
             b = c.Send(b, true);
             var r = new GetPlaylistEntryIndicesByDmxIdResult();
             r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            if(r.code < 0)
+            {
+                r.error = b.readInt();
+            }
+            else if(r.code != 196)
+            {
+            	r.code = -1;
+            	r.error = 7; // WrongMessageReturned
+            	return r;
+            }
+            else
             {
                 r.error = 0;
                 r.treeItemIds = b.readIntBuffer();
@@ -4266,7 +4806,17 @@ namespace PandorasBox
             b = c.Send(b, true);
             var r = new GetPlaylistEntryIndicesByPathResult();
             r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            if(r.code < 0)
+            {
+                r.error = b.readInt();
+            }
+            else if(r.code != 197)
+            {
+            	r.code = -1;
+            	r.error = 7; // WrongMessageReturned
+            	return r;
+            }
+            else
             {
                 r.error = 0;
                 r.treeItemIds = b.readIntBuffer();
@@ -4288,7 +4838,17 @@ namespace PandorasBox
             b = c.Send(b, true);
             var r = new GetPlaylistEntryIndicesByItemIdResult();
             r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            if(r.code < 0)
+            {
+                r.error = b.readInt();
+            }
+            else if(r.code != 198)
+            {
+            	r.code = -1;
+            	r.error = 7; // WrongMessageReturned
+            	return r;
+            }
+            else
             {
                 r.error = 0;
                 r.treeItemIds = b.readIntBuffer();
@@ -4311,7 +4871,17 @@ namespace PandorasBox
             b = c.Send(b, true);
             var r = new CreateGraphicLayerGetIdResult();
             r.code = b.readShort();
-            if (r.code < 0) r.error = b.readInt(); else
+            if(r.code < 0)
+            {
+                r.error = b.readInt();
+            }
+            else if(r.code != 96)
+            {
+            	r.code = -1;
+            	r.error = 7; // WrongMessageReturned
+            	return r;
+            }
+            else
             {
                 r.error = 0;
                 r.layerId = b.readInt();
@@ -4415,7 +4985,7 @@ namespace PandorasBox
         public void writeStringNarrow(string value) { writeShort((short)value.Length); list_bytes.AddRange(Encoding.UTF8.GetBytes(value)); }
         public void writeStringWide(string value) { writeShort((short)value.Length); list_bytes.AddRange(Encoding.BigEndianUnicode.GetBytes(value)); }
         public void writeByteBuffer(byte[] value) { writeInt(value.Length); list_bytes.AddRange(value); }
-        public void writeIntBuffer(int[] value) { writeInt(value.Length); foreach (var i in value) { list_bytes.AddRange(i.GetBytesNetworkOrder()); } }
+        public void writeIntBuffer(int[] value) { foreach (var i in value) { list_bytes.AddRange(i.GetBytesNetworkOrder()); } }
 
         // Reading
         private byte[] _readBlock(int length) { var ret = new byte[length]; Array.Copy(read_bytes, position, ret, 0, length);position += length;return ret; }
@@ -4426,9 +4996,9 @@ namespace PandorasBox
         public long readInt64() { return _readBlock(8).GetInt64(); }
         public double readDouble() { return BitConverter.ToDouble(_readBlock(8), 0); }
         public string readStringNarrow() { int length = readShort(); return Encoding.UTF8.GetString(_readBlock(length)); }
-        public string readStringWide() { int length = readShort(); return Encoding.BigEndianUnicode.GetString(_readBlock(length)); }
+        public string readStringWide() { int length = readShort(); return Encoding.BigEndianUnicode.GetString(_readBlock(length * 2)); }
         public byte[] readByteBuffer() { int length = readInt(); return _readBlock(length); }
-        public int[] readIntBuffer() { int length = readInt(); int[] result = new int[length]; for (int i = 0;i < length; i++) { result[i] = _readBlock(4).GetInt32(); }; return result; }
+        public int[] readIntBuffer() { int length = (read_bytes.Length - position) / 4; int[] result = new int[length]; for (int i = 0;i < length; i++) { result[i] = _readBlock(4).GetInt32(); }; return result; }
     }
 
     /// <summary>
@@ -4447,6 +5017,7 @@ namespace PandorasBox
         private string ip;
         private int domain;
         private TcpClient client;
+        private object sendLock = new object();
         private const int PORT = 6211;
 
         public TCP(string ip, int domain = 0)
@@ -4481,34 +5052,37 @@ namespace PandorasBox
             header.CopyTo(message, 0);
             data.CopyTo(message, 17);
 
-            var stream = client.GetStream();
-            stream.Write(message, 0, message.Length);
-            stream.Flush();
-
-            if( !has_response )
+            lock(sendLock)
             {
-                return null;
-            }
+                var stream = client.GetStream();
+                stream.Write(message, 0, message.Length);
+                stream.Flush();
 
-            int bytesread = 0;
-            while(bytesread < 17)
-            {
-                bytesread += stream.Read(header, bytesread, 17 - bytesread);
-            }
+                if( !has_response )
+                {
+                    return null;
+                }
 
-            if(header[0] != 0x50 || header[1] != 0x42 || header[2] != 0x41 || header[3] != 0x55 || header.PBAutoChecksum() != header[16])
-            {
-                // Not a PB Header or checksum fail
-                throw new ApplicationException("Error when communicating with Pandoras Box: Invalid response");
-            }
+                int bytesread = 0;
+                while(bytesread < 17)
+                {
+                    bytesread += stream.Read(header, bytesread, 17 - bytesread);
+                }
 
-            int message_length = header.GetInt16(9);
-            message = new byte[message_length];
+                if(header[0] != 0x50 || header[1] != 0x42 || header[2] != 0x41 || header[3] != 0x55 || header.PBAutoChecksum() != header[16])
+                {
+                    // Not a PB Header or checksum fail
+                    return new ByteUtil(new byte[]{ 255, 255, 0, 0, 0, 7});
+                }
 
-            bytesread = 0;
-            while (bytesread < message_length)
-            {
-                bytesread += stream.Read(message, bytesread, message_length - bytesread);
+                int message_length = header.GetInt16(9);
+                message = new byte[message_length];
+
+                bytesread = 0;
+                while (bytesread < message_length)
+                {
+                    bytesread += stream.Read(message, bytesread, message_length - bytesread);
+                }
             }
 
             return new ByteUtil(message);
