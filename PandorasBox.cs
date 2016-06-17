@@ -34,8 +34,12 @@ namespace PandorasBox
         }
 
         public struct PbAutoResult {
-            public bool Ok { get { return Error == 0; } }
-            public short Code; public int Error;
+            public bool Ok
+            {
+                get { return Error == ErrorCode.None; }
+            }
+            public short Code;
+            public ErrorCode Error;
         }
 
 
@@ -54,7 +58,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 1)
             {
@@ -62,7 +66,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -82,7 +86,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 84)
             {
@@ -90,7 +94,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -111,7 +115,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 115)
             {
@@ -119,16 +123,19 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
 
         public struct GetParamResult
         {
-            public bool Ok { get { return Error == 0; } }
+            public bool Ok
+            {
+                get { return Error == ErrorCode.None; }
+            }
             public short Code;
-            public int Error;
+            public ErrorCode Error;
             public double ParameterValue;
         }
         public GetParamResult GetParam(int siteId, int deviceId, string parameterName)
@@ -143,7 +150,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 79)
             {
@@ -151,7 +158,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
                 r.ParameterValue = b.ReadDouble();
             }
             return r;
@@ -159,9 +166,12 @@ namespace PandorasBox
 
         public struct GetParamByteTuplesResult
         {
-            public bool Ok { get { return Error == 0; } }
+            public bool Ok
+            {
+                get { return Error == ErrorCode.None; }
+            }
             public short Code;
-            public int Error;
+            public ErrorCode Error;
             public int TupleDimension;
             public byte[] TupleData;
         }
@@ -177,7 +187,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 132)
             {
@@ -185,7 +195,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
                 r.TupleDimension = b.ReadInt();
                 r.TupleData = b.ReadByteBuffer();
             }
@@ -207,7 +217,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 39)
             {
@@ -215,7 +225,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -235,7 +245,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 85)
             {
@@ -243,16 +253,19 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
 
         public struct GetParamOfKindResult
         {
-            public bool Ok { get { return Error == 0; } }
+            public bool Ok
+            {
+                get { return Error == ErrorCode.None; }
+            }
             public short Code;
-            public int Error;
+            public ErrorCode Error;
             public double ParameterValue;
         }
         public GetParamOfKindResult GetParamOfKind(int siteId, int deviceId, ParamKind parameterKindId)
@@ -267,7 +280,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 80)
             {
@@ -275,7 +288,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
                 r.ParameterValue = b.ReadDouble();
             }
             return r;
@@ -292,7 +305,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 58)
             {
@@ -300,7 +313,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -316,7 +329,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 99)
             {
@@ -324,7 +337,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -340,7 +353,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 59)
             {
@@ -348,7 +361,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -364,7 +377,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 100)
             {
@@ -372,7 +385,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -390,7 +403,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 232)
             {
@@ -398,16 +411,19 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
 
         public struct GetDeviceIsSelectedResult
         {
-            public bool Ok { get { return Error == 0; } }
+            public bool Ok
+            {
+                get { return Error == ErrorCode.None; }
+            }
             public short Code;
-            public int Error;
+            public ErrorCode Error;
             public byte IsSelected;
         }
         public GetDeviceIsSelectedResult GetDeviceIsSelected(int siteId, int deviceId)
@@ -421,7 +437,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 74)
             {
@@ -429,7 +445,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
                 r.IsSelected = b.ReadByte();
             }
             return r;
@@ -437,9 +453,12 @@ namespace PandorasBox
 
         public struct GetDeviceSelectionCountResult
         {
-            public bool Ok { get { return Error == 0; } }
+            public bool Ok
+            {
+                get { return Error == ErrorCode.None; }
+            }
             public short Code;
-            public int Error;
+            public ErrorCode Error;
             public int SelectedDevicesCount;
         }
         public GetDeviceSelectionCountResult GetDeviceSelectionCount()
@@ -451,7 +470,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 81)
             {
@@ -459,7 +478,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
                 r.SelectedDevicesCount = b.ReadInt();
             }
             return r;
@@ -467,9 +486,12 @@ namespace PandorasBox
 
         public struct GetDeviceInSelectionResult
         {
-            public bool Ok { get { return Error == 0; } }
+            public bool Ok
+            {
+                get { return Error == ErrorCode.None; }
+            }
             public short Code;
-            public int Error;
+            public ErrorCode Error;
             public int SiteId;
             public int DeviceId;
         }
@@ -483,7 +505,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 75)
             {
@@ -491,7 +513,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
                 r.SiteId = b.ReadInt();
                 r.DeviceId = b.ReadInt();
             }
@@ -516,7 +538,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 56)
             {
@@ -524,7 +546,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -543,7 +565,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 2)
             {
@@ -551,7 +573,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -570,7 +592,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 129)
             {
@@ -578,7 +600,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -595,7 +617,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 61)
             {
@@ -603,7 +625,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -619,7 +641,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 144)
             {
@@ -627,7 +649,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -643,7 +665,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 158)
             {
@@ -651,7 +673,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -667,7 +689,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 3)
             {
@@ -675,16 +697,19 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
 
         public struct GetSequenceTransportModeResult
         {
-            public bool Ok { get { return Error == 0; } }
+            public bool Ok
+            {
+                get { return Error == ErrorCode.None; }
+            }
             public short Code;
-            public int Error;
+            public ErrorCode Error;
             public TransportMode TransportMode;
         }
         public GetSequenceTransportModeResult GetSequenceTransportMode(int sequenceId)
@@ -697,7 +722,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 72)
             {
@@ -705,7 +730,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
                 r.TransportMode = (TransportMode)b.ReadInt();
             }
             return r;
@@ -725,7 +750,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 5)
             {
@@ -733,16 +758,19 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
 
         public struct GetSequenceTimeResult
         {
-            public bool Ok { get { return Error == 0; } }
+            public bool Ok
+            {
+                get { return Error == ErrorCode.None; }
+            }
             public short Code;
-            public int Error;
+            public ErrorCode Error;
             public int Hours;
             public int Minutes;
             public int Seconds;
@@ -758,7 +786,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 73)
             {
@@ -766,7 +794,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
                 r.Hours = b.ReadInt();
                 r.Minutes = b.ReadInt();
                 r.Seconds = b.ReadInt();
@@ -786,7 +814,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 6)
             {
@@ -794,7 +822,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -810,7 +838,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 4)
             {
@@ -818,7 +846,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -834,7 +862,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 7)
             {
@@ -842,7 +870,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -858,7 +886,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 8)
             {
@@ -866,16 +894,19 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
 
         public struct GetSequenceTransparencyResult
         {
-            public bool Ok { get { return Error == 0; } }
+            public bool Ok
+            {
+                get { return Error == ErrorCode.None; }
+            }
             public short Code;
-            public int Error;
+            public ErrorCode Error;
             public int Transparency;
         }
         public GetSequenceTransparencyResult GetSequenceTransparency(int sequenceId)
@@ -888,7 +919,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 91)
             {
@@ -896,7 +927,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
                 r.Transparency = b.ReadInt();
             }
             return r;
@@ -913,7 +944,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 41)
             {
@@ -921,7 +952,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -940,7 +971,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 42)
             {
@@ -948,7 +979,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -964,7 +995,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 43)
             {
@@ -972,7 +1003,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -986,7 +1017,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 9)
             {
@@ -994,7 +1025,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -1009,7 +1040,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 10)
             {
@@ -1017,7 +1048,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -1033,7 +1064,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 11)
             {
@@ -1041,7 +1072,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -1058,7 +1089,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 12)
             {
@@ -1066,7 +1097,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -1080,7 +1111,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 35)
             {
@@ -1088,7 +1119,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -1103,7 +1134,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 36)
             {
@@ -1111,7 +1142,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -1127,7 +1158,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 37)
             {
@@ -1135,7 +1166,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -1152,7 +1183,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 38)
             {
@@ -1160,7 +1191,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -1174,7 +1205,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 13)
             {
@@ -1182,7 +1213,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -1197,7 +1228,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 14)
             {
@@ -1205,7 +1236,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -1221,7 +1252,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 15)
             {
@@ -1229,7 +1260,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -1246,7 +1277,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 16)
             {
@@ -1254,7 +1285,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -1269,7 +1300,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 17)
             {
@@ -1277,7 +1308,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -1295,7 +1326,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 98)
             {
@@ -1303,7 +1334,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -1323,7 +1354,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 149)
             {
@@ -1331,7 +1362,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -1347,7 +1378,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 60)
             {
@@ -1355,7 +1386,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -1371,7 +1402,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 101)
             {
@@ -1379,7 +1410,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -1398,7 +1429,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 87)
             {
@@ -1406,7 +1437,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -1425,7 +1456,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 153)
             {
@@ -1433,7 +1464,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -1450,7 +1481,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 63)
             {
@@ -1458,7 +1489,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -1476,7 +1507,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 135)
             {
@@ -1484,7 +1515,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -1502,7 +1533,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 154)
             {
@@ -1510,7 +1541,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -1529,7 +1560,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 124)
             {
@@ -1537,7 +1568,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -1554,7 +1585,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 133)
             {
@@ -1562,7 +1593,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -1580,7 +1611,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 134)
             {
@@ -1588,7 +1619,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -1606,7 +1637,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 155)
             {
@@ -1614,7 +1645,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -1630,7 +1661,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 20)
             {
@@ -1638,7 +1669,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -1654,7 +1685,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 21)
             {
@@ -1662,7 +1693,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -1678,7 +1709,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 125)
             {
@@ -1686,7 +1717,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -1701,7 +1732,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 156)
             {
@@ -1709,7 +1740,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -1724,7 +1755,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 126)
             {
@@ -1732,7 +1763,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -1749,7 +1780,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 234)
             {
@@ -1757,7 +1788,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -1771,7 +1802,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 22)
             {
@@ -1779,7 +1810,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -1795,7 +1826,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 23)
             {
@@ -1803,7 +1834,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -1819,7 +1850,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 24)
             {
@@ -1827,7 +1858,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -1843,7 +1874,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 44)
             {
@@ -1851,7 +1882,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -1867,7 +1898,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 45)
             {
@@ -1875,7 +1906,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -1890,7 +1921,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 147)
             {
@@ -1898,7 +1929,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -1913,7 +1944,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 148)
             {
@@ -1921,7 +1952,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -1936,7 +1967,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 159)
             {
@@ -1944,7 +1975,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -1959,7 +1990,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 160)
             {
@@ -1967,7 +1998,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -1983,7 +2014,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 161)
             {
@@ -1991,7 +2022,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -2005,7 +2036,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 34)
             {
@@ -2013,7 +2044,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -2029,7 +2060,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 170)
             {
@@ -2037,7 +2068,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -2054,7 +2085,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 171)
             {
@@ -2062,7 +2093,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -2078,7 +2109,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 172)
             {
@@ -2086,7 +2117,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -2103,7 +2134,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 173)
             {
@@ -2111,7 +2142,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -2129,7 +2160,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 174)
             {
@@ -2137,7 +2168,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -2154,7 +2185,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 175)
             {
@@ -2162,7 +2193,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -2177,7 +2208,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 25)
             {
@@ -2185,7 +2216,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -2204,7 +2235,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 26)
             {
@@ -2212,7 +2243,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -2229,7 +2260,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 27)
             {
@@ -2237,7 +2268,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -2254,7 +2285,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 28)
             {
@@ -2262,7 +2293,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -2279,7 +2310,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 29)
             {
@@ -2287,7 +2318,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -2304,7 +2335,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 30)
             {
@@ -2312,7 +2343,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -2329,7 +2360,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 31)
             {
@@ -2337,7 +2368,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -2354,7 +2385,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 32)
             {
@@ -2362,7 +2393,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -2379,7 +2410,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 52)
             {
@@ -2387,7 +2418,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -2404,7 +2435,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 33)
             {
@@ -2412,7 +2443,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -2429,7 +2460,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 46)
             {
@@ -2437,7 +2468,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -2452,7 +2483,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 47)
             {
@@ -2460,7 +2491,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -2474,7 +2505,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 48)
             {
@@ -2482,7 +2513,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -2499,7 +2530,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 49)
             {
@@ -2507,7 +2538,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -2523,7 +2554,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 50)
             {
@@ -2531,7 +2562,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -2550,7 +2581,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 51)
             {
@@ -2558,7 +2589,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -2576,7 +2607,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 235)
             {
@@ -2584,7 +2615,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -2601,7 +2632,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 53)
             {
@@ -2609,7 +2640,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -2625,7 +2656,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 54)
             {
@@ -2633,7 +2664,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -2649,7 +2680,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 55)
             {
@@ -2657,7 +2688,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -2671,7 +2702,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 62)
             {
@@ -2679,7 +2710,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -2695,7 +2726,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 64)
             {
@@ -2703,7 +2734,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -2719,7 +2750,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 65)
             {
@@ -2727,7 +2758,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -2745,7 +2776,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 66)
             {
@@ -2753,7 +2784,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -2776,7 +2807,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 67)
             {
@@ -2784,7 +2815,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -2801,7 +2832,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 68)
             {
@@ -2809,7 +2840,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -2826,7 +2857,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 69)
             {
@@ -2834,7 +2865,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -2851,7 +2882,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 70)
             {
@@ -2859,7 +2890,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -2875,7 +2906,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 71)
             {
@@ -2883,16 +2914,19 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
 
         public struct GetClipRemainingTimeResult
         {
-            public bool Ok { get { return Error == 0; } }
+            public bool Ok
+            {
+                get { return Error == ErrorCode.None; }
+            }
             public short Code;
-            public int Error;
+            public ErrorCode Error;
             public int Hours;
             public int Minutes;
             public int Seconds;
@@ -2910,7 +2944,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 77)
             {
@@ -2918,7 +2952,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
                 r.Hours = b.ReadInt();
                 r.Minutes = b.ReadInt();
                 r.Seconds = b.ReadInt();
@@ -2929,9 +2963,12 @@ namespace PandorasBox
 
         public struct GetSeqCueRemainingTimeResult
         {
-            public bool Ok { get { return Error == 0; } }
+            public bool Ok
+            {
+                get { return Error == ErrorCode.None; }
+            }
             public short Code;
-            public int Error;
+            public ErrorCode Error;
             public int Hours;
             public int Minutes;
             public int Seconds;
@@ -2947,7 +2984,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 78)
             {
@@ -2955,7 +2992,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
                 r.Hours = b.ReadInt();
                 r.Minutes = b.ReadInt();
                 r.Seconds = b.ReadInt();
@@ -2966,9 +3003,12 @@ namespace PandorasBox
 
         public struct GetResourceCountResult
         {
-            public bool Ok { get { return Error == 0; } }
+            public bool Ok
+            {
+                get { return Error == ErrorCode.None; }
+            }
             public short Code;
-            public int Error;
+            public ErrorCode Error;
             public int MediaCount;
         }
         public GetResourceCountResult GetResourceCount()
@@ -2980,7 +3020,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 82)
             {
@@ -2988,7 +3028,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
                 r.MediaCount = b.ReadInt();
             }
             return r;
@@ -2996,9 +3036,12 @@ namespace PandorasBox
 
         public struct GetTreeItemCountResult
         {
-            public bool Ok { get { return Error == 0; } }
+            public bool Ok
+            {
+                get { return Error == ErrorCode.None; }
+            }
             public short Code;
-            public int Error;
+            public ErrorCode Error;
             public int TreeItemCount;
         }
         public GetTreeItemCountResult GetTreeItemCount()
@@ -3010,7 +3053,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 150)
             {
@@ -3018,7 +3061,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
                 r.TreeItemCount = b.ReadInt();
             }
             return r;
@@ -3034,7 +3077,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 83)
             {
@@ -3042,7 +3085,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -3058,7 +3101,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 122)
             {
@@ -3066,7 +3109,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -3082,7 +3125,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 157)
             {
@@ -3090,7 +3133,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -3105,7 +3148,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 123)
             {
@@ -3113,7 +3156,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -3130,7 +3173,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 86)
             {
@@ -3138,7 +3181,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -3154,7 +3197,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 90)
             {
@@ -3162,7 +3205,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -3179,7 +3222,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 92)
             {
@@ -3187,7 +3230,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -3209,7 +3252,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 93)
             {
@@ -3217,7 +3260,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -3233,7 +3276,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 94)
             {
@@ -3241,7 +3284,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -3256,7 +3299,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 95)
             {
@@ -3264,16 +3307,19 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
 
         public struct CreateVideoLayerGetIdResult
         {
-            public bool Ok { get { return Error == 0; } }
+            public bool Ok
+            {
+                get { return Error == ErrorCode.None; }
+            }
             public short Code;
-            public int Error;
+            public ErrorCode Error;
             public int LayerId;
         }
         public CreateVideoLayerGetIdResult CreateVideoLayerGetId(int siteId, bool isGraphicLayer)
@@ -3287,7 +3333,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 110)
             {
@@ -3295,7 +3341,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
                 r.LayerId = b.ReadInt();
             }
             return r;
@@ -3313,7 +3359,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 97)
             {
@@ -3321,7 +3367,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -3336,7 +3382,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 102)
             {
@@ -3344,7 +3390,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -3359,7 +3405,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 103)
             {
@@ -3367,7 +3413,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -3383,7 +3429,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 104)
             {
@@ -3391,16 +3437,19 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
 
         public struct GetSeqMediaByParamResult
         {
-            public bool Ok { get { return Error == 0; } }
+            public bool Ok
+            {
+                get { return Error == ErrorCode.None; }
+            }
             public short Code;
-            public int Error;
+            public ErrorCode Error;
             public int DmxFolderId;
             public int DmxFileId;
             public string FilePath;
@@ -3419,7 +3468,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 105)
             {
@@ -3427,7 +3476,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
                 r.DmxFolderId = b.ReadInt();
                 r.DmxFileId = b.ReadInt();
                 r.FilePath = b.ReadStringNarrow();
@@ -3438,9 +3487,12 @@ namespace PandorasBox
 
         public struct GetDeviceTransportModeResult
         {
-            public bool Ok { get { return Error == 0; } }
+            public bool Ok
+            {
+                get { return Error == ErrorCode.None; }
+            }
             public short Code;
-            public int Error;
+            public ErrorCode Error;
             public TransportMode TransportMode;
         }
         public GetDeviceTransportModeResult GetDeviceTransportMode(int siteId, int deviceId)
@@ -3454,7 +3506,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 108)
             {
@@ -3462,7 +3514,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
                 r.TransportMode = (TransportMode)b.ReadInt();
             }
             return r;
@@ -3470,9 +3522,12 @@ namespace PandorasBox
 
         public struct GetIsSiteConnectedResult
         {
-            public bool Ok { get { return Error == 0; } }
+            public bool Ok
+            {
+                get { return Error == ErrorCode.None; }
+            }
             public short Code;
-            public int Error;
+            public ErrorCode Error;
             public bool IsConnected;
         }
         public GetIsSiteConnectedResult GetIsSiteConnected(int siteId)
@@ -3485,7 +3540,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 109)
             {
@@ -3493,7 +3548,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
                 r.IsConnected = b.ReadBool();
             }
             return r;
@@ -3510,7 +3565,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 111)
             {
@@ -3518,7 +3573,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -3534,7 +3589,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 112)
             {
@@ -3542,7 +3597,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -3558,7 +3613,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 113)
             {
@@ -3566,7 +3621,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -3582,7 +3637,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 114)
             {
@@ -3590,7 +3645,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -3606,7 +3661,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 117)
             {
@@ -3614,16 +3669,19 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
 
         public struct GetEnableClxControllerResult
         {
-            public bool Ok { get { return Error == 0; } }
+            public bool Ok
+            {
+                get { return Error == ErrorCode.None; }
+            }
             public short Code;
-            public int Error;
+            public ErrorCode Error;
             public bool IsEnabled;
         }
         public GetEnableClxControllerResult GetEnableClxController(ClxHardware forJogShuttle)
@@ -3636,7 +3694,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 116)
             {
@@ -3644,7 +3702,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
                 r.IsEnabled = b.ReadBool();
             }
             return r;
@@ -3665,7 +3723,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 118)
             {
@@ -3673,7 +3731,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -3693,7 +3751,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 119)
             {
@@ -3701,7 +3759,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -3718,7 +3776,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 120)
             {
@@ -3726,7 +3784,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -3742,7 +3800,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 121)
             {
@@ -3750,16 +3808,19 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
 
         public struct GetResourceIsConsistentResult
         {
-            public bool Ok { get { return Error == 0; } }
+            public bool Ok
+            {
+                get { return Error == ErrorCode.None; }
+            }
             public short Code;
-            public int Error;
+            public ErrorCode Error;
             public Consistency IsContentInconsistent;
         }
         public GetResourceIsConsistentResult GetResourceIsConsistent(int dmxFolderId, int dmxFileId)
@@ -3773,7 +3834,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 127)
             {
@@ -3781,7 +3842,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
                 r.IsContentInconsistent = (Consistency)b.ReadInt();
             }
             return r;
@@ -3789,9 +3850,12 @@ namespace PandorasBox
 
         public struct GetResourceIsConsistentByNameResult
         {
-            public bool Ok { get { return Error == 0; } }
+            public bool Ok
+            {
+                get { return Error == ErrorCode.None; }
+            }
             public short Code;
-            public int Error;
+            public ErrorCode Error;
             public Consistency IsContentInconsistent;
         }
         public GetResourceIsConsistentByNameResult GetResourceIsConsistentByName(string resourcePath)
@@ -3804,7 +3868,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 128)
             {
@@ -3812,7 +3876,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
                 r.IsContentInconsistent = (Consistency)b.ReadInt();
             }
             return r;
@@ -3820,9 +3884,12 @@ namespace PandorasBox
 
         public struct CreateSequenceGetIdResult
         {
-            public bool Ok { get { return Error == 0; } }
+            public bool Ok
+            {
+                get { return Error == ErrorCode.None; }
+            }
             public short Code;
-            public int Error;
+            public ErrorCode Error;
             public int SequenceId;
         }
         public CreateSequenceGetIdResult CreateSequenceGetId()
@@ -3834,7 +3901,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 130)
             {
@@ -3842,7 +3909,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
                 r.SequenceId = b.ReadInt();
             }
             return r;
@@ -3858,7 +3925,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 131)
             {
@@ -3866,7 +3933,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -3886,7 +3953,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 136)
             {
@@ -3894,7 +3961,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -3911,7 +3978,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 233)
             {
@@ -3919,7 +3986,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -3940,7 +4007,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 146)
             {
@@ -3948,7 +4015,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -3965,7 +4032,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 137)
             {
@@ -3973,7 +4040,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -3989,7 +4056,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 138)
             {
@@ -3997,7 +4064,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -4013,7 +4080,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 145)
             {
@@ -4021,16 +4088,19 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
 
         public struct AddEncryptionKeyGetIdResult
         {
-            public bool Ok { get { return Error == 0; } }
+            public bool Ok
+            {
+                get { return Error == ErrorCode.None; }
+            }
             public short Code;
-            public int Error;
+            public ErrorCode Error;
             public bool IsKeyAdded;
         }
         public AddEncryptionKeyGetIdResult AddEncryptionKeyGetId(string encryptionKey)
@@ -4043,7 +4113,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 164)
             {
@@ -4051,7 +4121,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
                 r.IsKeyAdded = b.ReadBool();
             }
             return r;
@@ -4059,9 +4129,12 @@ namespace PandorasBox
 
         public struct AddEncryptionPolicyGetIdResult
         {
-            public bool Ok { get { return Error == 0; } }
+            public bool Ok
+            {
+                get { return Error == ErrorCode.None; }
+            }
             public short Code;
-            public int Error;
+            public ErrorCode Error;
             public bool IsKeyAdded;
         }
         public AddEncryptionPolicyGetIdResult AddEncryptionPolicyGetId(string encryptionPolicy)
@@ -4074,7 +4147,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 165)
             {
@@ -4082,7 +4155,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
                 r.IsKeyAdded = b.ReadBool();
             }
             return r;
@@ -4099,7 +4172,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 166)
             {
@@ -4107,7 +4180,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -4123,7 +4196,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 167)
             {
@@ -4131,7 +4204,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -4148,7 +4221,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 168)
             {
@@ -4156,7 +4229,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -4172,7 +4245,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 169)
             {
@@ -4180,16 +4253,19 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
 
         public struct GetThumbnailByPathResult
         {
-            public bool Ok { get { return Error == 0; } }
+            public bool Ok
+            {
+                get { return Error == ErrorCode.None; }
+            }
             public short Code;
-            public int Error;
+            public ErrorCode Error;
             public int ThumbnailWidth;
             public int ThumbnailHeight;
             public byte[] ThumbnailData;
@@ -4204,7 +4280,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 162)
             {
@@ -4212,7 +4288,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
                 r.ThumbnailWidth = b.ReadInt();
                 r.ThumbnailHeight = b.ReadInt();
                 r.ThumbnailData = b.ReadByteBuffer();
@@ -4222,9 +4298,12 @@ namespace PandorasBox
 
         public struct GetThumbnailByItemIndexResult
         {
-            public bool Ok { get { return Error == 0; } }
+            public bool Ok
+            {
+                get { return Error == ErrorCode.None; }
+            }
             public short Code;
-            public int Error;
+            public ErrorCode Error;
             public int ThumbnailWidth;
             public int ThumbnailHeight;
             public byte[] ThumbnailData;
@@ -4239,7 +4318,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 163)
             {
@@ -4247,7 +4326,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
                 r.ThumbnailWidth = b.ReadInt();
                 r.ThumbnailHeight = b.ReadInt();
                 r.ThumbnailData = b.ReadByteBuffer();
@@ -4267,7 +4346,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 176)
             {
@@ -4275,7 +4354,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -4293,7 +4372,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 177)
             {
@@ -4301,7 +4380,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -4319,7 +4398,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 178)
             {
@@ -4327,7 +4406,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -4346,7 +4425,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 179)
             {
@@ -4354,7 +4433,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -4373,7 +4452,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 180)
             {
@@ -4381,7 +4460,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -4399,7 +4478,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 181)
             {
@@ -4407,7 +4486,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -4423,7 +4502,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 182)
             {
@@ -4431,7 +4510,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -4447,7 +4526,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 183)
             {
@@ -4455,7 +4534,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -4474,7 +4553,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 184)
             {
@@ -4482,7 +4561,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -4499,7 +4578,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 185)
             {
@@ -4507,7 +4586,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -4524,7 +4603,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 186)
             {
@@ -4532,7 +4611,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -4549,7 +4628,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 187)
             {
@@ -4557,7 +4636,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -4573,7 +4652,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 188)
             {
@@ -4581,7 +4660,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -4597,7 +4676,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 189)
             {
@@ -4605,16 +4684,19 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
 
         public struct GetPlaylistSizeByDmxIdResult
         {
-            public bool Ok { get { return Error == 0; } }
+            public bool Ok
+            {
+                get { return Error == ErrorCode.None; }
+            }
             public short Code;
-            public int Error;
+            public ErrorCode Error;
             public int PlaylistSize;
         }
         public GetPlaylistSizeByDmxIdResult GetPlaylistSizeByDmxId(int playlistDmxFolderId, int playlistdmxFileId)
@@ -4628,7 +4710,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 190)
             {
@@ -4636,7 +4718,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
                 r.PlaylistSize = b.ReadInt();
             }
             return r;
@@ -4644,9 +4726,12 @@ namespace PandorasBox
 
         public struct GetPlaylistSizeByPathResult
         {
-            public bool Ok { get { return Error == 0; } }
+            public bool Ok
+            {
+                get { return Error == ErrorCode.None; }
+            }
             public short Code;
-            public int Error;
+            public ErrorCode Error;
             public int PlaylistSize;
         }
         public GetPlaylistSizeByPathResult GetPlaylistSizeByPath(string playlistPath)
@@ -4659,7 +4744,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 191)
             {
@@ -4667,7 +4752,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
                 r.PlaylistSize = b.ReadInt();
             }
             return r;
@@ -4675,9 +4760,12 @@ namespace PandorasBox
 
         public struct GetPlaylistSizeByItemIdResult
         {
-            public bool Ok { get { return Error == 0; } }
+            public bool Ok
+            {
+                get { return Error == ErrorCode.None; }
+            }
             public short Code;
-            public int Error;
+            public ErrorCode Error;
             public int PlaylistSize;
         }
         public GetPlaylistSizeByItemIdResult GetPlaylistSizeByItemId(int playlistItemIndex)
@@ -4690,7 +4778,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 192)
             {
@@ -4698,7 +4786,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
                 r.PlaylistSize = b.ReadInt();
             }
             return r;
@@ -4717,7 +4805,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 199)
             {
@@ -4725,7 +4813,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -4742,7 +4830,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 200)
             {
@@ -4750,7 +4838,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -4767,7 +4855,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 201)
             {
@@ -4775,7 +4863,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -4796,7 +4884,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 202)
             {
@@ -4804,7 +4892,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -4824,7 +4912,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 203)
             {
@@ -4832,7 +4920,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -4852,7 +4940,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 204)
             {
@@ -4860,7 +4948,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -4881,7 +4969,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 205)
             {
@@ -4889,7 +4977,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -4909,7 +4997,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 206)
             {
@@ -4917,7 +5005,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -4937,7 +5025,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 207)
             {
@@ -4945,7 +5033,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -4966,7 +5054,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 208)
             {
@@ -4974,7 +5062,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -4994,7 +5082,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 210)
             {
@@ -5002,7 +5090,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -5022,7 +5110,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 211)
             {
@@ -5030,7 +5118,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -5051,7 +5139,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 212)
             {
@@ -5059,7 +5147,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -5079,7 +5167,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 213)
             {
@@ -5087,7 +5175,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -5107,7 +5195,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 214)
             {
@@ -5115,7 +5203,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -5133,7 +5221,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 215)
             {
@@ -5141,7 +5229,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -5158,7 +5246,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 216)
             {
@@ -5166,7 +5254,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -5183,7 +5271,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 217)
             {
@@ -5191,7 +5279,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -5209,7 +5297,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 218)
             {
@@ -5217,7 +5305,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -5234,7 +5322,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 219)
             {
@@ -5242,7 +5330,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -5259,7 +5347,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 220)
             {
@@ -5267,7 +5355,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -5289,7 +5377,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 222)
             {
@@ -5297,7 +5385,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -5315,7 +5403,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 223)
             {
@@ -5323,7 +5411,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -5344,7 +5432,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 225)
             {
@@ -5352,7 +5440,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -5369,7 +5457,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 226)
             {
@@ -5377,7 +5465,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -5402,7 +5490,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 227)
             {
@@ -5410,7 +5498,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -5426,7 +5514,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 228)
             {
@@ -5434,7 +5522,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -5451,7 +5539,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 230)
             {
@@ -5459,7 +5547,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -5477,7 +5565,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 229)
             {
@@ -5485,7 +5573,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -5504,7 +5592,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 231)
             {
@@ -5512,7 +5600,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -5530,7 +5618,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 239)
             {
@@ -5538,7 +5626,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -5555,7 +5643,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 240)
             {
@@ -5563,7 +5651,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -5580,7 +5668,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 241)
             {
@@ -5588,7 +5676,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -5604,7 +5692,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 242)
             {
@@ -5612,7 +5700,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -5627,7 +5715,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 243)
             {
@@ -5635,7 +5723,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -5650,7 +5738,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 244)
             {
@@ -5658,7 +5746,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -5676,7 +5764,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 245)
             {
@@ -5684,7 +5772,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -5701,7 +5789,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 246)
             {
@@ -5709,7 +5797,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -5726,7 +5814,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 247)
             {
@@ -5734,16 +5822,19 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
 
         public struct GetCanvasDrawCommandsByDmxIdResult
         {
-            public bool Ok { get { return Error == 0; } }
+            public bool Ok
+            {
+                get { return Error == ErrorCode.None; }
+            }
             public short Code;
-            public int Error;
+            public ErrorCode Error;
             public string Commands;
         }
         public GetCanvasDrawCommandsByDmxIdResult GetCanvasDrawCommandsByDmxId(int canvasDmxFolderId, int canvasDmxFileId)
@@ -5757,7 +5848,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 248)
             {
@@ -5765,7 +5856,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
                 r.Commands = b.ReadStringNarrow();
             }
             return r;
@@ -5773,9 +5864,12 @@ namespace PandorasBox
 
         public struct GetCanvasDrawCommandsByPathResult
         {
-            public bool Ok { get { return Error == 0; } }
+            public bool Ok
+            {
+                get { return Error == ErrorCode.None; }
+            }
             public short Code;
-            public int Error;
+            public ErrorCode Error;
             public string Commands;
         }
         public GetCanvasDrawCommandsByPathResult GetCanvasDrawCommandsByPath(string canvasResourcePath)
@@ -5788,7 +5882,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 249)
             {
@@ -5796,7 +5890,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
                 r.Commands = b.ReadStringNarrow();
             }
             return r;
@@ -5804,9 +5898,12 @@ namespace PandorasBox
 
         public struct GetCanvasDrawCommandsByItemIdResult
         {
-            public bool Ok { get { return Error == 0; } }
+            public bool Ok
+            {
+                get { return Error == ErrorCode.None; }
+            }
             public short Code;
-            public int Error;
+            public ErrorCode Error;
             public string Commands;
         }
         public GetCanvasDrawCommandsByItemIdResult GetCanvasDrawCommandsByItemId(int canvasItemIndex)
@@ -5819,7 +5916,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 250)
             {
@@ -5827,7 +5924,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
                 r.Commands = b.ReadStringNarrow();
             }
             return r;
@@ -5835,9 +5932,12 @@ namespace PandorasBox
 
         public struct GetResourceWidthByDmxIdResult
         {
-            public bool Ok { get { return Error == 0; } }
+            public bool Ok
+            {
+                get { return Error == ErrorCode.None; }
+            }
             public short Code;
-            public int Error;
+            public ErrorCode Error;
             public int Width;
         }
         public GetResourceWidthByDmxIdResult GetResourceWidthByDmxId(int dmxFolderId, int dmxFileId)
@@ -5851,7 +5951,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 251)
             {
@@ -5859,7 +5959,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
                 r.Width = b.ReadInt();
             }
             return r;
@@ -5867,9 +5967,12 @@ namespace PandorasBox
 
         public struct GetResourceWidthByPathResult
         {
-            public bool Ok { get { return Error == 0; } }
+            public bool Ok
+            {
+                get { return Error == ErrorCode.None; }
+            }
             public short Code;
-            public int Error;
+            public ErrorCode Error;
             public int Width;
         }
         public GetResourceWidthByPathResult GetResourceWidthByPath(string folderPathToProject)
@@ -5882,7 +5985,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 252)
             {
@@ -5890,7 +5993,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
                 r.Width = b.ReadInt();
             }
             return r;
@@ -5898,9 +6001,12 @@ namespace PandorasBox
 
         public struct GetResourceWidthByItemIdResult
         {
-            public bool Ok { get { return Error == 0; } }
+            public bool Ok
+            {
+                get { return Error == ErrorCode.None; }
+            }
             public short Code;
-            public int Error;
+            public ErrorCode Error;
             public int Width;
         }
         public GetResourceWidthByItemIdResult GetResourceWidthByItemId(int itemId)
@@ -5913,7 +6019,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 253)
             {
@@ -5921,7 +6027,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
                 r.Width = b.ReadInt();
             }
             return r;
@@ -5929,9 +6035,12 @@ namespace PandorasBox
 
         public struct GetResourceHeightByDmxIdResult
         {
-            public bool Ok { get { return Error == 0; } }
+            public bool Ok
+            {
+                get { return Error == ErrorCode.None; }
+            }
             public short Code;
-            public int Error;
+            public ErrorCode Error;
             public int Height;
         }
         public GetResourceHeightByDmxIdResult GetResourceHeightByDmxId(int dmxFolderId, int dmxFileId)
@@ -5945,7 +6054,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 254)
             {
@@ -5953,7 +6062,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
                 r.Height = b.ReadInt();
             }
             return r;
@@ -5961,9 +6070,12 @@ namespace PandorasBox
 
         public struct GetResourceHeightByPathResult
         {
-            public bool Ok { get { return Error == 0; } }
+            public bool Ok
+            {
+                get { return Error == ErrorCode.None; }
+            }
             public short Code;
-            public int Error;
+            public ErrorCode Error;
             public int Height;
         }
         public GetResourceHeightByPathResult GetResourceHeightByPath(string folderPathToProject)
@@ -5976,7 +6088,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 255)
             {
@@ -5984,7 +6096,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
                 r.Height = b.ReadInt();
             }
             return r;
@@ -5992,9 +6104,12 @@ namespace PandorasBox
 
         public struct GetResourceHeightByItemIdResult
         {
-            public bool Ok { get { return Error == 0; } }
+            public bool Ok
+            {
+                get { return Error == ErrorCode.None; }
+            }
             public short Code;
-            public int Error;
+            public ErrorCode Error;
             public int Height;
         }
         public GetResourceHeightByItemIdResult GetResourceHeightByItemId(int itemId)
@@ -6007,7 +6122,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 256)
             {
@@ -6015,7 +6130,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
                 r.Height = b.ReadInt();
             }
             return r;
@@ -6023,9 +6138,12 @@ namespace PandorasBox
 
         public struct GetProjectPathOnDiscResult
         {
-            public bool Ok { get { return Error == 0; } }
+            public bool Ok
+            {
+                get { return Error == ErrorCode.None; }
+            }
             public short Code;
-            public int Error;
+            public ErrorCode Error;
             public string Commands;
         }
         public GetProjectPathOnDiscResult GetProjectPathOnDisc()
@@ -6037,7 +6155,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 257)
             {
@@ -6045,7 +6163,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
                 r.Commands = b.ReadStringNarrow();
             }
             return r;
@@ -6062,7 +6180,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 258)
             {
@@ -6070,7 +6188,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -6086,7 +6204,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 259)
             {
@@ -6094,7 +6212,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -6110,7 +6228,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 260)
             {
@@ -6118,7 +6236,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -6134,7 +6252,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 261)
             {
@@ -6142,7 +6260,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -6158,7 +6276,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 263)
             {
@@ -6166,7 +6284,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -6183,7 +6301,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 262)
             {
@@ -6191,7 +6309,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -6208,7 +6326,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 265)
             {
@@ -6216,7 +6334,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -6232,7 +6350,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 266)
             {
@@ -6240,7 +6358,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -6256,7 +6374,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 267)
             {
@@ -6264,7 +6382,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -6280,7 +6398,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 268)
             {
@@ -6288,7 +6406,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -6303,7 +6421,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 269)
             {
@@ -6311,7 +6429,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -6326,7 +6444,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 270)
             {
@@ -6334,7 +6452,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -6350,7 +6468,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 271)
             {
@@ -6358,7 +6476,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -6373,7 +6491,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 272)
             {
@@ -6381,7 +6499,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -6396,7 +6514,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 273)
             {
@@ -6404,7 +6522,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -6425,7 +6543,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 274)
             {
@@ -6433,7 +6551,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -6451,7 +6569,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 275)
             {
@@ -6459,7 +6577,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -6476,7 +6594,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 276)
             {
@@ -6484,16 +6602,19 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
 
         public struct GetCueNameResult
         {
-            public bool Ok { get { return Error == 0; } }
+            public bool Ok
+            {
+                get { return Error == ErrorCode.None; }
+            }
             public short Code;
-            public int Error;
+            public ErrorCode Error;
             public string CueName;
         }
         public GetCueNameResult GetCueName(int sequenceId, int cueId)
@@ -6507,7 +6628,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 277)
             {
@@ -6515,7 +6636,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
                 r.CueName = b.ReadStringNarrow();
             }
             return r;
@@ -6532,7 +6653,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 278)
             {
@@ -6540,7 +6661,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -6557,7 +6678,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 279)
             {
@@ -6565,7 +6686,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -6583,7 +6704,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 280)
             {
@@ -6591,7 +6712,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -6609,7 +6730,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 282)
             {
@@ -6617,7 +6738,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -6637,7 +6758,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 283)
             {
@@ -6645,7 +6766,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -6664,7 +6785,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 284)
             {
@@ -6672,7 +6793,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -6692,7 +6813,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 285)
             {
@@ -6700,7 +6821,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -6720,7 +6841,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 286)
             {
@@ -6728,7 +6849,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -6744,7 +6865,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 287)
             {
@@ -6752,7 +6873,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -6770,7 +6891,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 288)
             {
@@ -6778,7 +6899,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -6795,7 +6916,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 289)
             {
@@ -6803,7 +6924,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -6822,7 +6943,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 290)
             {
@@ -6830,7 +6951,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -6847,7 +6968,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 291)
             {
@@ -6855,7 +6976,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -6874,7 +6995,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 292)
             {
@@ -6882,7 +7003,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -6900,7 +7021,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 293)
             {
@@ -6908,7 +7029,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -6926,7 +7047,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 294)
             {
@@ -6934,16 +7055,19 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
 
         public struct GetCurrentTimeCueInfoResult
         {
-            public bool Ok { get { return Error == 0; } }
+            public bool Ok
+            {
+                get { return Error == ErrorCode.None; }
+            }
             public short Code;
-            public int Error;
+            public ErrorCode Error;
             public int Hours;
             public int Minutes;
             public int Seconds;
@@ -6973,7 +7097,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 295)
             {
@@ -6981,7 +7105,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
                 r.Hours = b.ReadInt();
                 r.Minutes = b.ReadInt();
                 r.Seconds = b.ReadInt();
@@ -7014,7 +7138,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 296)
             {
@@ -7022,7 +7146,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -7038,7 +7162,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 297)
             {
@@ -7046,7 +7170,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -7062,7 +7186,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 298)
             {
@@ -7070,7 +7194,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -7085,7 +7209,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 299)
             {
@@ -7093,7 +7217,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -7111,7 +7235,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 300)
             {
@@ -7119,7 +7243,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -7138,7 +7262,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 301)
             {
@@ -7146,7 +7270,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -7165,7 +7289,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 302)
             {
@@ -7173,7 +7297,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -7193,7 +7317,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 303)
             {
@@ -7201,7 +7325,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -7221,7 +7345,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 304)
             {
@@ -7229,7 +7353,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -7246,7 +7370,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 305)
             {
@@ -7254,7 +7378,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -7271,7 +7395,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 306)
             {
@@ -7279,7 +7403,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -7296,7 +7420,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 307)
             {
@@ -7304,7 +7428,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -7321,7 +7445,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 308)
             {
@@ -7329,7 +7453,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -7346,7 +7470,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 309)
             {
@@ -7354,16 +7478,19 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
 
         public struct GetWatchedFolderPropertyResult
         {
-            public bool Ok { get { return Error == 0; } }
+            public bool Ok
+            {
+                get { return Error == ErrorCode.None; }
+            }
             public short Code;
-            public int Error;
+            public ErrorCode Error;
             public bool IsEnabled;
         }
         public GetWatchedFolderPropertyResult GetWatchedFolderProperty(string projectPath, WatchFolderProperty watchFolderProperty)
@@ -7377,7 +7504,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 310)
             {
@@ -7385,7 +7512,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
                 r.IsEnabled = b.ReadBool();
             }
             return r;
@@ -7393,9 +7520,12 @@ namespace PandorasBox
 
         public struct GetWatchedFolderPropertyByItemIdResult
         {
-            public bool Ok { get { return Error == 0; } }
+            public bool Ok
+            {
+                get { return Error == ErrorCode.None; }
+            }
             public short Code;
-            public int Error;
+            public ErrorCode Error;
             public bool IsEnabled;
         }
         public GetWatchedFolderPropertyByItemIdResult GetWatchedFolderPropertyByItemId(int treeItemIndex, WatchFolderProperty watchFolderProperty)
@@ -7409,7 +7539,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 311)
             {
@@ -7417,7 +7547,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
                 r.IsEnabled = b.ReadBool();
             }
             return r;
@@ -7425,9 +7555,12 @@ namespace PandorasBox
 
         public struct GetFolderSpreadToSiteResult
         {
-            public bool Ok { get { return Error == 0; } }
+            public bool Ok
+            {
+                get { return Error == ErrorCode.None; }
+            }
             public short Code;
-            public int Error;
+            public ErrorCode Error;
             public bool IsEnabled;
         }
         public GetFolderSpreadToSiteResult GetFolderSpreadToSite(string projectPath, int siteId)
@@ -7441,7 +7574,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 312)
             {
@@ -7449,7 +7582,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
                 r.IsEnabled = b.ReadBool();
             }
             return r;
@@ -7457,9 +7590,12 @@ namespace PandorasBox
 
         public struct GetFolderSpreadToSiteByItemIdResult
         {
-            public bool Ok { get { return Error == 0; } }
+            public bool Ok
+            {
+                get { return Error == ErrorCode.None; }
+            }
             public short Code;
-            public int Error;
+            public ErrorCode Error;
             public bool IsEnabled;
         }
         public GetFolderSpreadToSiteByItemIdResult GetFolderSpreadToSiteByItemId(int treeItemIndex, int siteId)
@@ -7473,7 +7609,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 313)
             {
@@ -7481,7 +7617,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
                 r.IsEnabled = b.ReadBool();
             }
             return r;
@@ -7496,7 +7632,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 314)
             {
@@ -7504,7 +7640,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -7518,7 +7654,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 315)
             {
@@ -7526,7 +7662,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -7540,7 +7676,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 316)
             {
@@ -7548,7 +7684,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -7566,7 +7702,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 18)
             {
@@ -7574,7 +7710,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -7593,7 +7729,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 19)
             {
@@ -7601,16 +7737,19 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
 
         public struct GetResourceInfoResult
         {
-            public bool Ok { get { return Error == 0; } }
+            public bool Ok
+            {
+                get { return Error == ErrorCode.None; }
+            }
             public short Code;
-            public int Error;
+            public ErrorCode Error;
             public int DmxFolderId;
             public int DmxFileId;
             public string ResourceName;
@@ -7635,7 +7774,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 76)
             {
@@ -7643,7 +7782,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
                 r.DmxFolderId = b.ReadInt();
                 r.DmxFileId = b.ReadInt();
                 r.ResourceName = b.ReadStringNarrow();
@@ -7692,7 +7831,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 314)
             {
@@ -7700,7 +7839,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -7734,7 +7873,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 315)
             {
@@ -7742,7 +7881,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -7776,7 +7915,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 316)
             {
@@ -7784,7 +7923,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -7806,7 +7945,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 323)
             {
@@ -7814,16 +7953,19 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
 
         public struct GetYawPitchRollResult
         {
-            public bool Ok { get { return Error == 0; } }
+            public bool Ok
+            {
+                get { return Error == ErrorCode.None; }
+            }
             public short Code;
-            public int Error;
+            public ErrorCode Error;
             public double Yaw;
             public double Pitch;
             public double Roll;
@@ -7840,7 +7982,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 324)
             {
@@ -7848,7 +7990,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
                 r.Yaw = b.ReadDouble();
                 r.Pitch = b.ReadDouble();
                 r.Roll = b.ReadDouble();
@@ -7858,9 +8000,12 @@ namespace PandorasBox
 
         public struct GetSiteIdsResult
         {
-            public bool Ok { get { return Error == 0; } }
+            public bool Ok
+            {
+                get { return Error == ErrorCode.None; }
+            }
             public short Code;
-            public int Error;
+            public ErrorCode Error;
             public int[] SiteIds;
         }
         public GetSiteIdsResult GetSiteIds()
@@ -7872,7 +8017,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 317)
             {
@@ -7880,7 +8025,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
                 r.SiteIds = b.ReadIntBuffer();
             }
             return r;
@@ -7899,7 +8044,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 341)
             {
@@ -7907,7 +8052,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -7924,7 +8069,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 342)
             {
@@ -7932,7 +8077,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -7946,7 +8091,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 354)
             {
@@ -7954,7 +8099,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -7970,7 +8115,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 355)
             {
@@ -7978,7 +8123,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -7998,7 +8143,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 352)
             {
@@ -8006,7 +8151,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -8025,7 +8170,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 353)
             {
@@ -8033,7 +8178,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -8053,7 +8198,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 356)
             {
@@ -8061,7 +8206,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -8080,7 +8225,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 357)
             {
@@ -8088,7 +8233,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -8107,7 +8252,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 358)
             {
@@ -8115,7 +8260,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -8132,7 +8277,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 359)
             {
@@ -8140,7 +8285,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -8157,7 +8302,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 281)
             {
@@ -8165,7 +8310,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -8182,7 +8327,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 236)
             {
@@ -8190,7 +8335,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -8208,7 +8353,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 237)
             {
@@ -8216,7 +8361,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -8234,7 +8379,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 238)
             {
@@ -8242,7 +8387,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -8256,7 +8401,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 224)
             {
@@ -8264,7 +8409,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
@@ -8287,7 +8432,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 264)
             {
@@ -8295,16 +8440,19 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
 
         public struct GetHostRevisionNumberResult
         {
-            public bool Ok { get { return Error == 0; } }
+            public bool Ok
+            {
+                get { return Error == ErrorCode.None; }
+            }
             public short Code;
-            public int Error;
+            public ErrorCode Error;
             public int Revision;
         }
         public GetHostRevisionNumberResult GetHostRevisionNumber()
@@ -8316,7 +8464,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 334)
             {
@@ -8324,7 +8472,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
                 r.Revision = b.ReadInt();
             }
             return r;
@@ -8332,9 +8480,12 @@ namespace PandorasBox
 
         public struct GetTreeItemInfoResult
         {
-            public bool Ok { get { return Error == 0; } }
+            public bool Ok
+            {
+                get { return Error == ErrorCode.None; }
+            }
             public short Code;
-            public int Error;
+            public ErrorCode Error;
             public ResourceType ResourceType;
             public string ResourcePath;
             public string FolderPath;
@@ -8349,7 +8500,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 151)
             {
@@ -8357,7 +8508,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
                 r.ResourceType = (ResourceType)b.ReadInt();
                 r.ResourcePath = b.ReadStringWide();
                 r.FolderPath = b.ReadStringWide();
@@ -8367,9 +8518,12 @@ namespace PandorasBox
 
         public struct GetResourceInfoByTreeItemIndexResult
         {
-            public bool Ok { get { return Error == 0; } }
+            public bool Ok
+            {
+                get { return Error == ErrorCode.None; }
+            }
             public short Code;
-            public int Error;
+            public ErrorCode Error;
             public int DmxFolderId;
             public int DmxFileId;
             public string ResourceName;
@@ -8394,7 +8548,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 152)
             {
@@ -8402,7 +8556,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
                 r.DmxFolderId = b.ReadInt();
                 r.DmxFileId = b.ReadInt();
                 r.ResourceName = b.ReadStringNarrow();
@@ -8422,9 +8576,12 @@ namespace PandorasBox
 
         public struct GetPlaylistEntryByDmxIdResult
         {
-            public bool Ok { get { return Error == 0; } }
+            public bool Ok
+            {
+                get { return Error == ErrorCode.None; }
+            }
             public short Code;
-            public int Error;
+            public ErrorCode Error;
             public int TreeItemIndex;
             public string ResourceName;
             public string ResourcePath;
@@ -8458,7 +8615,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 193)
             {
@@ -8466,7 +8623,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
                 r.TreeItemIndex = b.ReadInt();
                 r.ResourceName = b.ReadStringNarrow();
                 r.ResourcePath = b.ReadStringNarrow();
@@ -8493,9 +8650,12 @@ namespace PandorasBox
 
         public struct GetPlaylistEntryByPathResult
         {
-            public bool Ok { get { return Error == 0; } }
+            public bool Ok
+            {
+                get { return Error == ErrorCode.None; }
+            }
             public short Code;
-            public int Error;
+            public ErrorCode Error;
             public int TreeItemIndex;
             public string ResourceName;
             public string ResourcePath;
@@ -8528,7 +8688,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 194)
             {
@@ -8536,7 +8696,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
                 r.TreeItemIndex = b.ReadInt();
                 r.ResourceName = b.ReadStringNarrow();
                 r.ResourcePath = b.ReadStringNarrow();
@@ -8563,9 +8723,12 @@ namespace PandorasBox
 
         public struct GetPlaylistEntryByItemIdResult
         {
-            public bool Ok { get { return Error == 0; } }
+            public bool Ok
+            {
+                get { return Error == ErrorCode.None; }
+            }
             public short Code;
-            public int Error;
+            public ErrorCode Error;
             public int TreeItemIndex;
             public string ResourceName;
             public string ResourcePath;
@@ -8598,7 +8761,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 195)
             {
@@ -8606,7 +8769,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
                 r.TreeItemIndex = b.ReadInt();
                 r.ResourceName = b.ReadStringNarrow();
                 r.ResourcePath = b.ReadStringNarrow();
@@ -8633,9 +8796,12 @@ namespace PandorasBox
 
         public struct GetPlaylistEntryIndicesByDmxIdResult
         {
-            public bool Ok { get { return Error == 0; } }
+            public bool Ok
+            {
+                get { return Error == ErrorCode.None; }
+            }
             public short Code;
-            public int Error;
+            public ErrorCode Error;
             public int[] TreeItemIds;
         }
         public GetPlaylistEntryIndicesByDmxIdResult GetPlaylistEntryIndicesByDmxId(int playlistDmxFolderId, int playlistdmxFileId)
@@ -8649,7 +8815,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 196)
             {
@@ -8657,7 +8823,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
                 r.TreeItemIds = b.ReadIntBuffer();
             }
             return r;
@@ -8665,9 +8831,12 @@ namespace PandorasBox
 
         public struct GetPlaylistEntryIndicesByPathResult
         {
-            public bool Ok { get { return Error == 0; } }
+            public bool Ok
+            {
+                get { return Error == ErrorCode.None; }
+            }
             public short Code;
-            public int Error;
+            public ErrorCode Error;
             public int[] TreeItemIds;
         }
         public GetPlaylistEntryIndicesByPathResult GetPlaylistEntryIndicesByPath(string playlistPath)
@@ -8680,7 +8849,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 197)
             {
@@ -8688,7 +8857,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
                 r.TreeItemIds = b.ReadIntBuffer();
             }
             return r;
@@ -8696,9 +8865,12 @@ namespace PandorasBox
 
         public struct GetPlaylistEntryIndicesByItemIdResult
         {
-            public bool Ok { get { return Error == 0; } }
+            public bool Ok
+            {
+                get { return Error == ErrorCode.None; }
+            }
             public short Code;
-            public int Error;
+            public ErrorCode Error;
             public int[] TreeItemIds;
         }
         public GetPlaylistEntryIndicesByItemIdResult GetPlaylistEntryIndicesByItemId(int playlistItemIndex)
@@ -8711,7 +8883,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 198)
             {
@@ -8719,7 +8891,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
                 r.TreeItemIds = b.ReadIntBuffer();
             }
             return r;
@@ -8727,9 +8899,12 @@ namespace PandorasBox
 
         public struct CreateGraphicLayerGetIdResult
         {
-            public bool Ok { get { return Error == 0; } }
+            public bool Ok
+            {
+                get { return Error == ErrorCode.None; }
+            }
             public short Code;
-            public int Error;
+            public ErrorCode Error;
             public int LayerId;
         }
         public CreateGraphicLayerGetIdResult CreateGraphicLayerGetId(int siteId, bool isGraphicLayer)
@@ -8743,7 +8918,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 96)
             {
@@ -8751,7 +8926,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
                 r.LayerId = b.ReadInt();
             }
             return r;
@@ -8770,7 +8945,7 @@ namespace PandorasBox
             r.Code = b.ReadShort();
             if (r.Code < 0)
             {
-                r.Error = b.ReadInt();
+                r.Error = (ErrorCode)b.ReadInt();
             }
             else if(r.Code != 282)
             {
@@ -8778,7 +8953,7 @@ namespace PandorasBox
             }
             else
             {
-                r.Error = 0;
+                r.Error = ErrorCode.None;
             }
             return r;
         }
