@@ -9416,7 +9416,7 @@ namespace PandorasBox
         public string ReadStringNarrow() { int length = ReadShort(); return Encoding.UTF8.GetString(_readBlock(length)); }
         public string ReadStringWide() { int length = ReadShort(); return Encoding.BigEndianUnicode.GetString(_readBlock(length * 2)); }
         public byte[] ReadByteBuffer() { int length = ReadInt(); return _readBlock(length); }
-        public int[] ReadIntBuffer() { int length = (read_bytes.Length - position) / 4; int[] result = new int[length]; for (int i = 0;i < length; i++) { result[i] = PbUtil.GetInt32(_readBlock(4)); }; return result; }
+        public int[] ReadIntBuffer() { int length = (readBytes.Length - position) / 4; int[] result = new int[length]; for (int i = 0;i < length; i++) { result[i] = PbUtil.GetInt32(_readBlock(4)); }; return result; }
     }
 
     /// <summary>
