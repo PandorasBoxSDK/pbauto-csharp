@@ -1,4 +1,4 @@
-/* Pandoras Box Automation - pbauto-csharp v0.0.13077 TESTING @2016-06-13 <support@coolux.de> */
+/* Pandoras Box Automation - pbauto-csharp v0.0.13077 TESTING @2016-06-17 <support@coolux.de> */
 
 using System;
 using System.Collections.Generic;
@@ -52,7 +52,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 1)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -69,7 +80,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 84)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -87,14 +109,26 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 115)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
         public struct GetParamResult
         {
             public bool Ok { get { return Error == 0; } }
-            public short Code; public int Error;
+            public short Code;
+            public int Error;
             public double ParameterValue;
         }
         public GetParamResult GetParam(int siteId, int deviceId, string parameterName)
@@ -107,7 +141,15 @@ namespace PandorasBox
             b = connector.Send(b, true);
             var r = new GetParamResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 79)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
             {
                 r.Error = 0;
                 r.ParameterValue = b.ReadDouble();
@@ -118,7 +160,8 @@ namespace PandorasBox
         public struct GetParamByteTuplesResult
         {
             public bool Ok { get { return Error == 0; } }
-            public short Code; public int Error;
+            public short Code;
+            public int Error;
             public int TupleDimension;
             public byte[] TupleData;
         }
@@ -132,7 +175,15 @@ namespace PandorasBox
             b = connector.Send(b, true);
             var r = new GetParamByteTuplesResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 132)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
             {
                 r.Error = 0;
                 r.TupleDimension = b.ReadInt();
@@ -154,7 +205,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 39)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -171,14 +233,26 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 85)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
         public struct GetParamOfKindResult
         {
             public bool Ok { get { return Error == 0; } }
-            public short Code; public int Error;
+            public short Code;
+            public int Error;
             public double ParameterValue;
         }
         public GetParamOfKindResult GetParamOfKind(int siteId, int deviceId, ParamKind parameterKindId)
@@ -191,7 +265,15 @@ namespace PandorasBox
             b = connector.Send(b, true);
             var r = new GetParamOfKindResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 80)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
             {
                 r.Error = 0;
                 r.ParameterValue = b.ReadDouble();
@@ -208,7 +290,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 58)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -221,7 +314,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 99)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -234,7 +338,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 59)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -247,7 +362,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 100)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -262,14 +388,26 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 232)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
         public struct GetDeviceIsSelectedResult
         {
             public bool Ok { get { return Error == 0; } }
-            public short Code; public int Error;
+            public short Code;
+            public int Error;
             public byte IsSelected;
         }
         public GetDeviceIsSelectedResult GetDeviceIsSelected(int siteId, int deviceId)
@@ -281,7 +419,15 @@ namespace PandorasBox
             b = connector.Send(b, true);
             var r = new GetDeviceIsSelectedResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 74)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
             {
                 r.Error = 0;
                 r.IsSelected = b.ReadByte();
@@ -292,7 +438,8 @@ namespace PandorasBox
         public struct GetDeviceSelectionCountResult
         {
             public bool Ok { get { return Error == 0; } }
-            public short Code; public int Error;
+            public short Code;
+            public int Error;
             public int SelectedDevicesCount;
         }
         public GetDeviceSelectionCountResult GetDeviceSelectionCount()
@@ -302,7 +449,15 @@ namespace PandorasBox
             b = connector.Send(b, true);
             var r = new GetDeviceSelectionCountResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 81)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
             {
                 r.Error = 0;
                 r.SelectedDevicesCount = b.ReadInt();
@@ -313,7 +468,8 @@ namespace PandorasBox
         public struct GetDeviceInSelectionResult
         {
             public bool Ok { get { return Error == 0; } }
-            public short Code; public int Error;
+            public short Code;
+            public int Error;
             public int SiteId;
             public int DeviceId;
         }
@@ -325,7 +481,15 @@ namespace PandorasBox
             b = connector.Send(b, true);
             var r = new GetDeviceInSelectionResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 75)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
             {
                 r.Error = 0;
                 r.SiteId = b.ReadInt();
@@ -350,7 +514,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 56)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -366,7 +541,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 2)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -382,7 +568,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 129)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -396,7 +593,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 61)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -409,7 +617,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 144)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -422,7 +641,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 158)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -435,14 +665,26 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 3)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
         public struct GetSequenceTransportModeResult
         {
             public bool Ok { get { return Error == 0; } }
-            public short Code; public int Error;
+            public short Code;
+            public int Error;
             public TransportMode TransportMode;
         }
         public GetSequenceTransportModeResult GetSequenceTransportMode(int sequenceId)
@@ -453,7 +695,15 @@ namespace PandorasBox
             b = connector.Send(b, true);
             var r = new GetSequenceTransportModeResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 72)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
             {
                 r.Error = 0;
                 r.TransportMode = (TransportMode)b.ReadInt();
@@ -473,14 +723,26 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 5)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
         public struct GetSequenceTimeResult
         {
             public bool Ok { get { return Error == 0; } }
-            public short Code; public int Error;
+            public short Code;
+            public int Error;
             public int Hours;
             public int Minutes;
             public int Seconds;
@@ -494,7 +756,15 @@ namespace PandorasBox
             b = connector.Send(b, true);
             var r = new GetSequenceTimeResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 73)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
             {
                 r.Error = 0;
                 r.Hours = b.ReadInt();
@@ -514,7 +784,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 6)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -527,7 +808,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 4)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -540,7 +832,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 7)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -553,14 +856,26 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 8)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
         public struct GetSequenceTransparencyResult
         {
             public bool Ok { get { return Error == 0; } }
-            public short Code; public int Error;
+            public short Code;
+            public int Error;
             public int Transparency;
         }
         public GetSequenceTransparencyResult GetSequenceTransparency(int sequenceId)
@@ -571,7 +886,15 @@ namespace PandorasBox
             b = connector.Send(b, true);
             var r = new GetSequenceTransparencyResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 91)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
             {
                 r.Error = 0;
                 r.Transparency = b.ReadInt();
@@ -588,7 +911,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 41)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -604,7 +938,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 42)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -617,7 +962,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 43)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -628,7 +984,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 9)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -640,7 +1007,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 10)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -653,7 +1031,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 11)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -667,7 +1056,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 12)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -678,7 +1078,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 35)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -690,7 +1101,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 36)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -703,7 +1125,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 37)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -717,7 +1150,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 38)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -728,7 +1172,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 13)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -740,7 +1195,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 14)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -753,7 +1219,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 15)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -767,7 +1244,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 16)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -779,7 +1267,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 17)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -794,7 +1293,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 98)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -811,7 +1321,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 149)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -824,7 +1345,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 60)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -837,7 +1369,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 101)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -853,7 +1396,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 87)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -869,7 +1423,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 153)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -883,7 +1448,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 63)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -898,7 +1474,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 135)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -913,7 +1500,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 154)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -929,7 +1527,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 124)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -943,7 +1552,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 133)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -958,7 +1578,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 134)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -973,7 +1604,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 155)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -986,7 +1628,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 20)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -999,7 +1652,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 21)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -1012,7 +1676,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 125)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -1024,7 +1699,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 156)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -1036,7 +1722,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 126)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -1050,7 +1747,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 234)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -1061,7 +1769,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 22)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -1074,7 +1793,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 23)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -1087,7 +1817,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 24)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -1100,7 +1841,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 44)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -1113,7 +1865,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 45)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -1125,7 +1888,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 147)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -1137,7 +1911,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 148)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -1149,7 +1934,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 159)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -1161,7 +1957,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 160)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -1174,7 +1981,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 161)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -1185,7 +2003,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 34)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -1198,7 +2027,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 170)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -1212,7 +2052,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 171)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -1225,7 +2076,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 172)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -1239,7 +2101,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 173)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -1254,7 +2127,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 174)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -1268,7 +2152,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 175)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -1280,7 +2175,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 25)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -1296,7 +2202,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 26)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -1310,7 +2227,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 27)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -1324,7 +2252,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 28)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -1338,7 +2277,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 29)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -1352,7 +2302,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 30)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -1366,7 +2327,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 31)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -1380,7 +2352,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 32)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -1394,7 +2377,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 52)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -1408,7 +2402,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 33)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -1422,7 +2427,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 46)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -1434,7 +2450,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 47)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -1445,7 +2472,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 48)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -1459,7 +2497,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 49)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -1472,7 +2521,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 50)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -1488,7 +2548,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 51)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -1503,7 +2574,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 235)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -1517,7 +2599,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 53)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -1530,7 +2623,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 54)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -1543,7 +2647,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 55)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -1554,7 +2669,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 62)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -1567,7 +2693,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 64)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -1580,7 +2717,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 65)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -1595,7 +2743,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 66)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -1615,7 +2774,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 67)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -1629,7 +2799,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 68)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -1643,7 +2824,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 69)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -1657,7 +2849,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 70)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -1670,14 +2873,26 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 71)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
         public struct GetClipRemainingTimeResult
         {
             public bool Ok { get { return Error == 0; } }
-            public short Code; public int Error;
+            public short Code;
+            public int Error;
             public int Hours;
             public int Minutes;
             public int Seconds;
@@ -1693,7 +2908,15 @@ namespace PandorasBox
             b = connector.Send(b, true);
             var r = new GetClipRemainingTimeResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 77)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
             {
                 r.Error = 0;
                 r.Hours = b.ReadInt();
@@ -1707,7 +2930,8 @@ namespace PandorasBox
         public struct GetSeqCueRemainingTimeResult
         {
             public bool Ok { get { return Error == 0; } }
-            public short Code; public int Error;
+            public short Code;
+            public int Error;
             public int Hours;
             public int Minutes;
             public int Seconds;
@@ -1721,7 +2945,15 @@ namespace PandorasBox
             b = connector.Send(b, true);
             var r = new GetSeqCueRemainingTimeResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 78)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
             {
                 r.Error = 0;
                 r.Hours = b.ReadInt();
@@ -1735,7 +2967,8 @@ namespace PandorasBox
         public struct GetResourceCountResult
         {
             public bool Ok { get { return Error == 0; } }
-            public short Code; public int Error;
+            public short Code;
+            public int Error;
             public int MediaCount;
         }
         public GetResourceCountResult GetResourceCount()
@@ -1745,7 +2978,15 @@ namespace PandorasBox
             b = connector.Send(b, true);
             var r = new GetResourceCountResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 82)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
             {
                 r.Error = 0;
                 r.MediaCount = b.ReadInt();
@@ -1756,7 +2997,8 @@ namespace PandorasBox
         public struct GetTreeItemCountResult
         {
             public bool Ok { get { return Error == 0; } }
-            public short Code; public int Error;
+            public short Code;
+            public int Error;
             public int TreeItemCount;
         }
         public GetTreeItemCountResult GetTreeItemCount()
@@ -1766,7 +3008,15 @@ namespace PandorasBox
             b = connector.Send(b, true);
             var r = new GetTreeItemCountResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 150)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
             {
                 r.Error = 0;
                 r.TreeItemCount = b.ReadInt();
@@ -1782,7 +3032,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 83)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -1795,7 +3056,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 122)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -1808,7 +3080,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 157)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -1820,7 +3103,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 123)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -1834,7 +3128,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 86)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -1847,7 +3152,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 90)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -1861,7 +3177,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 92)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -1880,7 +3207,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 93)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -1893,7 +3231,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 94)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -1905,14 +3254,26 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 95)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
         public struct CreateVideoLayerGetIdResult
         {
             public bool Ok { get { return Error == 0; } }
-            public short Code; public int Error;
+            public short Code;
+            public int Error;
             public int LayerId;
         }
         public CreateVideoLayerGetIdResult CreateVideoLayerGetId(int siteId, bool isGraphicLayer)
@@ -1924,7 +3285,15 @@ namespace PandorasBox
             b = connector.Send(b, true);
             var r = new CreateVideoLayerGetIdResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 110)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
             {
                 r.Error = 0;
                 r.LayerId = b.ReadInt();
@@ -1942,7 +3311,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 97)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -1954,7 +3334,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 102)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -1966,7 +3357,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 103)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -1979,14 +3381,26 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 104)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
         public struct GetSeqMediaByParamResult
         {
             public bool Ok { get { return Error == 0; } }
-            public short Code; public int Error;
+            public short Code;
+            public int Error;
             public int DmxFolderId;
             public int DmxFileId;
             public string FilePath;
@@ -2003,7 +3417,15 @@ namespace PandorasBox
             b = connector.Send(b, true);
             var r = new GetSeqMediaByParamResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 105)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
             {
                 r.Error = 0;
                 r.DmxFolderId = b.ReadInt();
@@ -2017,7 +3439,8 @@ namespace PandorasBox
         public struct GetDeviceTransportModeResult
         {
             public bool Ok { get { return Error == 0; } }
-            public short Code; public int Error;
+            public short Code;
+            public int Error;
             public TransportMode TransportMode;
         }
         public GetDeviceTransportModeResult GetDeviceTransportMode(int siteId, int deviceId)
@@ -2029,7 +3452,15 @@ namespace PandorasBox
             b = connector.Send(b, true);
             var r = new GetDeviceTransportModeResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 108)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
             {
                 r.Error = 0;
                 r.TransportMode = (TransportMode)b.ReadInt();
@@ -2040,7 +3471,8 @@ namespace PandorasBox
         public struct GetIsSiteConnectedResult
         {
             public bool Ok { get { return Error == 0; } }
-            public short Code; public int Error;
+            public short Code;
+            public int Error;
             public bool IsConnected;
         }
         public GetIsSiteConnectedResult GetIsSiteConnected(int siteId)
@@ -2051,7 +3483,15 @@ namespace PandorasBox
             b = connector.Send(b, true);
             var r = new GetIsSiteConnectedResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 109)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
             {
                 r.Error = 0;
                 r.IsConnected = b.ReadBool();
@@ -2068,7 +3508,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 111)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -2081,7 +3532,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 112)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -2094,7 +3556,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 113)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -2107,7 +3580,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 114)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -2120,14 +3604,26 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 117)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
         public struct GetEnableClxControllerResult
         {
             public bool Ok { get { return Error == 0; } }
-            public short Code; public int Error;
+            public short Code;
+            public int Error;
             public bool IsEnabled;
         }
         public GetEnableClxControllerResult GetEnableClxController(ClxHardware forJogShuttle)
@@ -2138,7 +3634,15 @@ namespace PandorasBox
             b = connector.Send(b, true);
             var r = new GetEnableClxControllerResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 116)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
             {
                 r.Error = 0;
                 r.IsEnabled = b.ReadBool();
@@ -2159,7 +3663,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 118)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -2176,7 +3691,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 119)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -2190,7 +3716,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 120)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -2203,14 +3740,26 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 121)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
         public struct GetResourceIsConsistentResult
         {
             public bool Ok { get { return Error == 0; } }
-            public short Code; public int Error;
+            public short Code;
+            public int Error;
             public Consistency IsContentInconsistent;
         }
         public GetResourceIsConsistentResult GetResourceIsConsistent(int dmxFolderId, int dmxFileId)
@@ -2222,7 +3771,15 @@ namespace PandorasBox
             b = connector.Send(b, true);
             var r = new GetResourceIsConsistentResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 127)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
             {
                 r.Error = 0;
                 r.IsContentInconsistent = (Consistency)b.ReadInt();
@@ -2233,7 +3790,8 @@ namespace PandorasBox
         public struct GetResourceIsConsistentByNameResult
         {
             public bool Ok { get { return Error == 0; } }
-            public short Code; public int Error;
+            public short Code;
+            public int Error;
             public Consistency IsContentInconsistent;
         }
         public GetResourceIsConsistentByNameResult GetResourceIsConsistentByName(string resourcePath)
@@ -2244,7 +3802,15 @@ namespace PandorasBox
             b = connector.Send(b, true);
             var r = new GetResourceIsConsistentByNameResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 128)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
             {
                 r.Error = 0;
                 r.IsContentInconsistent = (Consistency)b.ReadInt();
@@ -2255,7 +3821,8 @@ namespace PandorasBox
         public struct CreateSequenceGetIdResult
         {
             public bool Ok { get { return Error == 0; } }
-            public short Code; public int Error;
+            public short Code;
+            public int Error;
             public int SequenceId;
         }
         public CreateSequenceGetIdResult CreateSequenceGetId()
@@ -2265,7 +3832,15 @@ namespace PandorasBox
             b = connector.Send(b, true);
             var r = new CreateSequenceGetIdResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 130)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
             {
                 r.Error = 0;
                 r.SequenceId = b.ReadInt();
@@ -2281,7 +3856,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 131)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -2298,7 +3884,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 136)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -2312,7 +3909,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 233)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -2330,7 +3938,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 146)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -2344,7 +3963,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 137)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -2357,7 +3987,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 138)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -2370,14 +4011,26 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 145)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
         public struct AddEncryptionKeyGetIdResult
         {
             public bool Ok { get { return Error == 0; } }
-            public short Code; public int Error;
+            public short Code;
+            public int Error;
             public bool IsKeyAdded;
         }
         public AddEncryptionKeyGetIdResult AddEncryptionKeyGetId(string encryptionKey)
@@ -2388,7 +4041,15 @@ namespace PandorasBox
             b = connector.Send(b, true);
             var r = new AddEncryptionKeyGetIdResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 164)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
             {
                 r.Error = 0;
                 r.IsKeyAdded = b.ReadBool();
@@ -2399,7 +4060,8 @@ namespace PandorasBox
         public struct AddEncryptionPolicyGetIdResult
         {
             public bool Ok { get { return Error == 0; } }
-            public short Code; public int Error;
+            public short Code;
+            public int Error;
             public bool IsKeyAdded;
         }
         public AddEncryptionPolicyGetIdResult AddEncryptionPolicyGetId(string encryptionPolicy)
@@ -2410,7 +4072,15 @@ namespace PandorasBox
             b = connector.Send(b, true);
             var r = new AddEncryptionPolicyGetIdResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 165)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
             {
                 r.Error = 0;
                 r.IsKeyAdded = b.ReadBool();
@@ -2427,7 +4097,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 166)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -2440,7 +4121,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 167)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -2454,7 +4146,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 168)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -2467,14 +4170,26 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 169)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
         public struct GetThumbnailByPathResult
         {
             public bool Ok { get { return Error == 0; } }
-            public short Code; public int Error;
+            public short Code;
+            public int Error;
             public int ThumbnailWidth;
             public int ThumbnailHeight;
             public byte[] ThumbnailData;
@@ -2487,7 +4202,15 @@ namespace PandorasBox
             b = connector.Send(b, true);
             var r = new GetThumbnailByPathResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 162)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
             {
                 r.Error = 0;
                 r.ThumbnailWidth = b.ReadInt();
@@ -2500,7 +4223,8 @@ namespace PandorasBox
         public struct GetThumbnailByItemIndexResult
         {
             public bool Ok { get { return Error == 0; } }
-            public short Code; public int Error;
+            public short Code;
+            public int Error;
             public int ThumbnailWidth;
             public int ThumbnailHeight;
             public byte[] ThumbnailData;
@@ -2513,7 +4237,15 @@ namespace PandorasBox
             b = connector.Send(b, true);
             var r = new GetThumbnailByItemIndexResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 163)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
             {
                 r.Error = 0;
                 r.ThumbnailWidth = b.ReadInt();
@@ -2533,7 +4265,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 176)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -2548,7 +4291,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 177)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -2563,7 +4317,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 178)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -2579,7 +4344,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 179)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -2595,7 +4371,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 180)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -2610,7 +4397,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 181)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -2623,7 +4421,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 182)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -2636,7 +4445,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 183)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -2652,7 +4472,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 184)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -2666,7 +4497,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 185)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -2680,7 +4522,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 186)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -2694,7 +4547,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 187)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -2707,7 +4571,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 188)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -2720,14 +4595,26 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 189)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
         public struct GetPlaylistSizeByDmxIdResult
         {
             public bool Ok { get { return Error == 0; } }
-            public short Code; public int Error;
+            public short Code;
+            public int Error;
             public int PlaylistSize;
         }
         public GetPlaylistSizeByDmxIdResult GetPlaylistSizeByDmxId(int playlistDmxFolderId, int playlistdmxFileId)
@@ -2739,7 +4626,15 @@ namespace PandorasBox
             b = connector.Send(b, true);
             var r = new GetPlaylistSizeByDmxIdResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 190)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
             {
                 r.Error = 0;
                 r.PlaylistSize = b.ReadInt();
@@ -2750,7 +4645,8 @@ namespace PandorasBox
         public struct GetPlaylistSizeByPathResult
         {
             public bool Ok { get { return Error == 0; } }
-            public short Code; public int Error;
+            public short Code;
+            public int Error;
             public int PlaylistSize;
         }
         public GetPlaylistSizeByPathResult GetPlaylistSizeByPath(string playlistPath)
@@ -2761,7 +4657,15 @@ namespace PandorasBox
             b = connector.Send(b, true);
             var r = new GetPlaylistSizeByPathResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 191)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
             {
                 r.Error = 0;
                 r.PlaylistSize = b.ReadInt();
@@ -2772,7 +4676,8 @@ namespace PandorasBox
         public struct GetPlaylistSizeByItemIdResult
         {
             public bool Ok { get { return Error == 0; } }
-            public short Code; public int Error;
+            public short Code;
+            public int Error;
             public int PlaylistSize;
         }
         public GetPlaylistSizeByItemIdResult GetPlaylistSizeByItemId(int playlistItemIndex)
@@ -2783,7 +4688,15 @@ namespace PandorasBox
             b = connector.Send(b, true);
             var r = new GetPlaylistSizeByItemIdResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 192)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
             {
                 r.Error = 0;
                 r.PlaylistSize = b.ReadInt();
@@ -2802,7 +4715,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 199)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -2816,7 +4740,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 200)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -2830,7 +4765,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 201)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -2848,7 +4794,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 202)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -2865,7 +4822,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 203)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -2882,7 +4850,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 204)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -2900,7 +4879,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 205)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -2917,7 +4907,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 206)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -2934,7 +4935,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 207)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -2952,7 +4964,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 208)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -2969,7 +4992,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 210)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -2986,7 +5020,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 211)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -3004,7 +5049,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 212)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -3021,7 +5077,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 213)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -3038,7 +5105,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 214)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -3053,7 +5131,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 215)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -3067,7 +5156,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 216)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -3081,7 +5181,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 217)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -3096,7 +5207,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 218)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -3110,7 +5232,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 219)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -3124,7 +5257,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 220)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -3143,7 +5287,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 222)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -3158,7 +5313,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 223)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -3176,7 +5342,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 225)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -3190,7 +5367,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 226)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -3212,7 +5400,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 227)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -3225,7 +5424,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 228)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -3239,7 +5449,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 230)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -3254,7 +5475,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 229)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -3270,7 +5502,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 231)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -3285,7 +5528,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 239)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -3299,7 +5553,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 240)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -3313,7 +5578,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 241)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -3326,7 +5602,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 242)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -3338,7 +5625,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 243)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -3350,7 +5648,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 244)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -3365,7 +5674,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 245)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -3379,7 +5699,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 246)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -3393,14 +5724,26 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 247)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
         public struct GetCanvasDrawCommandsByDmxIdResult
         {
             public bool Ok { get { return Error == 0; } }
-            public short Code; public int Error;
+            public short Code;
+            public int Error;
             public string Commands;
         }
         public GetCanvasDrawCommandsByDmxIdResult GetCanvasDrawCommandsByDmxId(int canvasDmxFolderId, int canvasDmxFileId)
@@ -3412,7 +5755,15 @@ namespace PandorasBox
             b = connector.Send(b, true);
             var r = new GetCanvasDrawCommandsByDmxIdResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 248)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
             {
                 r.Error = 0;
                 r.Commands = b.ReadStringNarrow();
@@ -3423,7 +5774,8 @@ namespace PandorasBox
         public struct GetCanvasDrawCommandsByPathResult
         {
             public bool Ok { get { return Error == 0; } }
-            public short Code; public int Error;
+            public short Code;
+            public int Error;
             public string Commands;
         }
         public GetCanvasDrawCommandsByPathResult GetCanvasDrawCommandsByPath(string canvasResourcePath)
@@ -3434,7 +5786,15 @@ namespace PandorasBox
             b = connector.Send(b, true);
             var r = new GetCanvasDrawCommandsByPathResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 249)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
             {
                 r.Error = 0;
                 r.Commands = b.ReadStringNarrow();
@@ -3445,7 +5805,8 @@ namespace PandorasBox
         public struct GetCanvasDrawCommandsByItemIdResult
         {
             public bool Ok { get { return Error == 0; } }
-            public short Code; public int Error;
+            public short Code;
+            public int Error;
             public string Commands;
         }
         public GetCanvasDrawCommandsByItemIdResult GetCanvasDrawCommandsByItemId(int canvasItemIndex)
@@ -3456,7 +5817,15 @@ namespace PandorasBox
             b = connector.Send(b, true);
             var r = new GetCanvasDrawCommandsByItemIdResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 250)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
             {
                 r.Error = 0;
                 r.Commands = b.ReadStringNarrow();
@@ -3467,7 +5836,8 @@ namespace PandorasBox
         public struct GetResourceWidthByDmxIdResult
         {
             public bool Ok { get { return Error == 0; } }
-            public short Code; public int Error;
+            public short Code;
+            public int Error;
             public int Width;
         }
         public GetResourceWidthByDmxIdResult GetResourceWidthByDmxId(int dmxFolderId, int dmxFileId)
@@ -3479,7 +5849,15 @@ namespace PandorasBox
             b = connector.Send(b, true);
             var r = new GetResourceWidthByDmxIdResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 251)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
             {
                 r.Error = 0;
                 r.Width = b.ReadInt();
@@ -3490,7 +5868,8 @@ namespace PandorasBox
         public struct GetResourceWidthByPathResult
         {
             public bool Ok { get { return Error == 0; } }
-            public short Code; public int Error;
+            public short Code;
+            public int Error;
             public int Width;
         }
         public GetResourceWidthByPathResult GetResourceWidthByPath(string folderPathToProject)
@@ -3501,7 +5880,15 @@ namespace PandorasBox
             b = connector.Send(b, true);
             var r = new GetResourceWidthByPathResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 252)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
             {
                 r.Error = 0;
                 r.Width = b.ReadInt();
@@ -3512,7 +5899,8 @@ namespace PandorasBox
         public struct GetResourceWidthByItemIdResult
         {
             public bool Ok { get { return Error == 0; } }
-            public short Code; public int Error;
+            public short Code;
+            public int Error;
             public int Width;
         }
         public GetResourceWidthByItemIdResult GetResourceWidthByItemId(int itemId)
@@ -3523,7 +5911,15 @@ namespace PandorasBox
             b = connector.Send(b, true);
             var r = new GetResourceWidthByItemIdResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 253)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
             {
                 r.Error = 0;
                 r.Width = b.ReadInt();
@@ -3534,7 +5930,8 @@ namespace PandorasBox
         public struct GetResourceHeightByDmxIdResult
         {
             public bool Ok { get { return Error == 0; } }
-            public short Code; public int Error;
+            public short Code;
+            public int Error;
             public int Height;
         }
         public GetResourceHeightByDmxIdResult GetResourceHeightByDmxId(int dmxFolderId, int dmxFileId)
@@ -3546,7 +5943,15 @@ namespace PandorasBox
             b = connector.Send(b, true);
             var r = new GetResourceHeightByDmxIdResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 254)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
             {
                 r.Error = 0;
                 r.Height = b.ReadInt();
@@ -3557,7 +5962,8 @@ namespace PandorasBox
         public struct GetResourceHeightByPathResult
         {
             public bool Ok { get { return Error == 0; } }
-            public short Code; public int Error;
+            public short Code;
+            public int Error;
             public int Height;
         }
         public GetResourceHeightByPathResult GetResourceHeightByPath(string folderPathToProject)
@@ -3568,7 +5974,15 @@ namespace PandorasBox
             b = connector.Send(b, true);
             var r = new GetResourceHeightByPathResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 255)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
             {
                 r.Error = 0;
                 r.Height = b.ReadInt();
@@ -3579,7 +5993,8 @@ namespace PandorasBox
         public struct GetResourceHeightByItemIdResult
         {
             public bool Ok { get { return Error == 0; } }
-            public short Code; public int Error;
+            public short Code;
+            public int Error;
             public int Height;
         }
         public GetResourceHeightByItemIdResult GetResourceHeightByItemId(int itemId)
@@ -3590,7 +6005,15 @@ namespace PandorasBox
             b = connector.Send(b, true);
             var r = new GetResourceHeightByItemIdResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 256)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
             {
                 r.Error = 0;
                 r.Height = b.ReadInt();
@@ -3601,7 +6024,8 @@ namespace PandorasBox
         public struct GetProjectPathOnDiscResult
         {
             public bool Ok { get { return Error == 0; } }
-            public short Code; public int Error;
+            public short Code;
+            public int Error;
             public string Commands;
         }
         public GetProjectPathOnDiscResult GetProjectPathOnDisc()
@@ -3611,7 +6035,15 @@ namespace PandorasBox
             b = connector.Send(b, true);
             var r = new GetProjectPathOnDiscResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 257)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
             {
                 r.Error = 0;
                 r.Commands = b.ReadStringNarrow();
@@ -3628,7 +6060,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 258)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -3641,7 +6084,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 259)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -3654,7 +6108,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 260)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -3667,7 +6132,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 261)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -3680,7 +6156,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 263)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -3694,7 +6181,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 262)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -3708,7 +6206,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 265)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -3721,7 +6230,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 266)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -3734,7 +6254,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 267)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -3747,7 +6278,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 268)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -3759,7 +6301,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 269)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -3771,7 +6324,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 270)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -3784,7 +6348,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 271)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -3796,7 +6371,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 272)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -3808,7 +6394,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 273)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -3826,7 +6423,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 274)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -3841,7 +6449,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 275)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -3855,14 +6474,26 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 276)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
         public struct GetCueNameResult
         {
             public bool Ok { get { return Error == 0; } }
-            public short Code; public int Error;
+            public short Code;
+            public int Error;
             public string CueName;
         }
         public GetCueNameResult GetCueName(int sequenceId, int cueId)
@@ -3874,7 +6505,15 @@ namespace PandorasBox
             b = connector.Send(b, true);
             var r = new GetCueNameResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 277)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
             {
                 r.Error = 0;
                 r.CueName = b.ReadStringNarrow();
@@ -3891,7 +6530,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 278)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -3905,7 +6555,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 279)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -3920,7 +6581,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 280)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -3935,7 +6607,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 282)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -3952,7 +6635,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 283)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -3968,7 +6662,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 284)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -3985,7 +6690,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 285)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -4002,7 +6718,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 286)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -4015,7 +6742,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 287)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -4030,7 +6768,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 288)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -4044,7 +6793,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 289)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -4060,7 +6820,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 290)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -4074,7 +6845,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 291)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -4090,7 +6872,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 292)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -4105,7 +6898,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 293)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -4120,14 +6924,26 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 294)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
         public struct GetCurrentTimeCueInfoResult
         {
             public bool Ok { get { return Error == 0; } }
-            public short Code; public int Error;
+            public short Code;
+            public int Error;
             public int Hours;
             public int Minutes;
             public int Seconds;
@@ -4155,7 +6971,15 @@ namespace PandorasBox
             b = connector.Send(b, true);
             var r = new GetCurrentTimeCueInfoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 295)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
             {
                 r.Error = 0;
                 r.Hours = b.ReadInt();
@@ -4188,7 +7012,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 296)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -4201,7 +7036,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 297)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -4214,7 +7060,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 298)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -4226,7 +7083,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 299)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -4241,7 +7109,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 300)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -4257,7 +7136,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 301)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -4273,7 +7163,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 302)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -4290,7 +7191,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 303)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -4307,7 +7219,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 304)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -4321,7 +7244,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 305)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -4335,7 +7269,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 306)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -4349,7 +7294,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 307)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -4363,7 +7319,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 308)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -4377,14 +7344,26 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 309)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
         public struct GetWatchedFolderPropertyResult
         {
             public bool Ok { get { return Error == 0; } }
-            public short Code; public int Error;
+            public short Code;
+            public int Error;
             public bool IsEnabled;
         }
         public GetWatchedFolderPropertyResult GetWatchedFolderProperty(string projectPath, WatchFolderProperty watchFolderProperty)
@@ -4396,7 +7375,15 @@ namespace PandorasBox
             b = connector.Send(b, true);
             var r = new GetWatchedFolderPropertyResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 310)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
             {
                 r.Error = 0;
                 r.IsEnabled = b.ReadBool();
@@ -4407,7 +7394,8 @@ namespace PandorasBox
         public struct GetWatchedFolderPropertyByItemIdResult
         {
             public bool Ok { get { return Error == 0; } }
-            public short Code; public int Error;
+            public short Code;
+            public int Error;
             public bool IsEnabled;
         }
         public GetWatchedFolderPropertyByItemIdResult GetWatchedFolderPropertyByItemId(int treeItemIndex, WatchFolderProperty watchFolderProperty)
@@ -4419,7 +7407,15 @@ namespace PandorasBox
             b = connector.Send(b, true);
             var r = new GetWatchedFolderPropertyByItemIdResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 311)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
             {
                 r.Error = 0;
                 r.IsEnabled = b.ReadBool();
@@ -4430,7 +7426,8 @@ namespace PandorasBox
         public struct GetFolderSpreadToSiteResult
         {
             public bool Ok { get { return Error == 0; } }
-            public short Code; public int Error;
+            public short Code;
+            public int Error;
             public bool IsEnabled;
         }
         public GetFolderSpreadToSiteResult GetFolderSpreadToSite(string projectPath, int siteId)
@@ -4442,7 +7439,15 @@ namespace PandorasBox
             b = connector.Send(b, true);
             var r = new GetFolderSpreadToSiteResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 312)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
             {
                 r.Error = 0;
                 r.IsEnabled = b.ReadBool();
@@ -4453,7 +7458,8 @@ namespace PandorasBox
         public struct GetFolderSpreadToSiteByItemIdResult
         {
             public bool Ok { get { return Error == 0; } }
-            public short Code; public int Error;
+            public short Code;
+            public int Error;
             public bool IsEnabled;
         }
         public GetFolderSpreadToSiteByItemIdResult GetFolderSpreadToSiteByItemId(int treeItemIndex, int siteId)
@@ -4465,7 +7471,15 @@ namespace PandorasBox
             b = connector.Send(b, true);
             var r = new GetFolderSpreadToSiteByItemIdResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 313)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
             {
                 r.Error = 0;
                 r.IsEnabled = b.ReadBool();
@@ -4480,7 +7494,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 314)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -4491,7 +7516,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 315)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -4502,7 +7538,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 316)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -4517,7 +7564,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 18)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -4533,14 +7591,26 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 19)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
         public struct GetResourceInfoResult
         {
             public bool Ok { get { return Error == 0; } }
-            public short Code; public int Error;
+            public short Code;
+            public int Error;
             public int DmxFolderId;
             public int DmxFileId;
             public string ResourceName;
@@ -4563,7 +7633,15 @@ namespace PandorasBox
             b = connector.Send(b, true);
             var r = new GetResourceInfoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 76)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
             {
                 r.Error = 0;
                 r.DmxFolderId = b.ReadInt();
@@ -4612,7 +7690,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 314)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -4643,7 +7732,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 315)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -4674,7 +7774,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 316)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -4693,14 +7804,26 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 323)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
         public struct GetYawPitchRollResult
         {
             public bool Ok { get { return Error == 0; } }
-            public short Code; public int Error;
+            public short Code;
+            public int Error;
             public double Yaw;
             public double Pitch;
             public double Roll;
@@ -4715,7 +7838,15 @@ namespace PandorasBox
             b = connector.Send(b, true);
             var r = new GetYawPitchRollResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 324)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
             {
                 r.Error = 0;
                 r.Yaw = b.ReadDouble();
@@ -4728,7 +7859,8 @@ namespace PandorasBox
         public struct GetSiteIdsResult
         {
             public bool Ok { get { return Error == 0; } }
-            public short Code; public int Error;
+            public short Code;
+            public int Error;
             public int[] SiteIds;
         }
         public GetSiteIdsResult GetSiteIds()
@@ -4738,7 +7870,15 @@ namespace PandorasBox
             b = connector.Send(b, true);
             var r = new GetSiteIdsResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 317)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
             {
                 r.Error = 0;
                 r.SiteIds = b.ReadIntBuffer();
@@ -4757,7 +7897,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 341)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -4771,7 +7922,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 342)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -4782,7 +7944,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 354)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -4795,7 +7968,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 355)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -4812,7 +7996,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 352)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -4828,7 +8023,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 353)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -4845,7 +8051,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 356)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -4861,7 +8078,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 357)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -4877,7 +8105,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 358)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -4891,7 +8130,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 359)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -4905,7 +8155,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 281)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -4919,7 +8180,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 236)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -4934,7 +8206,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 237)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -4949,7 +8232,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 238)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -4960,7 +8254,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 224)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
@@ -4980,14 +8285,26 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 264)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
 
         public struct GetHostRevisionNumberResult
         {
             public bool Ok { get { return Error == 0; } }
-            public short Code; public int Error;
+            public short Code;
+            public int Error;
             public int Revision;
         }
         public GetHostRevisionNumberResult GetHostRevisionNumber()
@@ -4997,7 +8314,15 @@ namespace PandorasBox
             b = connector.Send(b, true);
             var r = new GetHostRevisionNumberResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 334)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
             {
                 r.Error = 0;
                 r.Revision = b.ReadInt();
@@ -5008,7 +8333,8 @@ namespace PandorasBox
         public struct GetTreeItemInfoResult
         {
             public bool Ok { get { return Error == 0; } }
-            public short Code; public int Error;
+            public short Code;
+            public int Error;
             public ResourceType ResourceType;
             public string ResourcePath;
             public string FolderPath;
@@ -5021,7 +8347,15 @@ namespace PandorasBox
             b = connector.Send(b, true);
             var r = new GetTreeItemInfoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 151)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
             {
                 r.Error = 0;
                 r.ResourceType = (ResourceType)b.ReadInt();
@@ -5034,7 +8368,8 @@ namespace PandorasBox
         public struct GetResourceInfoByTreeItemIndexResult
         {
             public bool Ok { get { return Error == 0; } }
-            public short Code; public int Error;
+            public short Code;
+            public int Error;
             public int DmxFolderId;
             public int DmxFileId;
             public string ResourceName;
@@ -5057,7 +8392,15 @@ namespace PandorasBox
             b = connector.Send(b, true);
             var r = new GetResourceInfoByTreeItemIndexResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 152)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
             {
                 r.Error = 0;
                 r.DmxFolderId = b.ReadInt();
@@ -5080,7 +8423,8 @@ namespace PandorasBox
         public struct GetPlaylistEntryByDmxIdResult
         {
             public bool Ok { get { return Error == 0; } }
-            public short Code; public int Error;
+            public short Code;
+            public int Error;
             public int TreeItemIndex;
             public string ResourceName;
             public string ResourcePath;
@@ -5112,7 +8456,15 @@ namespace PandorasBox
             b = connector.Send(b, true);
             var r = new GetPlaylistEntryByDmxIdResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 193)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
             {
                 r.Error = 0;
                 r.TreeItemIndex = b.ReadInt();
@@ -5142,7 +8494,8 @@ namespace PandorasBox
         public struct GetPlaylistEntryByPathResult
         {
             public bool Ok { get { return Error == 0; } }
-            public short Code; public int Error;
+            public short Code;
+            public int Error;
             public int TreeItemIndex;
             public string ResourceName;
             public string ResourcePath;
@@ -5173,7 +8526,15 @@ namespace PandorasBox
             b = connector.Send(b, true);
             var r = new GetPlaylistEntryByPathResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 194)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
             {
                 r.Error = 0;
                 r.TreeItemIndex = b.ReadInt();
@@ -5203,7 +8564,8 @@ namespace PandorasBox
         public struct GetPlaylistEntryByItemIdResult
         {
             public bool Ok { get { return Error == 0; } }
-            public short Code; public int Error;
+            public short Code;
+            public int Error;
             public int TreeItemIndex;
             public string ResourceName;
             public string ResourcePath;
@@ -5234,7 +8596,15 @@ namespace PandorasBox
             b = connector.Send(b, true);
             var r = new GetPlaylistEntryByItemIdResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 195)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
             {
                 r.Error = 0;
                 r.TreeItemIndex = b.ReadInt();
@@ -5264,7 +8634,8 @@ namespace PandorasBox
         public struct GetPlaylistEntryIndicesByDmxIdResult
         {
             public bool Ok { get { return Error == 0; } }
-            public short Code; public int Error;
+            public short Code;
+            public int Error;
             public int[] TreeItemIds;
         }
         public GetPlaylistEntryIndicesByDmxIdResult GetPlaylistEntryIndicesByDmxId(int playlistDmxFolderId, int playlistdmxFileId)
@@ -5276,7 +8647,15 @@ namespace PandorasBox
             b = connector.Send(b, true);
             var r = new GetPlaylistEntryIndicesByDmxIdResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 196)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
             {
                 r.Error = 0;
                 r.TreeItemIds = b.ReadIntBuffer();
@@ -5287,7 +8666,8 @@ namespace PandorasBox
         public struct GetPlaylistEntryIndicesByPathResult
         {
             public bool Ok { get { return Error == 0; } }
-            public short Code; public int Error;
+            public short Code;
+            public int Error;
             public int[] TreeItemIds;
         }
         public GetPlaylistEntryIndicesByPathResult GetPlaylistEntryIndicesByPath(string playlistPath)
@@ -5298,7 +8678,15 @@ namespace PandorasBox
             b = connector.Send(b, true);
             var r = new GetPlaylistEntryIndicesByPathResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 197)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
             {
                 r.Error = 0;
                 r.TreeItemIds = b.ReadIntBuffer();
@@ -5309,7 +8697,8 @@ namespace PandorasBox
         public struct GetPlaylistEntryIndicesByItemIdResult
         {
             public bool Ok { get { return Error == 0; } }
-            public short Code; public int Error;
+            public short Code;
+            public int Error;
             public int[] TreeItemIds;
         }
         public GetPlaylistEntryIndicesByItemIdResult GetPlaylistEntryIndicesByItemId(int playlistItemIndex)
@@ -5320,7 +8709,15 @@ namespace PandorasBox
             b = connector.Send(b, true);
             var r = new GetPlaylistEntryIndicesByItemIdResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 198)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
             {
                 r.Error = 0;
                 r.TreeItemIds = b.ReadIntBuffer();
@@ -5331,7 +8728,8 @@ namespace PandorasBox
         public struct CreateGraphicLayerGetIdResult
         {
             public bool Ok { get { return Error == 0; } }
-            public short Code; public int Error;
+            public short Code;
+            public int Error;
             public int LayerId;
         }
         public CreateGraphicLayerGetIdResult CreateGraphicLayerGetId(int siteId, bool isGraphicLayer)
@@ -5343,7 +8741,15 @@ namespace PandorasBox
             b = connector.Send(b, true);
             var r = new CreateGraphicLayerGetIdResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 96)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
             {
                 r.Error = 0;
                 r.LayerId = b.ReadInt();
@@ -5362,7 +8768,18 @@ namespace PandorasBox
             b = connector.Send(b, false);
             var r = new PbAutoResult();
             r.Code = b.ReadShort();
-            if (r.Code < 0) r.Error = b.ReadInt(); else r.Error = 0;
+            if (r.Code < 0)
+            {
+                r.Error = b.ReadInt();
+            }
+            else if(r.Code != 282)
+            {
+                r.Error = ErrorCode.WrongMessageReturned;
+            }
+            else
+            {
+                r.Error = 0;
+            }
             return r;
         }
     }
@@ -5700,7 +9117,7 @@ namespace PandorasBox
     {
         public static byte PbAutoChecksum(byte[] message)
         {
-            if (message.Length < 17) throw new ArgumentException("Byte array is not a PbAuto header! Length != 17");
+            if (message.Length < 17) throw new ArgumentException("Not a pb automation header");
             var checksum = 0;
             for(int i=4;i<16;i++)
             {
@@ -5784,26 +9201,18 @@ namespace PandorasBox
         // default responses
         public static ByteUtil ErrorNotConnected()
         {
-            ByteUtil b = new ByteUtil();
-            b.WriteShort(-1);
-            b.WriteInt((int)ErrorCode.NoConnection);
-            b.Commit();
-            return b;
+            // ErrorCode.NoConnection = 1
+            return new ByteUtil(new byte[]{ 255, 255, 0, 0, 0, 1});
         }
         public static ByteUtil ErrorWrongMessageReturned()
         {
-            ByteUtil b = new ByteUtil();
-            b.WriteShort(-1);
-            b.WriteInt((int)ErrorCode.WrongMessageReturned);
-            b.Commit();
-            return b;
+            // ErrorCode.WrongMessageReturned = 7
+            return new ByteUtil(new byte[]{ 255, 255, 0, 0, 0, 7});
         }
         public static ByteUtil ResponseOk()
         {
-            ByteUtil b = new ByteUtil();
-            b.WriteShort(0);
-            b.Commit();
-            return b;
+            // OK = 0
+            return new ByteUtil(new byte[]{ 0, 0});
         }     
 
         public void CopyTo(byte[] bytes, int offset) { listBytes.CopyTo(bytes, offset); }
@@ -5819,7 +9228,7 @@ namespace PandorasBox
         public void WriteStringNarrow(string value) { WriteShort((short)value.Length); listBytes.AddRange(Encoding.UTF8.GetBytes(value)); }
         public void WriteStringWide(string value) { WriteShort((short)value.Length); listBytes.AddRange(Encoding.BigEndianUnicode.GetBytes(value)); }
         public void WriteByteBuffer(byte[] value) { WriteInt(value.Length); listBytes.AddRange(value); }
-        public void WriteIntBuffer(int[] value) { WriteInt(value.Length); foreach (var i in value) { listBytes.AddRange(PbUtil.GetBytesNetworkOrder(i)); } }
+        public void WriteIntBuffer(int[] value) { foreach (var i in value) { listBytes.AddRange(PbUtil.GetBytesNetworkOrder(i)); } }
 
         // Reading
         private byte[] _readBlock(int length) { var ret = new byte[length]; Array.Copy(readBytes, position, ret, 0, length);position += length;return ret; }
@@ -5830,9 +9239,9 @@ namespace PandorasBox
         public long ReadInt64() { return PbUtil.GetInt64(_readBlock(8)); }
         public double ReadDouble() { return BitConverter.ToDouble(_readBlock(8), 0); }
         public string ReadStringNarrow() { int length = ReadShort(); return Encoding.UTF8.GetString(_readBlock(length)); }
-        public string ReadStringWide() { int length = ReadShort(); return Encoding.BigEndianUnicode.GetString(_readBlock(length)); }
+        public string ReadStringWide() { int length = ReadShort(); return Encoding.BigEndianUnicode.GetString(_readBlock(length * 2)); }
         public byte[] ReadByteBuffer() { int length = ReadInt(); return _readBlock(length); }
-        public int[] ReadIntBuffer() { int length = ReadInt(); int[] result = new int[length]; for (int i = 0;i < length; i++) { result[i] = PbUtil.GetInt32(_readBlock(4)); }; return result; }
+        public int[] ReadIntBuffer() { int length = (read_bytes.Length - position) / 4; int[] result = new int[length]; for (int i = 0;i < length; i++) { result[i] = PbUtil.GetInt32(_readBlock(4)); }; return result; }
     }
 
     /// <summary>
@@ -5856,6 +9265,7 @@ namespace PandorasBox
         private string ip;
         private int domain;
         private TcpClient tcpClient;
+        private object sendLock = new object();
         private const int PORT = 6211;
 
         public TcpConnector(string ip, int domain = 0)
@@ -5934,33 +9344,36 @@ namespace PandorasBox
             header.CopyTo(message, 0);
             data.CopyTo(message, 17);
 
-            var stream = tcpClient.GetStream();
-            stream.Write(message, 0, message.Length);
-            stream.Flush();
-
-            if( !hasResponse )
+            lock(sendLock)
             {
-                return ByteUtil.ResponseOk();
-            }
+                var stream = tcpClient.GetStream();
+                stream.Write(message, 0, message.Length);
+                stream.Flush();
 
-            int bytesRead = 0;
-            while(bytesRead < 17)
-            {
-                bytesRead += stream.Read(header, bytesRead, 17 - bytesRead);
-            }
+                if( !hasResponse )
+                {
+                    return ByteUtil.ResponseOk();
+                }
 
-            if(header[0] != 0x50 || header[1] != 0x42 || header[2] != 0x41 || header[3] != 0x55 || PbUtil.PbAutoChecksum(header) != header[16])
-            {
-                return ByteUtil.ErrorWrongMessageReturned();
-            }
+                int bytesRead = 0;
+                while(bytesRead < 17)
+                {
+                    bytesRead += stream.Read(header, bytesRead, 17 - bytesRead);
+                }
 
-            int messageLength = PbUtil.GetInt16(header, 9);
-            message = new byte[messageLength];
+                if(header[0] != 0x50 || header[1] != 0x42 || header[2] != 0x41 || header[3] != 0x55 || PbUtil.PbAutoChecksum(header) != header[16])
+                {
+                    return ByteUtil.ErrorWrongMessageReturned();
+                }
 
-            bytesRead = 0;
-            while (bytesRead < messageLength)
-            {
-                bytesRead += stream.Read(message, bytesRead, messageLength - bytesRead);
+                int messageLength = PbUtil.GetInt16(header, 9);
+                message = new byte[messageLength];
+
+                bytesRead = 0;
+                while (bytesRead < messageLength)
+                {
+                    bytesRead += stream.Read(message, bytesRead, messageLength - bytesRead);
+                }
             }
 
             return new ByteUtil(message);
